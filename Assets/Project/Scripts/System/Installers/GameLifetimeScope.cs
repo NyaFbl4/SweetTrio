@@ -1,3 +1,4 @@
+using Dessert;
 using MessagePipe;
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
@@ -13,6 +14,7 @@ namespace Project.Scripts.System.Installers
     {
         [SerializeField] private GameManagerHelper _gameManagerHelper;
         [SerializeField] private LayoutsRepository _layoutsRepository;
+        [SerializeField] private DessertPool _dessertsPool;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -21,6 +23,7 @@ namespace Project.Scripts.System.Installers
             RegisterUseCases(builder);
             RegisterViews(builder);
             RegisterPresenters(builder);
+            RegisterConfigs(builder);
         }
 
         private void RegisterSystems(IContainerBuilder builder)
@@ -67,6 +70,11 @@ namespace Project.Scripts.System.Installers
         private void RegisterPresenters(IContainerBuilder builder)
         {
             builder.RegisterEntryPoint<MainMenuPresenter>(Lifetime.Scoped);
+        }
+
+        private void RegisterConfigs(IContainerBuilder builder)
+        {
+            builder.RegisterInstance<DessertPool>(_dessertsPool);
         }
     }
 }
