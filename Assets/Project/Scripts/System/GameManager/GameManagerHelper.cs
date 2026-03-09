@@ -1,17 +1,26 @@
 using UnityEngine;
 using VContainer;
 using Sirenix.OdinInspector;
+using MessagePipe;
+using Project.Scripts.Systems.UI.Dtos;
 
 namespace Project.Scripts.GameManager
 {
     public class GameManagerHelper : MonoBehaviour
     {
         private IGameManagerService _gameManagerService;
+        private IPublisher<ShowPopupDto> _showPopupDto;
+        private IPublisher<HidePopupDto> _hidePopupDto;
 
         [Inject]
-        public void Construct(IGameManagerService gameManagerService)
+        public void Construct(
+            IGameManagerService gameManagerService,
+            IPublisher<ShowPopupDto> showPopupDto,
+            IPublisher<HidePopupDto> hidePopupDto)
         {
             _gameManagerService = gameManagerService;
+            _showPopupDto = showPopupDto;
+            _hidePopupDto = hidePopupDto;
         }
 
         [Button]
