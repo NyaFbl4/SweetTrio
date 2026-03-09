@@ -1,4 +1,4 @@
-namespace Dessert
+namespace Assets.Project.Scripts.Desserts
 {
     public enum EDessertType
     {

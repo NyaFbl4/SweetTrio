@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Dessert
+namespace Assets.Project.Scripts.Desserts
 {
     public class DessertController : MonoBehaviour
     {
@@ -12,6 +12,7 @@ namespace Dessert
         // private DessertData _dessertData;
 
         public EDessertType DessertType => _dessertType;
+        // public event Action<DessertController> Clicked;
 
         // public void Init(DessertData dessertData)
         // {
@@ -30,6 +31,18 @@ namespace Dessert
             Destroy(this.gameObject.GetComponent<Rigidbody2D>());
         }
 
-        
+        public void SetInteractable(bool isInteractable)
+        {
+            _isInteractable = isInteractable;
+        }
+
+        private void OnMouseDown()
+        {
+            Debug.Log("Figure clicked: " + _dessertType);
+            if (!_isInteractable)
+                return;
+
+            // Clicked?.Invoke(this);
+        }
     }
 }

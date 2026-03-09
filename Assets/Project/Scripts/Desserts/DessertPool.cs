@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Dessert
+namespace Assets.Project.Scripts.Desserts
 {
     [CreateAssetMenu(menuName = "Configs/Dessert pool", fileName = "DessertConfig ")]
     public class DessertPool : ScriptableObject
