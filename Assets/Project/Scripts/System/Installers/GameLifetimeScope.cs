@@ -3,6 +3,7 @@ using Assets.Project.Scripts.System.DessertCreator;
 using MessagePipe;
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
+using Project.Scripts.UI.LevelUI;
 using Project.Scripts.UI.UseCases;
 using Project.System;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace Project.Scripts.System.Installers
             RegisterSystems(builder);
             RegisterHelpers(builder);
             RegisterUseCases(builder);
-            // RegisterViews(builder);
+            RegisterViews(builder);
             RegisterPresenters(builder);
             RegisterConfigs(builder);
         }
@@ -74,6 +75,7 @@ namespace Project.Scripts.System.Installers
         private void RegisterPresenters(IContainerBuilder builder)
         {
             // builder.RegisterEntryPoint<MainMenuPresenter>(Lifetime.Scoped);
+            builder.RegisterEntryPoint<LevelUIPresenter>(Lifetime.Singleton);
         }
 
         private void RegisterConfigs(IContainerBuilder builder)
