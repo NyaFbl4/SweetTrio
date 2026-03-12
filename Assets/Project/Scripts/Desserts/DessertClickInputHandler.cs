@@ -1,12 +1,20 @@
 using VContainer.Unity;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Project.System;
 
 
 namespace Assets.Project.Scripts.Desserts
 {
     public class DessertClickInputHandler : ITickable
     {
+        private readonly IActionBar _actionBar;
+
+        public DessertClickInputHandler(IActionBar actionBar)
+        {
+            _actionBar = actionBar;    
+        }
+
         public void Tick()
         {
             if (Mouse.current == null)
@@ -30,6 +38,11 @@ namespace Assets.Project.Scripts.Desserts
                         ?? hit.collider.GetComponentInParent<DessertController>();
 
             // dessert?.HandleClick();
+
+            if (dessert == null)
+                return;
+            
+            _actionBar.TryAddDessert(dessert);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Project.Scripts.System.Installers
         [SerializeField] private LayoutsRepository _layoutsRepository;
         [SerializeField] private DessertPool _dessertsPool;
         [SerializeField] private TransformController _transformController;
+        [SerializeField] private ActionBar _actionBar;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -36,6 +37,19 @@ namespace Project.Scripts.System.Installers
             builder.RegisterEntryPoint<GameManagerService>().As<IGameManagerService>();
             builder.RegisterEntryPoint<DessertClickInputHandler>(Lifetime.Singleton);
             builder.RegisterEntryPoint<DessertCreator>().As<IDessertCreator>();
+
+            if (_actionBar != null)
+            {
+                builder.RegisterComponent(_actionBar)
+                    .AsSelf()
+                    .As<IActionBar>();
+            }
+            else
+            {
+                builder.RegisterComponentInHierarchy<ActionBar>()
+                    .AsSelf()
+                    .As<IActionBar>();
+            }
         }
 
         private void RegisterHelpers(IContainerBuilder builder)
