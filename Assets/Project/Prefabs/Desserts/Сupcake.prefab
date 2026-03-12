@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.949, y: 0.711}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0.7, y: 0.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &69579196324769709
 MonoBehaviour:
@@ -50,8 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f8b5907601dcf34f9ec369dea3b9800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dessert.DessertController
-  _dessertSprite: {fileID: 2515987298617838780}
-  _dessertConfig: {fileID: 0}
+  _dessertType: 0
 --- !u!50 &3721199001329167299
 Rigidbody2D:
   serializedVersion: 5
