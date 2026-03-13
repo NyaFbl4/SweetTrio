@@ -36,6 +36,7 @@ namespace Project.Scripts.System.Installers
             builder.RegisterEntryPoint<UIController>().As<IUIController>();
             builder.RegisterEntryPoint<GameManagerService>().As<IGameManagerService>();
             builder.RegisterEntryPoint<DessertClickInputHandler>(Lifetime.Singleton);
+            builder.Register<DessertSpawner>(Lifetime.Singleton).As<IDessertSpawner>();
             builder.RegisterEntryPoint<DessertCreator>().As<IDessertCreator>();
 
             if (_actionBar != null)

@@ -3,9 +3,7 @@ using VContainer;
 using Sirenix.OdinInspector;
 using MessagePipe;
 using Project.Scripts.Systems.UI.Dtos;
-using Project.System;
 using Assets.Project.Scripts.System.DessertCreator;
-using Assets.Project.Scripts.Desserts;
 
 namespace Project.Scripts.GameManager
 {
@@ -14,25 +12,19 @@ namespace Project.Scripts.GameManager
         private IGameManagerService _gameManagerService;
         private IPublisher<ShowPopupDto> _showPopupDto;
         private IPublisher<HidePopupDto> _hidePopupDto;
-        private TransformController _transformController;
-        private IDessertCreator _dessertCreator;
-        private DessertPool _dessertsPool;
+        private IDessertSpawner _dessertSpawner;
 
         [Inject]
         public void Construct(
             IGameManagerService gameManagerService,
             IPublisher<ShowPopupDto> showPopupDto,
             IPublisher<HidePopupDto> hidePopupDto,
-            TransformController transformController,
-            IDessertCreator dessertCreator,
-            DessertPool dessertsPool)
+            IDessertSpawner dessertSpawner)
         {
             _gameManagerService = gameManagerService;
             _showPopupDto = showPopupDto;
             _hidePopupDto = hidePopupDto;
-            _transformController = transformController;
-            _dessertCreator = dessertCreator;
-            _dessertsPool = dessertsPool;
+            _dessertSpawner = dessertSpawner;
         }
 
         [Button]
@@ -86,7 +78,31 @@ namespace Project.Scripts.GameManager
         [Button]
         public void Spawn(int n)
         {
-            _dessertCreator.SpawnDessert(_transformController.SpawnPoint, _dessertsPool.DessertPrefabs[n]);
+            _dessertSpawner.SpawnByIndex(n);
+        }
+
+        [Button]
+        public void PrepareDesserts(int copiesPerDessert)
+        {
+            if (_dessertSpawner == null)
+            {
+                Debug.LogError("DessertSpawner is null. Ensure it is registered in GameLifetimeScope.");
+                return;
+            }
+
+            _dessertSpawner.PreparePool(copiesPerDessert);
+        }
+
+        [Button]
+        public void SpawnDessertFromButton(int index)
+        {
+            if (_dessertSpawner == null)
+            {
+                Debug.LogError("DessertSpawner is null. Ensure it is registered in GameLifetimeScope.");
+                return;
+            }
+
+            _dessertSpawner.SpawnByIndex(index);
         }
     }
 }
