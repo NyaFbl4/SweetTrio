@@ -9,7 +9,8 @@ namespace Assets.Project.Scripts.System.DessertCreator
     {
         private readonly DessertPool _dessertPool;
         private readonly TransformController _transformController;
-        private readonly Dictionary<int, Queue<DessertController>> _preparedDesserts = new();
+        private readonly Queue<DessertController> _preparedDessertsQueue = new();
+        private readonly List<DessertController> _preparedDesserts = new();
 
         public DessertSpawner(DessertPool dessertPool, TransformController transformController)
         {
@@ -17,7 +18,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
             _transformController = transformController;
         }
 
-        public void PreparePool(int copiesPerDessert)
+        public void PrepareDeck(int copiesPerDessert)
         {
             if (_dessertPool == null || _dessertPool.DessertPrefabs == null)
             {
@@ -37,7 +38,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
                 return;
             }
 
-            _preparedDesserts.Clear();
+            ClearPreparedDesserts();
 
             for (var i = 0; i < _dessertPool.DessertPrefabs.Count; i++)
             {
@@ -48,19 +49,23 @@ namespace Assets.Project.Scripts.System.DessertCreator
                     continue;
                 }
 
-                var queue = new Queue<DessertController>(copiesPerDessert);
                 for (var copy = 0; copy < copiesPerDessert; copy++)
                 {
                     var instance = Object.Instantiate(prefab, _transformController.DessertdContainer, false);
                     instance.gameObject.SetActive(false);
-                    queue.Enqueue(instance);
+                    _preparedDesserts.Add(instance);
                 }
+            }
 
-                _preparedDesserts[i] = queue;
+            ShufflePreparedDesserts();
+
+            for (var i = 0; i < _preparedDesserts.Count; i++)
+            {
+                _preparedDessertsQueue.Enqueue(_preparedDesserts[i]);
             }
         }
 
-        public DessertController SpawnByIndex(int index)
+        public DessertController SpawnNext()
         {
             if (_transformController == null || _transformController.SpawnPoint == null)
             {
@@ -68,19 +73,13 @@ namespace Assets.Project.Scripts.System.DessertCreator
                 return null;
             }
 
-            if (!_preparedDesserts.TryGetValue(index, out var queue))
+            if (_preparedDessertsQueue.Count == 0)
             {
-                Debug.LogError($"Dessert index {index} is not prepared. Call PreparePool(n) first.");
+                Debug.LogWarning("Prepared deck is empty. Call PrepareDeck(n) first.");
                 return null;
             }
 
-            if (queue.Count == 0)
-            {
-                Debug.LogWarning($"No prepared desserts left for index {index}.");
-                return null;
-            }
-
-            var dessert = queue.Dequeue();
+            var dessert = _preparedDessertsQueue.Dequeue();
             dessert.transform.SetParent(_transformController.SpawnPoint, false);
             dessert.transform.localPosition = Vector3.zero;
             dessert.transform.localRotation = Quaternion.identity;
@@ -88,6 +87,33 @@ namespace Assets.Project.Scripts.System.DessertCreator
             dessert.gameObject.SetActive(true);
 
             return dessert;
+        }
+
+        private void ClearPreparedDesserts()
+        {
+            while (_preparedDessertsQueue.Count > 0)
+            {
+                _preparedDessertsQueue.Dequeue();
+            }
+
+            for (var i = 0; i < _preparedDesserts.Count; i++)
+            {
+                if (_preparedDesserts[i] != null)
+                {
+                    Object.Destroy(_preparedDesserts[i].gameObject);
+                }
+            }
+
+            _preparedDesserts.Clear();
+        }
+
+        private void ShufflePreparedDesserts()
+        {
+            for (var i = _preparedDesserts.Count - 1; i > 0; i--)
+            {
+                var j = Random.Range(0, i + 1);
+                (_preparedDesserts[i], _preparedDesserts[j]) = (_preparedDesserts[j], _preparedDesserts[i]);
+            }
         }
     }
 }

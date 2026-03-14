@@ -76,9 +76,15 @@ namespace Project.Scripts.GameManager
         }
 
         [Button]
-        public void Spawn(int n)
+        public void SpawnDessert()
         {
-            _dessertSpawner.SpawnByIndex(n);
+            if (_dessertSpawner == null)
+            {
+                Debug.LogError("DessertSpawner is null. Ensure it is registered in GameLifetimeScope.");
+                return;
+            }
+
+            _dessertSpawner.SpawnNext();
         }
 
         [Button]
@@ -90,19 +96,7 @@ namespace Project.Scripts.GameManager
                 return;
             }
 
-            _dessertSpawner.PreparePool(copiesPerDessert);
-        }
-
-        [Button]
-        public void SpawnDessertFromButton(int index)
-        {
-            if (_dessertSpawner == null)
-            {
-                Debug.LogError("DessertSpawner is null. Ensure it is registered in GameLifetimeScope.");
-                return;
-            }
-
-            _dessertSpawner.SpawnByIndex(index);
+            _dessertSpawner.PrepareDeck(copiesPerDessert);
         }
     }
 }
