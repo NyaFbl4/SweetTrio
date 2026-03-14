@@ -6,28 +6,36 @@
     xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
 >
     <ui:VisualElement
-        name="center-strip-container"
+        name="top-counter-container"
         style="
             position: absolute;
             left: 0;
             right: 0;
-            top: 0;
-            bottom: 0;
+            top: 16px;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
         "
     >
         <ui:VisualElement
-            name="center-white-strip"
+            name="counter-panel"
             style="
-                width: 30%;
-                min-width: 160px;
-                max-width: 300px;
-                height: 7%;
-                min-height: 40px;
-                max-height: 70px;
+                width: 220px;
+                min-height: 42px;
                 background-color: rgba(255, 255, 255, 0.5);
+                align-items: center;
+                justify-content: center;
             "
-        />
+        >
+            <ui:Label
+                name="level-counter-label"
+                text="0"
+                style="
+                    unity-text-align: middle-center;
+                    -unity-font-style: bold;
+                    font-size: 24px;
+                    color: rgba(0, 0, 0, 1);
+                "
+            />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

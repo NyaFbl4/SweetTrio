@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Desserts
   m_EditorClassIdentifier: Assembly-CSharp::Dessert.DessertConfig
   _dessertPrefabs:
-  - {fileID: 3754081583075185905, guid: ec6b467c5b3b6cd42a407aaf44152038, type: 3}
   - {fileID: 69579196324769709, guid: 7d98dbf38ae5c914daa121e4beddb456, type: 3}
+  - {fileID: 3754081583075185905, guid: ec6b467c5b3b6cd42a407aaf44152038, type: 3}
   - {fileID: 9094558141650339143, guid: 95fa4668ae774b048b427edc349a2c9c, type: 3}
+  - {fileID: 69579196324769709, guid: b56fb4df2846fd64abedab359f749a50, type: 3}

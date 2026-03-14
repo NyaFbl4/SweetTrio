@@ -73,6 +73,7 @@ namespace Project.Scripts.System.Installers
         {
             builder.RegisterEntryPoint<HidePopUpUseCase>(Lifetime.Singleton);
             builder.RegisterEntryPoint<ShowPopUpUseCase>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<LevelCounterUseCase>(Lifetime.Singleton).As<ILevelCounterUseCase>();
         }
 
         private void RegisterViews(IContainerBuilder builder)
