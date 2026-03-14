@@ -12,6 +12,23 @@ namespace Assets.Project.Scripts.System.DessertCreator
         private readonly TransformController _transformController;
         private readonly Queue<DessertController> _preparedDessertsQueue = new();
         private readonly List<DessertController> _preparedDesserts = new();
+        public int RemainingDessertsCount => _preparedDessertsQueue.Count;
+        public int ActiveDessertsCount
+        {
+            get
+            {
+                var count = 0;
+                for (var i = 0; i < _preparedDesserts.Count; i++)
+                {
+                    if (_preparedDesserts[i] != null)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
 
         public DessertSpawner(LevelConfig levelConfig, TransformController transformController)
         {

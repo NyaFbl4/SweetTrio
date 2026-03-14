@@ -1,9 +1,10 @@
-namespace Assets.Project.Scripts.Desserts
+﻿namespace Assets.Project.Scripts.Desserts
 {
     public enum EDessertType
     {
-        Сupcake, 
-        Cake, 
-        Donut
+        Cupcake,
+        Cake,
+        Donut,
+        Eclair
     }
 }

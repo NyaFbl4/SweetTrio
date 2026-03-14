@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.Systems.UI.LayoutsRepository
   _layoutViews:
   - {fileID: 1332893647212423162, guid: f3d6575a42a9fe64193458b67c006180, type: 3}
+  - {fileID: 6510559919384091658, guid: c8756628e011ec94e95c913885e0c054, type: 3}
