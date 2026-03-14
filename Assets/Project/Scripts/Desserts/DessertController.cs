@@ -17,6 +17,7 @@ namespace Assets.Project.Scripts.Desserts
             transform.SetParent(newPosition, worldPositionStays: false);
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
+            transform.localScale = Vector3.one * 0.85f;
             Destroy(GetComponent<Rigidbody2D>());
         }
 

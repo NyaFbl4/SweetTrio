@@ -9,15 +9,16 @@ namespace Project.Scripts.GameManager
     {
         private readonly IDessertSpawner _dessertSpawner;
         private readonly IActionBar _actionBar;
+        private readonly LevelConfig _levelConfig;
 
         private bool _isAutoSpawnActive;
         private float _spawnTimer;
-        private const float SpawnDelay = 0.5f;
 
-        public GameBootstrap(IDessertSpawner dessertSpawner, IActionBar actionBar)
+        public GameBootstrap(IDessertSpawner dessertSpawner, IActionBar actionBar, LevelConfig levelConfig)
         {
             _dessertSpawner = dessertSpawner;
             _actionBar = actionBar;
+            _levelConfig = levelConfig;
 
             IGameListener.Register(this);
         }
@@ -28,7 +29,7 @@ namespace Project.Scripts.GameManager
                 return;
 
             _spawnTimer += UnityEngine.Time.deltaTime;
-            if (_spawnTimer < SpawnDelay)
+            if (_spawnTimer < _levelConfig.SpawnDelaySeconds)
                 return;
 
             _spawnTimer = 0f;

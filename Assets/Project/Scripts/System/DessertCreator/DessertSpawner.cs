@@ -107,6 +107,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
             dessert.transform.SetParent(_transformController.SpawnPoint, false);
             dessert.transform.localPosition = Vector3.zero;
             dessert.transform.localRotation = Quaternion.identity;
+            dessert.transform.localScale = Vector3.one * _levelConfig.SpawnDessertScale;
             dessert.SetInteractable(true);
             dessert.gameObject.SetActive(true);
 

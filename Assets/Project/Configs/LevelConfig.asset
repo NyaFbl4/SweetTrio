@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.GameManager.LevelConfig
   _dessertPool: {fileID: 11400000, guid: 2f2bfe2dac624a84b97ea08db1e8e543, type: 2}
   _copiesPerDessert: 3
+  _spawnDelaySeconds: 1
+  _spawnDessertScale: 1.5
