@@ -2,8 +2,9 @@ using UnityEngine;
 using VContainer;
 using Sirenix.OdinInspector;
 using MessagePipe;
-using Project.Scripts.Systems.UI.Dtos;
 using Assets.Project.Scripts.System.DessertCreator;
+using Project.Scripts.Systems.UI.Dtos;
+using Project.Scripts.UI.GameStatus;
 
 namespace Project.Scripts.GameManager
 {
@@ -61,6 +62,10 @@ namespace Project.Scripts.GameManager
             }
 
             _gameManagerService.PauseGame();
+            _showPopupDto.Publish(new ShowPopupDto
+            {
+                TargetPopUpType = typeof(IGameStatusPresenter)
+            });
         }
 
         [Button]
@@ -73,6 +78,10 @@ namespace Project.Scripts.GameManager
             }
 
             _gameManagerService.ResumeGame();
+            _hidePopupDto.Publish(new HidePopupDto
+            {
+                TargetPopUpType = typeof(IGameStatusPresenter)
+            });
         }
 
         [Button]

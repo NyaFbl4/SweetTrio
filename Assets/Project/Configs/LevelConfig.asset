@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd82b99a45d51b4eb088eb715ec8e59, type: 3}
   m_Name: LevelConfig
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.GameManager.LevelConfig
-  _dessertPool: {fileID: 0}
+  _dessertPool: {fileID: 11400000, guid: 2f2bfe2dac624a84b97ea08db1e8e543, type: 2}
   _copiesPerDessert: 3

@@ -3,6 +3,7 @@ using Assets.Project.Scripts.System.DessertCreator;
 using MessagePipe;
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
+using Project.Scripts.UI.GameStatus;
 using Project.Scripts.UI.LevelUI;
 using Project.Scripts.UI.UseCases;
 using Project.System;
@@ -92,7 +93,8 @@ namespace Project.Scripts.System.Installers
         private void RegisterPresenters(IContainerBuilder builder)
         {
             // builder.RegisterEntryPoint<MainMenuPresenter>(Lifetime.Scoped);
-            builder.RegisterEntryPoint<LevelUIPresenter>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<LevelUIPresenter>(Lifetime.Singleton).As<ILevelUIPresenter>();
+            builder.RegisterEntryPoint<GameStatusPresenter>(Lifetime.Singleton).As<IGameStatusPresenter>();
         }
 
         private void RegisterConfigs(IContainerBuilder builder)
@@ -103,3 +105,4 @@ namespace Project.Scripts.System.Installers
         }
     }
 }
+
