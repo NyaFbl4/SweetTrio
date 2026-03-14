@@ -17,6 +17,7 @@ namespace Project.Scripts.System.Installers
         [SerializeField] private GameManagerHelper _gameManagerHelper;
         [SerializeField] private LayoutsRepository _layoutsRepository;
         [SerializeField] private DessertPool _dessertsPool;
+        [SerializeField] private LevelConfig _levelConfig;
         [SerializeField] private TransformController _transformController;
         [SerializeField] private ActionBar _actionBar;
 
@@ -35,6 +36,7 @@ namespace Project.Scripts.System.Installers
             builder.RegisterMessagePipe();
             builder.RegisterEntryPoint<UIController>().As<IUIController>();
             builder.RegisterEntryPoint<GameManagerService>().As<IGameManagerService>();
+            builder.RegisterEntryPoint<GameBootstrap>(Lifetime.Singleton);
             builder.RegisterEntryPoint<DessertClickInputHandler>(Lifetime.Singleton);
             builder.Register<DessertSpawner>(Lifetime.Singleton).As<IDessertSpawner>();
             builder.RegisterEntryPoint<DessertCreator>().As<IDessertCreator>();
@@ -96,6 +98,7 @@ namespace Project.Scripts.System.Installers
         private void RegisterConfigs(IContainerBuilder builder)
         {
             builder.RegisterInstance(_dessertsPool);
+            builder.RegisterInstance(_levelConfig);
             builder.RegisterInstance(_transformController);
         }
     }

@@ -88,7 +88,7 @@ namespace Project.Scripts.GameManager
         }
 
         [Button]
-        public void PrepareDesserts(int copiesPerDessert)
+        public void PrepareDesserts()
         {
             if (_dessertSpawner == null)
             {
@@ -96,7 +96,7 @@ namespace Project.Scripts.GameManager
                 return;
             }
 
-            _dessertSpawner.PrepareDeck(copiesPerDessert);
+            _dessertSpawner.PrepareDeck();
         }
     }
 }

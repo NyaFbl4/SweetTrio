@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Assets.Project.Scripts.Desserts;
+using Project.Scripts.GameManager;
 using Project.System;
 using UnityEngine;
 
@@ -7,20 +8,26 @@ namespace Assets.Project.Scripts.System.DessertCreator
 {
     public class DessertSpawner : IDessertSpawner
     {
-        private readonly DessertPool _dessertPool;
+        private readonly LevelConfig _levelConfig;
         private readonly TransformController _transformController;
         private readonly Queue<DessertController> _preparedDessertsQueue = new();
         private readonly List<DessertController> _preparedDesserts = new();
 
-        public DessertSpawner(DessertPool dessertPool, TransformController transformController)
+        public DessertSpawner(LevelConfig levelConfig, TransformController transformController)
         {
-            _dessertPool = dessertPool;
+            _levelConfig = levelConfig;
             _transformController = transformController;
         }
 
-        public void PrepareDeck(int copiesPerDessert)
+        public void PrepareDeck()
         {
-            if (_dessertPool == null || _dessertPool.DessertPrefabs == null)
+            if (_levelConfig == null)
+            {
+                Debug.LogError("LevelConfig is not assigned.");
+                return;
+            }
+
+            if (_levelConfig.DessertPool == null || _levelConfig.DessertPool.DessertPrefabs == null)
             {
                 Debug.LogError("DessertPool is not assigned.");
                 return;
@@ -32,7 +39,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
                 return;
             }
 
-            if (copiesPerDessert <= 0)
+            if (_levelConfig.CopiesPerDessert <= 0)
             {
                 Debug.LogError("copiesPerDessert must be greater than 0.");
                 return;
@@ -40,16 +47,16 @@ namespace Assets.Project.Scripts.System.DessertCreator
 
             ClearPreparedDesserts();
 
-            for (var i = 0; i < _dessertPool.DessertPrefabs.Count; i++)
+            for (var i = 0; i < _levelConfig.DessertPool.DessertPrefabs.Count; i++)
             {
-                var prefab = _dessertPool.DessertPrefabs[i];
+                var prefab = _levelConfig.DessertPool.DessertPrefabs[i];
                 if (prefab == null)
                 {
                     Debug.LogWarning($"Dessert prefab at index {i} is null.");
                     continue;
                 }
 
-                for (var copy = 0; copy < copiesPerDessert; copy++)
+                for (var copy = 0; copy < _levelConfig.CopiesPerDessert; copy++)
                 {
                     var instance = Object.Instantiate(prefab, _transformController.DessertdContainer, false);
                     instance.gameObject.SetActive(false);
@@ -75,7 +82,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
 
             if (_preparedDessertsQueue.Count == 0)
             {
-                Debug.LogWarning("Prepared deck is empty. Call PrepareDeck(n) first.");
+                Debug.LogWarning("Prepared deck is empty. Call PrepareDeck() first.");
                 return null;
             }
 
@@ -87,6 +94,11 @@ namespace Assets.Project.Scripts.System.DessertCreator
             dessert.gameObject.SetActive(true);
 
             return dessert;
+        }
+
+        public void ClearDeck()
+        {
+            ClearPreparedDesserts();
         }
 
         private void ClearPreparedDesserts()

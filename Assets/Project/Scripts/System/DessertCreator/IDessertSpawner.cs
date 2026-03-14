@@ -4,7 +4,8 @@ namespace Assets.Project.Scripts.System.DessertCreator
 {
     public interface IDessertSpawner
     {
-        void PrepareDeck(int copiesPerDessert);
+        void PrepareDeck();
         DessertController SpawnNext();
+        void ClearDeck();
     }
 }
