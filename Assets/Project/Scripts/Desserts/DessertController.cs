@@ -9,7 +9,6 @@ namespace Assets.Project.Scripts.Desserts
 
         public EDessertType DessertType => _dessertType;
 
-
         public void MoveToActionBar(Transform newPosition)
         {
             _isInteractable = false;
