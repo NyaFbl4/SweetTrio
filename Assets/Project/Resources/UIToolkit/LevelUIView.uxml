@@ -20,10 +20,11 @@
             name="counter-panel"
             style="
                 width: 220px;
-                min-height: 42px;
+                min-height: 72px;
                 background-color: rgba(255, 255, 255, 0.5);
                 align-items: center;
                 justify-content: center;
+                flex-direction: column;
             "
         >
             <ui:Label
@@ -33,6 +34,15 @@
                     unity-text-align: middle-center;
                     -unity-font-style: bold;
                     font-size: 24px;
+                    color: rgba(0, 0, 0, 1);
+                "
+            />
+            <ui:Label
+                name="total-desserts-label"
+                text="Desserts: 0"
+                style="
+                    unity-text-align: middle-center;
+                    font-size: 18px;
                     color: rgba(0, 0, 0, 1);
                 "
             />

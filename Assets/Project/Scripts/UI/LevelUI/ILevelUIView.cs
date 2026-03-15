@@ -6,5 +6,6 @@ namespace Project.Scripts.UI.LevelUI
     {
         void SetCounter(int value);
         void SetCounterText(string text);
+        void SetTotalDessertsText(string text);
     }
 }

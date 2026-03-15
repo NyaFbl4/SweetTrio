@@ -33,6 +33,11 @@ namespace Project.Scripts.UI.LevelUI
             _layoutView.SetCounterText(text);
         }
 
+        public void SetTotalDessertsText(string text)
+        {
+            _layoutView.SetTotalDessertsText(text);
+        }
+
         public void OnStartGame()
         {
             _showPopUpPublisher.Publish(new ShowPopupDto

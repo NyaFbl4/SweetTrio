@@ -6,12 +6,15 @@ namespace Assets.Project.Scripts.Desserts
     {
         [SerializeField] private EDessertType _dessertType;
         private bool _isInteractable = true;
+        private bool _isInActionBar;
 
         public EDessertType DessertType => _dessertType;
+        public bool IsInActionBar => _isInActionBar;
 
         public void MoveToActionBar(Transform newPosition)
         {
             _isInteractable = false;
+            _isInActionBar = true;
 
             transform.SetParent(newPosition, worldPositionStays: false);
             transform.localPosition = Vector3.zero;

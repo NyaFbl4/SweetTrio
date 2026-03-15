@@ -13,7 +13,32 @@ namespace Assets.Project.Scripts.System.DessertCreator
         private readonly TransformController _transformController;
         private readonly Queue<DessertController> _preparedDessertsQueue = new();
         private readonly List<DessertController> _preparedDesserts = new();
+        private readonly List<DessertController> _fieldDesserts = new();
+        public int TotalDessertsCount
+        {
+            get
+            {
+                var count = 0;
+                for (var i = 0; i < _preparedDesserts.Count; i++)
+                {
+                    if (_preparedDesserts[i] != null)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
         public int RemainingDessertsCount => _preparedDessertsQueue.Count;
+        public int FieldDessertsCount
+        {
+            get
+            {
+                CleanupFieldDesserts();
+                return _fieldDesserts.Count;
+            }
+        }
         public int ActiveDessertsCount
         {
             get
@@ -65,6 +90,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
             }
 
             ClearPreparedDesserts();
+            _fieldDesserts.Clear();
 
             for (var i = 0; i < _levelConfig.DessertPool.DessertPrefabs.Count; i++)
             {
@@ -111,6 +137,12 @@ namespace Assets.Project.Scripts.System.DessertCreator
                 return null;
             }
 
+            CleanupFieldDesserts();
+            if (_fieldDesserts.Count >= _gameConfig.MaxDessertsOnField)
+            {
+                return null;
+            }
+
             var dessert = _preparedDessertsQueue.Dequeue();
             dessert.transform.SetParent(_transformController.SpawnPoint, false);
             dessert.transform.localPosition = Vector3.zero;
@@ -118,6 +150,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
             dessert.transform.localScale = Vector3.one * _gameConfig.SpawnDessertScale;
             dessert.SetInteractable(true);
             dessert.gameObject.SetActive(true);
+            _fieldDesserts.Add(dessert);
 
             return dessert;
         }
@@ -143,6 +176,19 @@ namespace Assets.Project.Scripts.System.DessertCreator
             }
 
             _preparedDesserts.Clear();
+            _fieldDesserts.Clear();
+        }
+
+        private void CleanupFieldDesserts()
+        {
+            for (var i = _fieldDesserts.Count - 1; i >= 0; i--)
+            {
+                var dessert = _fieldDesserts[i];
+                if (dessert == null || !dessert.gameObject.activeInHierarchy || dessert.IsInActionBar)
+                {
+                    _fieldDesserts.RemoveAt(i);
+                }
+            }
         }
 
         private void ShufflePreparedDesserts()

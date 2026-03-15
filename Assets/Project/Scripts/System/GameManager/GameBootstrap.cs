@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Assets.Project.Scripts.System.DessertCreator;
 using Project.System;
 using VContainer.Unity;
@@ -10,17 +11,26 @@ namespace Project.Scripts.GameManager
         private readonly IDessertSpawner _dessertSpawner;
         private readonly IActionBar _actionBar;
         private readonly LevelConfig _levelConfig;
+        private readonly GameConfig _gameConfig;
 
         private bool _isAutoSpawnActive;
+        private bool _isInitialSpawnInProgress;
         private float _spawnTimer;
+        private readonly Queue<int> _spawnRequestQueue = new();
 
-        public GameBootstrap(IDessertSpawner dessertSpawner, IActionBar actionBar, LevelConfig levelConfig)
+        public GameBootstrap(
+            IDessertSpawner dessertSpawner,
+            IActionBar actionBar,
+            LevelConfig levelConfig,
+            GameConfig gameConfig)
         {
             _dessertSpawner = dessertSpawner;
             _actionBar = actionBar;
             _levelConfig = levelConfig;
+            _gameConfig = gameConfig;
 
             IGameListener.Register(this);
+            _actionBar.DessertAdded += HandleDessertAdded;
         }
 
         public void Tick()
@@ -34,8 +44,33 @@ namespace Project.Scripts.GameManager
 
             _spawnTimer = 0f;
 
-            var spawned = _dessertSpawner.SpawnNext();
-            if (spawned == null)
+            if (_isInitialSpawnInProgress)
+            {
+                if (_dessertSpawner.FieldDessertsCount >= _gameConfig.MaxDessertsOnField)
+                {
+                    _isInitialSpawnInProgress = false;
+                }
+                else
+                {
+                    var initialSpawned = _dessertSpawner.SpawnNext();
+                    if (initialSpawned == null)
+                    {
+                        _isInitialSpawnInProgress = false;
+                    }
+                }
+
+                return;
+            }
+
+            if (_spawnRequestQueue.Count == 0)
+                return;
+
+            if (_dessertSpawner.FieldDessertsCount >= _gameConfig.MaxDessertsOnField)
+                return;
+
+            _spawnRequestQueue.Dequeue();
+            var queuedSpawned = _dessertSpawner.SpawnNext();
+            if (queuedSpawned == null)
             {
                 _isAutoSpawnActive = false;
             }
@@ -45,9 +80,11 @@ namespace Project.Scripts.GameManager
         {
             _actionBar.ClearField();
             _dessertSpawner.PrepareDeck();
+            _spawnRequestQueue.Clear();
 
             _spawnTimer = 0f;
             _isAutoSpawnActive = true;
+            _isInitialSpawnInProgress = true;
         }
 
         public void OnPauseGame()
@@ -63,14 +100,26 @@ namespace Project.Scripts.GameManager
         public void OnFinishGame()
         {
             _isAutoSpawnActive = false;
+            _isInitialSpawnInProgress = false;
             _spawnTimer = 0f;
+            _spawnRequestQueue.Clear();
 
             _dessertSpawner.ClearDeck();
             _actionBar.ClearField();
         }
 
+        private void HandleDessertAdded(Assets.Project.Scripts.Desserts.DessertController _)
+        {
+            if (!_isAutoSpawnActive)
+                return;
+
+            // Queue spawn requests and process them in Tick.
+            _spawnRequestQueue.Enqueue(1);
+        }
+
         public void Dispose()
         {
+            _actionBar.DessertAdded -= HandleDessertAdded;
             IGameListener.Unregister(this);
         }
     }
