@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Assets.Project.Scripts.Desserts;
 using Assets.Project.Scripts.System.DessertCreator;
 using Project.Scripts.UI.GameStatus;
+using Project.Scripts.UI.UseCases;
 using Project.System;
 using VContainer.Unity;
 
@@ -12,11 +13,13 @@ namespace Project.Scripts.GameManager
     {
         private const int LoseDessertsCount = 7;
         private const int MatchCount = 3;
+        private const int PointsPerDessert = 100;
 
         private readonly IActionBar _actionBar;
         private readonly IDessertSpawner _dessertSpawner;
         private readonly IGameManagerService _gameManagerService;
         private readonly IGameStatusPresenter _gameStatusPresenter;
+        private readonly ILevelCounterUseCase _levelCounterUseCase;
         private bool _isGameFinished;
         private bool _isRoundActive;
 
@@ -24,12 +27,14 @@ namespace Project.Scripts.GameManager
             IActionBar actionBar,
             IDessertSpawner dessertSpawner,
             IGameManagerService gameManagerService,
-            IGameStatusPresenter gameStatusPresenter)
+            IGameStatusPresenter gameStatusPresenter,
+            ILevelCounterUseCase levelCounterUseCase)
         {
             _actionBar = actionBar;
             _dessertSpawner = dessertSpawner;
             _gameManagerService = gameManagerService;
             _gameStatusPresenter = gameStatusPresenter;
+            _levelCounterUseCase = levelCounterUseCase;
         }
 
         public void Initialize()
@@ -50,6 +55,7 @@ namespace Project.Scripts.GameManager
         {
             _isGameFinished = false;
             _isRoundActive = true;
+            _levelCounterUseCase.Reset();
         }
 
         public void OnFinishGame()
@@ -98,6 +104,7 @@ namespace Project.Scripts.GameManager
             while (TryGetThreeOfKind(out var matchedDesserts))
             {
                 _actionBar.RemoveDesserts(matchedDesserts);
+                _levelCounterUseCase.Increment(matchedDesserts.Count * PointsPerDessert);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using VContainer.Unity;
+using VContainer.Unity;
 using Project.Scripts.UI.LevelUI;
 
 namespace Project.Scripts.UI.UseCases
@@ -57,7 +57,7 @@ namespace Project.Scripts.UI.UseCases
 
         private void NotifyPresenter()
         {
-            _levelUIPresenter.SetCounter(_value);
+            _levelUIPresenter.SetCounterText($"Score: {_value}");
         }
     }
 }
