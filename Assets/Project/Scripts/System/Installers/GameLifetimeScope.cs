@@ -19,6 +19,7 @@ namespace Project.Scripts.System.Installers
         [SerializeField] private LayoutsRepository _layoutsRepository;
         [SerializeField] private DessertPool _dessertsPool;
         [SerializeField] private LevelConfig _levelConfig;
+        [SerializeField] private GameConfig _gameConfig;
         [SerializeField] private TransformController _transformController;
         [SerializeField] private ActionBar _actionBar;
 
@@ -103,6 +104,7 @@ namespace Project.Scripts.System.Installers
         {
             builder.RegisterInstance(_dessertsPool);
             builder.RegisterInstance(_levelConfig);
+            builder.RegisterInstance(_gameConfig);
             builder.RegisterInstance(_transformController);
         }
     }

@@ -9,6 +9,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
     public class DessertSpawner : IDessertSpawner
     {
         private readonly LevelConfig _levelConfig;
+        private readonly GameConfig _gameConfig;
         private readonly TransformController _transformController;
         private readonly Queue<DessertController> _preparedDessertsQueue = new();
         private readonly List<DessertController> _preparedDesserts = new();
@@ -30,9 +31,10 @@ namespace Assets.Project.Scripts.System.DessertCreator
             }
         }
 
-        public DessertSpawner(LevelConfig levelConfig, TransformController transformController)
+        public DessertSpawner(LevelConfig levelConfig, GameConfig gameConfig, TransformController transformController)
         {
             _levelConfig = levelConfig;
+            _gameConfig = gameConfig;
             _transformController = transformController;
         }
 
@@ -97,6 +99,12 @@ namespace Assets.Project.Scripts.System.DessertCreator
                 return null;
             }
 
+            if (_gameConfig == null)
+            {
+                Debug.LogError("GameConfig is not assigned.");
+                return null;
+            }
+
             if (_preparedDessertsQueue.Count == 0)
             {
                 Debug.LogWarning("Prepared deck is empty. Call PrepareDeck() first.");
@@ -107,7 +115,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
             dessert.transform.SetParent(_transformController.SpawnPoint, false);
             dessert.transform.localPosition = Vector3.zero;
             dessert.transform.localRotation = Quaternion.identity;
-            dessert.transform.localScale = Vector3.one * _levelConfig.SpawnDessertScale;
+            dessert.transform.localScale = Vector3.one * _gameConfig.SpawnDessertScale;
             dessert.SetInteractable(true);
             dessert.gameObject.SetActive(true);
 
