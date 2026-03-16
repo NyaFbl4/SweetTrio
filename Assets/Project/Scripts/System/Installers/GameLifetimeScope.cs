@@ -38,7 +38,7 @@ namespace Project.Scripts.System.Installers
             builder.RegisterMessagePipe();
             builder.RegisterEntryPoint<UIController>().As<IUIController>();
             builder.RegisterEntryPoint<GameManagerService>().As<IGameManagerService>();
-            builder.RegisterEntryPoint<GameBootstrap>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<GameBootstrap>(Lifetime.Singleton).As<IGameBootstrapControl>();
             builder.RegisterEntryPoint<GameRulesManager>(Lifetime.Singleton);
             builder.RegisterEntryPoint<DessertClickInputHandler>(Lifetime.Singleton);
             builder.Register<DessertSpawner>(Lifetime.Singleton).As<IDessertSpawner>();

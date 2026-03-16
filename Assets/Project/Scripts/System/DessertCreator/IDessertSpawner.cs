@@ -11,6 +11,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
 
         void PrepareDeck();
         DessertController SpawnNext();
+        void RespawnFieldWithShuffle();
         void ClearDeck();
     }
 }

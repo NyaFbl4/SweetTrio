@@ -6,7 +6,7 @@ using VContainer.Unity;
 
 namespace Project.Scripts.GameManager
 {
-    public class GameBootstrap : ITickable, IDisposable, IGameStartListener, IGamePauseListener, IGameResumeListener, IGameFinishListener
+    public class GameBootstrap : ITickable, IDisposable, IGameStartListener, IGamePauseListener, IGameResumeListener, IGameFinishListener, IGameBootstrapControl
     {
         private readonly IDessertSpawner _dessertSpawner;
         private readonly IActionBar _actionBar;
@@ -106,6 +106,16 @@ namespace Project.Scripts.GameManager
 
             _dessertSpawner.ClearDeck();
             _actionBar.ClearField();
+        }
+
+        public void RestartInitialSpawn()
+        {
+            if (!_isAutoSpawnActive)
+                return;
+
+            _spawnTimer = 0f;
+            _spawnRequestQueue.Clear();
+            _isInitialSpawnInProgress = true;
         }
 
         private void HandleDessertAdded(Assets.Project.Scripts.Desserts.DessertController _)

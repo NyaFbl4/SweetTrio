@@ -172,6 +172,57 @@ namespace Assets.Project.Scripts.System.DessertCreator
             ClearPreparedDesserts();
         }
 
+        public void RespawnFieldWithShuffle()
+        {
+            if (_transformController == null || _transformController.DessertdContainer == null || _transformController.SpawnPoint == null)
+            {
+                Debug.LogError("TransformController references are not assigned.");
+                return;
+            }
+
+            if (_gameConfig == null)
+            {
+                Debug.LogError("GameConfig is not assigned.");
+                return;
+            }
+
+            CleanupFieldDesserts();
+
+            var dessertsToShuffle = new List<DessertController>(_preparedDessertsQueue.Count + _fieldDesserts.Count);
+            while (_preparedDessertsQueue.Count > 0)
+            {
+                var queuedDessert = _preparedDessertsQueue.Dequeue();
+                if (queuedDessert == null)
+                    continue;
+
+                queuedDessert.gameObject.SetActive(false);
+                queuedDessert.transform.SetParent(_transformController.DessertdContainer, false);
+                dessertsToShuffle.Add(queuedDessert);
+            }
+
+            for (var i = 0; i < _fieldDesserts.Count; i++)
+            {
+                var fieldDessert = _fieldDesserts[i];
+                if (fieldDessert == null)
+                    continue;
+
+                fieldDessert.SetInteractable(false);
+                fieldDessert.gameObject.SetActive(false);
+                fieldDessert.transform.SetParent(_transformController.DessertdContainer, false);
+                dessertsToShuffle.Add(fieldDessert);
+            }
+
+            _fieldDesserts.Clear();
+            ShuffleDesserts(dessertsToShuffle);
+
+            for (var i = 0; i < dessertsToShuffle.Count; i++)
+            {
+                _preparedDessertsQueue.Enqueue(dessertsToShuffle[i]);
+            }
+
+            NotifyCountsChanged();
+        }
+
         private void ClearPreparedDesserts(bool notify = true)
         {
             while (_preparedDessertsQueue.Count > 0)
@@ -210,10 +261,15 @@ namespace Assets.Project.Scripts.System.DessertCreator
 
         private void ShufflePreparedDesserts()
         {
-            for (var i = _preparedDesserts.Count - 1; i > 0; i--)
+            ShuffleDesserts(_preparedDesserts);
+        }
+
+        private static void ShuffleDesserts(IList<DessertController> desserts)
+        {
+            for (var i = desserts.Count - 1; i > 0; i--)
             {
                 var j = UnityEngine.Random.Range(0, i + 1);
-                (_preparedDesserts[i], _preparedDesserts[j]) = (_preparedDesserts[j], _preparedDesserts[i]);
+                (desserts[i], desserts[j]) = (desserts[j], desserts[i]);
             }
         }
 
