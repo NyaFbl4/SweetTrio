@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Assets.Project.Scripts.Desserts;
+using Assets.Project.Scripts.System.DessertCreator.Dtos;
+using MessagePipe;
 using Project.Scripts.GameManager;
 using Project.System;
 using UnityEngine;
@@ -11,9 +13,11 @@ namespace Assets.Project.Scripts.System.DessertCreator
         private readonly LevelConfig _levelConfig;
         private readonly GameConfig _gameConfig;
         private readonly TransformController _transformController;
+        private readonly IPublisher<DessertCountsDto> _dessertCountsPublisher;
         private readonly Queue<DessertController> _preparedDessertsQueue = new();
         private readonly List<DessertController> _preparedDesserts = new();
         private readonly List<DessertController> _fieldDesserts = new();
+
         public int TotalDessertsCount
         {
             get
@@ -56,11 +60,16 @@ namespace Assets.Project.Scripts.System.DessertCreator
             }
         }
 
-        public DessertSpawner(LevelConfig levelConfig, GameConfig gameConfig, TransformController transformController)
+        public DessertSpawner(
+            LevelConfig levelConfig,
+            GameConfig gameConfig,
+            TransformController transformController,
+            IPublisher<DessertCountsDto> dessertCountsPublisher)
         {
             _levelConfig = levelConfig;
             _gameConfig = gameConfig;
             _transformController = transformController;
+            _dessertCountsPublisher = dessertCountsPublisher;
         }
 
         public void PrepareDeck()
@@ -89,7 +98,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
                 return;
             }
 
-            ClearPreparedDesserts();
+            ClearPreparedDesserts(notify: false);
             _fieldDesserts.Clear();
 
             for (var i = 0; i < _levelConfig.DessertPool.DessertPrefabs.Count; i++)
@@ -103,7 +112,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
 
                 for (var copy = 0; copy < _levelConfig.CopiesPerDessert; copy++)
                 {
-                    var instance = Object.Instantiate(prefab, _transformController.DessertdContainer, false);
+                    var instance = UnityEngine.Object.Instantiate(prefab, _transformController.DessertdContainer, false);
                     instance.gameObject.SetActive(false);
                     _preparedDesserts.Add(instance);
                 }
@@ -115,6 +124,8 @@ namespace Assets.Project.Scripts.System.DessertCreator
             {
                 _preparedDessertsQueue.Enqueue(_preparedDesserts[i]);
             }
+
+            NotifyCountsChanged();
         }
 
         public DessertController SpawnNext()
@@ -151,6 +162,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
             dessert.SetInteractable(true);
             dessert.gameObject.SetActive(true);
             _fieldDesserts.Add(dessert);
+            NotifyCountsChanged();
 
             return dessert;
         }
@@ -160,7 +172,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
             ClearPreparedDesserts();
         }
 
-        private void ClearPreparedDesserts()
+        private void ClearPreparedDesserts(bool notify = true)
         {
             while (_preparedDessertsQueue.Count > 0)
             {
@@ -171,12 +183,17 @@ namespace Assets.Project.Scripts.System.DessertCreator
             {
                 if (_preparedDesserts[i] != null)
                 {
-                    Object.Destroy(_preparedDesserts[i].gameObject);
+                    UnityEngine.Object.Destroy(_preparedDesserts[i].gameObject);
                 }
             }
 
             _preparedDesserts.Clear();
             _fieldDesserts.Clear();
+
+            if (notify)
+            {
+                NotifyCountsChanged();
+            }
         }
 
         private void CleanupFieldDesserts()
@@ -195,9 +212,18 @@ namespace Assets.Project.Scripts.System.DessertCreator
         {
             for (var i = _preparedDesserts.Count - 1; i > 0; i--)
             {
-                var j = Random.Range(0, i + 1);
+                var j = UnityEngine.Random.Range(0, i + 1);
                 (_preparedDesserts[i], _preparedDesserts[j]) = (_preparedDesserts[j], _preparedDesserts[i]);
             }
+        }
+
+        private void NotifyCountsChanged()
+        {
+            _dessertCountsPublisher.Publish(new DessertCountsDto(
+                TotalDessertsCount,
+                RemainingDessertsCount,
+                ActiveDessertsCount,
+                FieldDessertsCount));
         }
     }
 }

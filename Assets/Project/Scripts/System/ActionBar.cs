@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using Assets.Project.Scripts.Desserts;
+using Assets.Project.Scripts.System.DessertCreator;
+using Assets.Project.Scripts.System.DessertCreator.Dtos;
+using MessagePipe;
 using UnityEngine;
 using UnityEngine.Rendering;
+using VContainer;
 
 namespace Project.System
 {
@@ -11,6 +15,8 @@ namespace Project.System
         [SerializeField] private Transform _actionBarContainer;
         [SerializeField] private int _maxCount = 7;
         [SerializeField] private int _baseSortingOrder = 100;
+        [Inject] private readonly IDessertSpawner _dessertSpawner;
+        [Inject] private readonly IPublisher<DessertCountsDto> _dessertCountsPublisher;
         private readonly List<DessertController> _desserts = new();
 
         public event Action<DessertController> DessertAdded;
@@ -30,6 +36,7 @@ namespace Project.System
             ApplyRenderOrder(dessert, _baseSortingOrder + _desserts.Count);
             _desserts.Add(dessert);
             DessertAdded?.Invoke(dessert);
+            PublishCountsChanged();
             return true;
         }
 
@@ -43,6 +50,7 @@ namespace Project.System
             if (desserts == null)
                 return;
 
+            var hasChanges = false;
             for (var i = 0; i < desserts.Count; i++)
             {
                 var dessert = desserts[i];
@@ -52,12 +60,19 @@ namespace Project.System
                 if (_desserts.Remove(dessert))
                 {
                     Destroy(dessert.gameObject);
+                    hasChanges = true;
                 }
+            }
+
+            if (hasChanges)
+            {
+                PublishCountsChanged();
             }
         }
 
         public void ClearField()
         {
+            var hasChanges = _desserts.Count > 0;
             for (var i = 0; i < _desserts.Count; i++)
             {
                 if (_desserts[i] != null)
@@ -67,6 +82,19 @@ namespace Project.System
             }
 
             _desserts.Clear();
+            if (hasChanges)
+            {
+                PublishCountsChanged();
+            }
+        }
+
+        private void PublishCountsChanged()
+        {
+            _dessertCountsPublisher.Publish(new DessertCountsDto(
+                _dessertSpawner.TotalDessertsCount,
+                _dessertSpawner.RemainingDessertsCount,
+                _dessertSpawner.ActiveDessertsCount,
+                _dessertSpawner.FieldDessertsCount));
         }
 
         private void ApplyRenderOrder(DessertController dessert, int order)
