@@ -5,6 +5,7 @@ using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.UI.GameStatus;
 using Project.Scripts.UI.LevelUI;
+using Project.Scripts.UI.TimerUI;
 using Project.Scripts.UI.UseCases;
 using Project.System;
 using UnityEngine;
@@ -74,8 +75,10 @@ namespace Project.Scripts.System.Installers
         {
             builder.RegisterEntryPoint<HidePopUpUseCase>(Lifetime.Singleton);
             builder.RegisterEntryPoint<ShowPopUpUseCase>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<GameStatusUseCase>(Lifetime.Singleton);
             builder.RegisterEntryPoint<LevelCounterUseCase>(Lifetime.Singleton).As<ILevelCounterUseCase>();
             builder.RegisterEntryPoint<DessertCountUseCase>(Lifetime.Singleton).As<IDessertCountUseCase>();
+            builder.RegisterEntryPoint<TimerCountdownUseCase>(Lifetime.Singleton).As<ITimerCountdownUseCase>();
         }
 
         private void RegisterViews(IContainerBuilder builder)
@@ -99,6 +102,7 @@ namespace Project.Scripts.System.Installers
             // builder.RegisterEntryPoint<MainMenuPresenter>(Lifetime.Scoped);
             builder.RegisterEntryPoint<LevelUIPresenter>(Lifetime.Singleton).As<ILevelUIPresenter>();
             builder.RegisterEntryPoint<GameStatusPresenter>(Lifetime.Singleton).As<IGameStatusPresenter>();
+            builder.RegisterEntryPoint<TimerUIPresenter>(Lifetime.Singleton).As<ITimerUIPresenter>();
         }
 
         private void RegisterConfigs(IContainerBuilder builder)

@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using Assets.Project.Scripts.Desserts;
 using Assets.Project.Scripts.System.DessertCreator;
-using Project.Scripts.UI.GameStatus;
+using MessagePipe;
+using Project.Scripts.Systems.UI.Dtos;
 using Project.Scripts.UI.UseCases;
 using Project.System;
 using VContainer.Unity;
@@ -17,24 +18,22 @@ namespace Project.Scripts.GameManager
 
         private readonly IActionBar _actionBar;
         private readonly IDessertSpawner _dessertSpawner;
-        private readonly IGameManagerService _gameManagerService;
-        private readonly IGameStatusPresenter _gameStatusPresenter;
         private readonly ILevelCounterUseCase _levelCounterUseCase;
+        private readonly IPublisher<GameStatusCommandDto> _gameStatusPublisher;
+
         private bool _isGameFinished;
         private bool _isRoundActive;
 
         public GameRulesManager(
             IActionBar actionBar,
             IDessertSpawner dessertSpawner,
-            IGameManagerService gameManagerService,
-            IGameStatusPresenter gameStatusPresenter,
-            ILevelCounterUseCase levelCounterUseCase)
+            ILevelCounterUseCase levelCounterUseCase,
+            IPublisher<GameStatusCommandDto> gameStatusPublisher)
         {
             _actionBar = actionBar;
             _dessertSpawner = dessertSpawner;
-            _gameManagerService = gameManagerService;
-            _gameStatusPresenter = gameStatusPresenter;
             _levelCounterUseCase = levelCounterUseCase;
+            _gameStatusPublisher = gameStatusPublisher;
         }
 
         public void Initialize()
@@ -85,16 +84,20 @@ namespace Project.Scripts.GameManager
         {
             if (_actionBar.CurrentCount >= LoseDessertsCount)
             {
-                _gameStatusPresenter.ShowLose();
-                _gameManagerService.FinishGame();
+                _gameStatusPublisher.Publish(new GameStatusCommandDto
+                {
+                    Command = EGameStatusCommand.ShowLoseAndFinish
+                });
                 _isGameFinished = true;
                 return;
             }
 
             if (_dessertSpawner.RemainingDessertsCount == 0 && _dessertSpawner.ActiveDessertsCount == 0)
             {
-                _gameStatusPresenter.ShowWin();
-                _gameManagerService.FinishGame();
+                _gameStatusPublisher.Publish(new GameStatusCommandDto
+                {
+                    Command = EGameStatusCommand.ShowWinAndFinish
+                });
                 _isGameFinished = true;
             }
         }

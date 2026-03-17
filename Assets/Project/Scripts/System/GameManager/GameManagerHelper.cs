@@ -4,29 +4,25 @@ using Sirenix.OdinInspector;
 using MessagePipe;
 using Assets.Project.Scripts.System.DessertCreator;
 using Project.Scripts.Systems.UI.Dtos;
-using Project.Scripts.UI.GameStatus;
 
 namespace Project.Scripts.GameManager
 {
     public class GameManagerHelper : MonoBehaviour
     {
         private IGameManagerService _gameManagerService;
-        private IPublisher<ShowPopupDto> _showPopupDto;
-        private IPublisher<HidePopupDto> _hidePopupDto;
+        private IPublisher<GameStatusCommandDto> _gameStatusPublisher;
         private IDessertSpawner _dessertSpawner;
         private IGameBootstrapControl _gameBootstrapControl;
 
         [Inject]
         public void Construct(
             IGameManagerService gameManagerService,
-            IPublisher<ShowPopupDto> showPopupDto,
-            IPublisher<HidePopupDto> hidePopupDto,
+            IPublisher<GameStatusCommandDto> gameStatusPublisher,
             IDessertSpawner dessertSpawner,
             IGameBootstrapControl gameBootstrapControl)
         {
             _gameManagerService = gameManagerService;
-            _showPopupDto = showPopupDto;
-            _hidePopupDto = hidePopupDto;
+            _gameStatusPublisher = gameStatusPublisher;
             _dessertSpawner = dessertSpawner;
             _gameBootstrapControl = gameBootstrapControl;
         }
@@ -65,9 +61,9 @@ namespace Project.Scripts.GameManager
             }
 
             _gameManagerService.PauseGame();
-            _showPopupDto.Publish(new ShowPopupDto
+            _gameStatusPublisher.Publish(new GameStatusCommandDto
             {
-                TargetPopUpType = typeof(IGameStatusPresenter)
+                Command = EGameStatusCommand.ShowPaused
             });
         }
 
@@ -81,9 +77,9 @@ namespace Project.Scripts.GameManager
             }
 
             _gameManagerService.ResumeGame();
-            _hidePopupDto.Publish(new HidePopupDto
+            _gameStatusPublisher.Publish(new GameStatusCommandDto
             {
-                TargetPopUpType = typeof(IGameStatusPresenter)
+                Command = EGameStatusCommand.HideStatus
             });
         }
 

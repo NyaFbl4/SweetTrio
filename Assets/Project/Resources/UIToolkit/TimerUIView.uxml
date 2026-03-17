@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+>
+    <ui:VisualElement
+        name="bottom-timer-container"
+        style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 16px;
+            align-items: center;
+            justify-content: center;
+        "
+    >
+        <ui:VisualElement
+            name="timer-panel"
+            style="
+                width: 80%;
+                min-width: 220px;
+                height: 48px;
+                background-color: rgba(255, 255, 255, 0.35);
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                border-bottom-left-radius: 8px;
+                border-bottom-right-radius: 8px;
+                position: relative;
+                overflow: hidden;
+                justify-content: center;
+                align-items: center;
+            "
+        >
+            <ui:VisualElement
+                name="timer-progress-fill"
+                style="
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    width: 100%;
+                    background-color: rgba(95, 185, 110, 0.8);
+                "
+            />
+            <ui:Label
+                name="timer-countdown-label"
+                text="00:00"
+                style="
+                    unity-text-align: middle-center;
+                    -unity-font-style: bold;
+                    font-size: 22px;
+                    color: rgba(0, 0, 0, 1);
+                "
+            />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
