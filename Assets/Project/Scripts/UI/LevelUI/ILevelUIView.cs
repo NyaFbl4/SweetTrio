@@ -1,5 +1,6 @@
 ﻿using System;
 using Project.Scripts.Systems.UI;
+using UnityEngine;
 
 namespace Project.Scripts.UI.LevelUI
 {
@@ -12,6 +13,7 @@ namespace Project.Scripts.UI.LevelUI
         void SetTotalDessertsText(string text);
         void SetTimerText(string text);
         void SetProgress(float value01);
+        void SetBonusDessertSprite(Sprite sprite);
+        void SetBonusMultiplierText(string text);
     }
 }
-

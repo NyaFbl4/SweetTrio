@@ -12,11 +12,15 @@ namespace Project.Scripts.UI.LevelUI
         private const string CountdownLabelName = "timer-countdown-label";
         private const string FillName = "timer-progress-fill";
         private const string ShuffleButtonName = "shuffle-button";
+        private const string BonusDessertImageName = "bonus-dessert-image";
+        private const string BonusMultiplierLabelName = "bonus-multiplier-label";
 
         private Label _counterLabel;
         private Label _totalDessertsLabel;
         private Label _countdownLabel;
+        private Label _bonusMultiplierLabel;
         private VisualElement _fillElement;
+        private VisualElement _bonusDessertImage;
         private Button _shuffleButton;
 
         public event Action ShuffleButtonClicked;
@@ -27,7 +31,9 @@ namespace Project.Scripts.UI.LevelUI
             _counterLabel = _root.Q<Label>(CounterLabelName);
             _totalDessertsLabel = _root.Q<Label>(TotalDessertsLabelName);
             _countdownLabel = _root.Q<Label>(CountdownLabelName);
+            _bonusMultiplierLabel = _root.Q<Label>(BonusMultiplierLabelName);
             _fillElement = _root.Q<VisualElement>(FillName);
+            _bonusDessertImage = _root.Q<VisualElement>(BonusDessertImageName);
             _shuffleButton = _root.Q<Button>(ShuffleButtonName);
 
             if (_counterLabel == null)
@@ -45,9 +51,19 @@ namespace Project.Scripts.UI.LevelUI
                 Debug.LogError($"LevelUIView: Label '{CountdownLabelName}' not found in UXML.");
             }
 
+            if (_bonusMultiplierLabel == null)
+            {
+                Debug.LogError($"LevelUIView: Label '{BonusMultiplierLabelName}' not found in UXML.");
+            }
+
             if (_fillElement == null)
             {
                 Debug.LogError($"LevelUIView: VisualElement '{FillName}' not found in UXML.");
+            }
+
+            if (_bonusDessertImage == null)
+            {
+                Debug.LogError($"LevelUIView: VisualElement '{BonusDessertImageName}' not found in UXML.");
             }
 
             if (_shuffleButton == null)
@@ -106,10 +122,31 @@ namespace Project.Scripts.UI.LevelUI
             _fillElement.style.width = Length.Percent(clampedValue * 100f);
         }
 
+        public void SetBonusDessertSprite(Sprite sprite)
+        {
+            if (_bonusDessertImage == null)
+                return;
+
+            if (sprite == null)
+            {
+                _bonusDessertImage.style.backgroundImage = StyleKeyword.None;
+                return;
+            }
+
+            _bonusDessertImage.style.backgroundImage = new StyleBackground(sprite);
+        }
+
+        public void SetBonusMultiplierText(string text)
+        {
+            if (_bonusMultiplierLabel == null)
+                return;
+
+            _bonusMultiplierLabel.text = text;
+        }
+
         private void OnShuffleButtonClicked()
         {
             ShuffleButtonClicked?.Invoke();
         }
     }
 }
-

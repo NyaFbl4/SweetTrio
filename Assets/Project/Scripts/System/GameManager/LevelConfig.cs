@@ -11,11 +11,20 @@ namespace Project.Scripts.GameManager
         [SerializeField, Min(0.05f)] private float _spawnDelaySeconds = 0.5f;
         [SerializeField, Min(1f)] private float _roundDurationSeconds = 120f;
         [SerializeField, Min(0f)] private float _actionBarOverflowPenaltySeconds = 10f;
+        [SerializeField] private DessertPoints _dessertPointsConfig;
 
         public DessertPool DessertPool => _dessertPool;
         public int CopiesPerDessert => _copiesPerDessert;
         public float SpawnDelaySeconds => _spawnDelaySeconds;
         public float RoundDurationSeconds => _roundDurationSeconds;
         public float ActionBarOverflowPenaltySeconds => _actionBarOverflowPenaltySeconds;
+        public DessertPoints DessertPointsConfig => _dessertPointsConfig;
+
+        public int GetPointsForDessert(EDessertType dessertType, int defaultPoints)
+        {
+            return _dessertPointsConfig != null
+                ? _dessertPointsConfig.GetPointsForDessert(dessertType, defaultPoints)
+                : Mathf.Max(0, defaultPoints);
+        }
     }
 }

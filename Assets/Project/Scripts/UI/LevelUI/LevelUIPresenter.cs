@@ -2,6 +2,7 @@
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
+using UnityEngine;
 using VContainer;
 
 namespace Project.Scripts.UI.LevelUI
@@ -51,6 +52,16 @@ namespace Project.Scripts.UI.LevelUI
             _layoutView.SetProgress(value01);
         }
 
+        public void SetBonusDessertSprite(Sprite sprite)
+        {
+            _layoutView.SetBonusDessertSprite(sprite);
+        }
+
+        public void SetBonusMultiplierText(string text)
+        {
+            _layoutView.SetBonusMultiplierText(text);
+        }
+
         public void OnStartGame()
         {
             _showPopUpPublisher.Publish(new ShowPopupDto
@@ -73,4 +84,3 @@ namespace Project.Scripts.UI.LevelUI
         }
     }
 }
-

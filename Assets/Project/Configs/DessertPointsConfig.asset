@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6385c788cd035d3449c6dc8807659471, type: 3}
+  m_Name: DessertPointsConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.GameManager.DessertPoints
+  _entries:
+  - _dessertType: 0
+    _points: 74
+  - _dessertType: 1
+    _points: 68
+  - _dessertType: 2
+    _points: 73
+  - _dessertType: 3
+    _points: 93
+  - _dessertType: 4
+    _points: 69
+  - _dessertType: 5
+    _points: 92
+  - _dessertType: 6
+    _points: 87
+  - _dessertType: 7
+    _points: 65
+  - _dessertType: 8
+    _points: 85
+  - _dessertType: 9
+    _points: 73
+  - _dessertType: 10
+    _points: 88
+  - _dessertType: 11
+    _points: 93
+  - _dessertType: 12
+    _points: 77
+  - _dessertType: 13
+    _points: 75
+  - _dessertType: 14
+    _points: 94
+  - _dessertType: 15
+    _points: 72
+  - _dessertType: 16
+    _points: 67
+  - _dessertType: 17
+    _points: 71
+  - _dessertType: 18
+    _points: 93
+  - _dessertType: 19
+    _points: 64
+  - _dessertType: 20
+    _points: 96
+  - _dessertType: 21
+    _points: 77
+  - _dessertType: 22
+    _points: 63
+  - _dessertType: 23
+    _points: 73
+  - _dessertType: 24
+    _points: 55
+  - _dessertType: 25
+    _points: 84
+  - _dessertType: 26
+    _points: 87
+  - _dessertType: 27
+    _points: 69
+  - _dessertType: 28
+    _points: 51
+  - _dessertType: 29
+    _points: 78
+  - _dessertType: 30
+    _points: 80
+  - _dessertType: 31
+    _points: 99
+  - _dessertType: 32
+    _points: 68
+  - _dessertType: 33
+    _points: 72
+  - _dessertType: 34
+    _points: 71
+  - _dessertType: 35
+    _points: 90
+  - _dessertType: 36
+    _points: 90
+  - _dessertType: 37
+    _points: 99
+  - _dessertType: 38
+    _points: 57
