@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using MessagePipe;
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI.Dtos;
-using Project.Scripts.UI.GameStatus;
+using Project.Scripts.UI.EndGame;
 using VContainer;
 using VContainer.Unity;
 
@@ -11,8 +11,9 @@ namespace Project.Scripts.UI.UseCases
     public class GameStatusUseCase : IInitializable, IDisposable
     {
         [Inject] private readonly ISubscriber<GameStatusCommandDto> _gameStatusSubscriber;
-        [Inject] private readonly IGameStatusPresenter _gameStatusPresenter;
+        [Inject] private readonly IEndGamePresenter _endGamePresenter;
         [Inject] private readonly IGameManagerService _gameManagerService;
+        [Inject] private readonly ILevelCounterUseCase _levelCounterUseCase;
 
         private IDisposable _subscription = DisposableBag.Empty;
 
@@ -33,21 +34,16 @@ namespace Project.Scripts.UI.UseCases
 
             switch (message.Command)
             {
-                case EGameStatusCommand.ShowPaused:
-                    _gameStatusPresenter.ShowPaused();
-                    break;
                 case EGameStatusCommand.ShowWinAndFinish:
-                    _gameStatusPresenter.ShowWin();
+                    _endGamePresenter.ShowWin(_levelCounterUseCase.CurrentValue);
                     _gameManagerService.FinishGame();
                     break;
                 case EGameStatusCommand.ShowLoseAndFinish:
-                    _gameStatusPresenter.ShowLose();
+                    _endGamePresenter.ShowLose();
                     _gameManagerService.FinishGame();
-                    break;
-                case EGameStatusCommand.HideStatus:
-                    _gameStatusPresenter.HideStatus();
                     break;
             }
         }
     }
 }
+

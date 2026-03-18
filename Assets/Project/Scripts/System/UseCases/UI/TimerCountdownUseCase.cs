@@ -2,7 +2,7 @@ using System;
 using Project.Scripts.GameManager;
 using MessagePipe;
 using Project.Scripts.Systems.UI.Dtos;
-using Project.Scripts.UI.TimerUI;
+using Project.Scripts.UI.LevelUI;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -12,7 +12,7 @@ namespace Project.Scripts.UI.UseCases
     {
         private const float DefaultRoundDurationSeconds = 120f;
 
-        private readonly ITimerUIPresenter _timerUIPresenter;
+        private readonly ILevelUIPresenter _levelUIPresenter;
         private readonly IPublisher<GameStatusCommandDto> _gameStatusPublisher;
         private readonly float _initialDurationSeconds;
 
@@ -25,11 +25,11 @@ namespace Project.Scripts.UI.UseCases
         public float RemainingSeconds => _remainingSeconds;
 
         public TimerCountdownUseCase(
-            ITimerUIPresenter timerUIPresenter,
+            ILevelUIPresenter levelUIPresenter,
             IPublisher<GameStatusCommandDto> gameStatusPublisher,
             LevelConfig levelConfig)
         {
-            _timerUIPresenter = timerUIPresenter;
+            _levelUIPresenter = levelUIPresenter;
             _gameStatusPublisher = gameStatusPublisher;
             _initialDurationSeconds = levelConfig != null && levelConfig.RoundDurationSeconds > 0f
                 ? levelConfig.RoundDurationSeconds
@@ -89,6 +89,24 @@ namespace Project.Scripts.UI.UseCases
             NotifyPresenter(forceTextUpdate: true);
         }
 
+        public void SubtractSeconds(float seconds)
+        {
+            if (!_isActive || seconds <= 0f)
+                return;
+
+            _remainingSeconds = Mathf.Max(0f, _remainingSeconds - seconds);
+            if (_remainingSeconds <= 0f)
+            {
+                _remainingSeconds = 0f;
+                _isActive = false;
+                NotifyPresenter(forceTextUpdate: true);
+                TriggerTimeoutLose();
+                return;
+            }
+
+            NotifyPresenter(forceTextUpdate: true);
+        }
+
         private void TriggerTimeoutLose()
         {
             if (_timeoutTriggered)
@@ -104,14 +122,14 @@ namespace Project.Scripts.UI.UseCases
         private void NotifyPresenter(bool forceTextUpdate)
         {
             var normalized = Mathf.Clamp01(_remainingSeconds / _durationSeconds);
-            _timerUIPresenter.SetProgress(normalized);
+            _levelUIPresenter.SetProgress(normalized);
 
             var roundedSeconds = Mathf.CeilToInt(_remainingSeconds);
             if (!forceTextUpdate && roundedSeconds == _lastShownSeconds)
                 return;
 
             _lastShownSeconds = roundedSeconds;
-            _timerUIPresenter.SetTimerText(FormatSeconds(roundedSeconds));
+            _levelUIPresenter.SetTimerText(FormatSeconds(roundedSeconds));
         }
 
         private static string FormatSeconds(int totalSeconds)

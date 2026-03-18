@@ -7,7 +7,6 @@ namespace Project.Scripts.GameManager
     {
         Play,
         Finish,
-        Pause,
         Off
     }
 }

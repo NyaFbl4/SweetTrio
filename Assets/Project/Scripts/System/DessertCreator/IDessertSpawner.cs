@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Assets.Project.Scripts.Desserts;
 
 namespace Assets.Project.Scripts.System.DessertCreator
@@ -12,6 +13,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
         void PrepareDeck();
         DessertController SpawnNext();
         void RespawnFieldWithShuffle();
+        void ReturnDessertsToPool(IReadOnlyList<DessertController> desserts);
         void ClearDeck();
     }
 }

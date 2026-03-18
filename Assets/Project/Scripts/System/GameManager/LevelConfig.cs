@@ -10,10 +10,12 @@ namespace Project.Scripts.GameManager
         [SerializeField, Min(1)] private int _copiesPerDessert = 3;
         [SerializeField, Min(0.05f)] private float _spawnDelaySeconds = 0.5f;
         [SerializeField, Min(1f)] private float _roundDurationSeconds = 120f;
+        [SerializeField, Min(0f)] private float _actionBarOverflowPenaltySeconds = 10f;
 
         public DessertPool DessertPool => _dessertPool;
         public int CopiesPerDessert => _copiesPerDessert;
         public float SpawnDelaySeconds => _spawnDelaySeconds;
         public float RoundDurationSeconds => _roundDurationSeconds;
+        public float ActionBarOverflowPenaltySeconds => _actionBarOverflowPenaltySeconds;
     }
 }

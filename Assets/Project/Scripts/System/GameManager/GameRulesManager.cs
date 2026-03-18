@@ -12,7 +12,6 @@ namespace Project.Scripts.GameManager
 {
     public class GameRulesManager : IInitializable, ITickable, IDisposable, IGameStartListener, IGameFinishListener
     {
-        private const int LoseDessertsCount = 7;
         private const int MatchCount = 3;
         private const int PointsPerDessert = 100;
 
@@ -82,16 +81,6 @@ namespace Project.Scripts.GameManager
 
         private void EvaluateGameState()
         {
-            if (_actionBar.CurrentCount >= LoseDessertsCount)
-            {
-                _gameStatusPublisher.Publish(new GameStatusCommandDto
-                {
-                    Command = EGameStatusCommand.ShowLoseAndFinish
-                });
-                _isGameFinished = true;
-                return;
-            }
-
             if (_dessertSpawner.RemainingDessertsCount == 0 && _dessertSpawner.ActiveDessertsCount == 0)
             {
                 _gameStatusPublisher.Publish(new GameStatusCommandDto

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 271568894131627523}
   - component: {fileID: 6510559919384091658}
   m_Layer: 0
-  m_Name: GameStatusView
+  m_Name: EndGameView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,4 +67,4 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dca9a6b9368af0f4f98f9d84962a1180, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.UI.GameStatus.GameStatusView
+  m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.UI.EndGame.EndGameView

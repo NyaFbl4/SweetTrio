@@ -4,5 +4,6 @@ namespace Project.Scripts.UI.UseCases
     {
         float RemainingSeconds { get; }
         void Reset(float seconds);
+        void SubtractSeconds(float seconds);
     }
 }

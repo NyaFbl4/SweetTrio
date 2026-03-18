@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Assets.Project.Scripts.System.DessertCreator;
+using MessagePipe;
 using Project.System;
 using VContainer.Unity;
 
 namespace Project.Scripts.GameManager
 {
-    public class GameBootstrap : ITickable, IDisposable, IGameStartListener, IGamePauseListener, IGameResumeListener, IGameFinishListener, IGameBootstrapControl
+    public class GameBootstrap : ITickable, IDisposable, IGameStartListener, IGameFinishListener, IGameBootstrapControl
     {
         private readonly IDessertSpawner _dessertSpawner;
         private readonly IActionBar _actionBar;
@@ -17,12 +18,14 @@ namespace Project.Scripts.GameManager
         private bool _isInitialSpawnInProgress;
         private float _spawnTimer;
         private readonly Queue<int> _spawnRequestQueue = new();
+        private readonly IDisposable _shuffleFieldSubscription;
 
         public GameBootstrap(
             IDessertSpawner dessertSpawner,
             IActionBar actionBar,
             LevelConfig levelConfig,
-            GameConfig gameConfig)
+            GameConfig gameConfig,
+            ISubscriber<ShuffleFieldCommandDto> shuffleFieldSubscriber)
         {
             _dessertSpawner = dessertSpawner;
             _actionBar = actionBar;
@@ -31,6 +34,7 @@ namespace Project.Scripts.GameManager
 
             IGameListener.Register(this);
             _actionBar.DessertAdded += HandleDessertAdded;
+            _shuffleFieldSubscription = shuffleFieldSubscriber.Subscribe(HandleShuffleRequested);
         }
 
         public void Tick()
@@ -87,16 +91,6 @@ namespace Project.Scripts.GameManager
             _isInitialSpawnInProgress = true;
         }
 
-        public void OnPauseGame()
-        {
-            _isAutoSpawnActive = false;
-        }
-
-        public void OnResumeGame()
-        {
-            _isAutoSpawnActive = true;
-        }
-
         public void OnFinishGame()
         {
             _isAutoSpawnActive = false;
@@ -127,8 +121,18 @@ namespace Project.Scripts.GameManager
             _spawnRequestQueue.Enqueue(1);
         }
 
+        private void HandleShuffleRequested(ShuffleFieldCommandDto _)
+        {
+            if (!_isAutoSpawnActive)
+                return;
+
+            _dessertSpawner.RespawnFieldWithShuffle();
+            RestartInitialSpawn();
+        }
+
         public void Dispose()
         {
+            _shuffleFieldSubscription.Dispose();
             _actionBar.DessertAdded -= HandleDessertAdded;
             IGameListener.Unregister(this);
         }

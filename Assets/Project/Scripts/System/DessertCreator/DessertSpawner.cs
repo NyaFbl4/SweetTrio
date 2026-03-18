@@ -159,8 +159,8 @@ namespace Assets.Project.Scripts.System.DessertCreator
             dessert.transform.localPosition = Vector3.zero;
             dessert.transform.localRotation = Quaternion.identity;
             dessert.transform.localScale = Vector3.one * _gameConfig.SpawnDessertScale;
-            dessert.SetInteractable(true);
             dessert.gameObject.SetActive(true);
+            dessert.PrepareForField();
             _fieldDesserts.Add(dessert);
             NotifyCountsChanged();
 
@@ -221,6 +221,35 @@ namespace Assets.Project.Scripts.System.DessertCreator
             }
 
             NotifyCountsChanged();
+        }
+
+        public void ReturnDessertsToPool(IReadOnlyList<DessertController> desserts)
+        {
+            if (desserts == null || desserts.Count == 0)
+                return;
+
+            if (_transformController == null || _transformController.DessertdContainer == null)
+            {
+                Debug.LogError("DessertContainer is not assigned in TransformController.");
+                return;
+            }
+
+            var hasChanges = false;
+            for (var i = 0; i < desserts.Count; i++)
+            {
+                var dessert = desserts[i];
+                if (dessert == null || !dessert.IsInActionBar)
+                    continue;
+
+                dessert.ReturnToPool(_transformController.DessertdContainer);
+                _preparedDessertsQueue.Enqueue(dessert);
+                hasChanges = true;
+            }
+
+            if (hasChanges)
+            {
+                NotifyCountsChanged();
+            }
         }
 
         private void ClearPreparedDesserts(bool notify = true)

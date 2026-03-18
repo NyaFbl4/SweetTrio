@@ -113,32 +113,5 @@ namespace Project.Scripts.GameManager
             _gameState = EGameState.Finish;
         }
 
-        public void PauseGame()
-        {
-            foreach (var gameListener in _gameListeners)
-            {
-                if (gameListener is IGamePauseListener gamePauseListener)
-                {
-                    gamePauseListener.OnPauseGame();
-                }
-            }
-
-            Time.timeScale = 0f;
-            _gameState = EGameState.Pause;
-        }
-
-        public void ResumeGame()
-        {
-            foreach (var gameListener in _gameListeners)
-            {
-                if (gameListener is IGameResumeListener gameResumeListener)
-                {
-                    gameResumeListener.OnResumeGame();
-                }
-            }
-
-            Time.timeScale = 1f;
-            _gameState = EGameState.Play;
-        }
     }
 }

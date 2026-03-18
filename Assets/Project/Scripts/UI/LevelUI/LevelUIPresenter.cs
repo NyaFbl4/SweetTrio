@@ -1,4 +1,4 @@
-using MessagePipe;
+﻿using MessagePipe;
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
@@ -8,6 +8,7 @@ namespace Project.Scripts.UI.LevelUI
 {
     public class LevelUIPresenter : LayoutPresenterBase<ILevelUIView>, ILevelUIPresenter, IGameStartListener, IGameFinishListener
     {
+        [Inject] private readonly IPublisher<ShuffleFieldCommandDto> _shuffleFieldPublisher;
         [Inject] private readonly IPublisher<ShowPopupDto> _showPopUpPublisher;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
 
@@ -15,10 +16,12 @@ namespace Project.Scripts.UI.LevelUI
         {
             base.Initialize();
             IGameListener.Register(this);
+            _layoutView.ShuffleButtonClicked += HandleShuffleButtonClicked;
         }
 
         public override void Dispose()
         {
+            _layoutView.ShuffleButtonClicked -= HandleShuffleButtonClicked;
             IGameListener.Unregister(this);
             base.Dispose();
         }
@@ -38,6 +41,16 @@ namespace Project.Scripts.UI.LevelUI
             _layoutView.SetTotalDessertsText(text);
         }
 
+        public void SetTimerText(string text)
+        {
+            _layoutView.SetTimerText(text);
+        }
+
+        public void SetProgress(float value01)
+        {
+            _layoutView.SetProgress(value01);
+        }
+
         public void OnStartGame()
         {
             _showPopUpPublisher.Publish(new ShowPopupDto
@@ -53,5 +66,11 @@ namespace Project.Scripts.UI.LevelUI
                 TargetPopUpType = typeof(ILevelUIPresenter)
             });
         }
+
+        private void HandleShuffleButtonClicked()
+        {
+            _shuffleFieldPublisher.Publish(new ShuffleFieldCommandDto());
+        }
     }
 }
+

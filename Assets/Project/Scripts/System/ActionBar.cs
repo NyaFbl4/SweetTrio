@@ -4,6 +4,8 @@ using Assets.Project.Scripts.Desserts;
 using Assets.Project.Scripts.System.DessertCreator;
 using Assets.Project.Scripts.System.DessertCreator.Dtos;
 using MessagePipe;
+using Project.Scripts.GameManager;
+using Project.Scripts.UI.UseCases;
 using UnityEngine;
 using UnityEngine.Rendering;
 using VContainer;
@@ -12,10 +14,14 @@ namespace Project.System
 {
     public class ActionBar : MonoBehaviour, IActionBar
     {
+        private const int MatchCount = 3;
+
         [SerializeField] private Transform _actionBarContainer;
         [SerializeField] private int _maxCount = 7;
         [SerializeField] private int _baseSortingOrder = 100;
         [Inject] private readonly IDessertSpawner _dessertSpawner;
+        [Inject] private readonly ITimerCountdownUseCase _timerCountdownUseCase;
+        [Inject] private readonly LevelConfig _levelConfig;
         [Inject] private readonly IPublisher<DessertCountsDto> _dessertCountsPublisher;
         private readonly List<DessertController> _desserts = new();
 
@@ -27,8 +33,14 @@ namespace Project.System
             if (dessert == null || _actionBarContainer == null)
                 return false;
 
-            if (_desserts.Count >= _maxCount)
+            if (dessert.IsInActionBar)
                 return false;
+
+            if (_desserts.Count >= _maxCount && !WillCreateMatch(dessert))
+            {
+                HandleActionBarOverflow();
+                return false;
+            }
 
             var slot = _actionBarContainer;
 
@@ -86,6 +98,45 @@ namespace Project.System
             {
                 PublishCountsChanged();
             }
+        }
+
+        private void HandleActionBarOverflow()
+        {
+            if (_desserts.Count > 0)
+            {
+                var dessertsToReturn = new List<DessertController>(_desserts);
+                _desserts.Clear();
+                _dessertSpawner.ReturnDessertsToPool(dessertsToReturn);
+                PublishCountsChanged();
+            }
+
+            if (_timerCountdownUseCase != null && _levelConfig != null)
+            {
+                _timerCountdownUseCase.SubtractSeconds(_levelConfig.ActionBarOverflowPenaltySeconds);
+            }
+        }
+
+        private bool WillCreateMatch(DessertController dessert)
+        {
+            if (dessert == null)
+                return false;
+
+            var sameTypeCount = 0;
+            for (var i = 0; i < _desserts.Count; i++)
+            {
+                var currentDessert = _desserts[i];
+                if (currentDessert == null)
+                    continue;
+
+                if (currentDessert.DessertType == dessert.DessertType)
+                {
+                    sameTypeCount++;
+                    if (sameTypeCount >= MatchCount - 1)
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         private void PublishCountsChanged()
