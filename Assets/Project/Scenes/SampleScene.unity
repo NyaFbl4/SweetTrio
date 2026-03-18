@@ -303,7 +303,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &341882589
 RectTransform:
   m_ObjectHideFlags: 0
@@ -434,6 +434,13 @@ MonoBehaviour:
   _actionBarContainer: {fileID: 489407076}
   _maxCount: 7
   _baseSortingOrder: 100
+  _slots: []
+  _autoSlotSpacing: 0.9
+  _createSlotVisuals: 1
+  _slotVisualSprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  _slotVisualColor: {r: 0.9622642, g: 0.45843717, b: 0.45843717, a: 0.35}
+  _slotVisualScale: {x: 0.7, y: 0.7, z: 1}
+  _slotVisualSortingOffset: -10
 --- !u!1 &483594929
 GameObject:
   m_ObjectHideFlags: 0
