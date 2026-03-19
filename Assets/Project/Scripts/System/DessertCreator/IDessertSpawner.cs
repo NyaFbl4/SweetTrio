@@ -9,6 +9,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
         int RemainingDessertsCount { get; }
         int ActiveDessertsCount { get; }
         int FieldDessertsCount { get; }
+        IReadOnlyList<EDessertType> GetDessertTypesWithAtLeastCount(int minimumCount);
 
         void PrepareDeck();
         DessertController SpawnNext();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MessagePipe;
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI.Dtos;
@@ -14,6 +14,7 @@ namespace Project.Scripts.UI.UseCases
         [Inject] private readonly IEndGamePresenter _endGamePresenter;
         [Inject] private readonly IGameManagerService _gameManagerService;
         [Inject] private readonly ILevelCounterUseCase _levelCounterUseCase;
+        [Inject] private readonly ITimerPointsUseCase _timerPointsUseCase;
 
         private IDisposable _subscription = DisposableBag.Empty;
 
@@ -35,6 +36,7 @@ namespace Project.Scripts.UI.UseCases
             switch (message.Command)
             {
                 case EGameStatusCommand.ShowWinAndFinish:
+                    _timerPointsUseCase.ApplyWinBonus();
                     _endGamePresenter.ShowWin(_levelCounterUseCase.CurrentValue);
                     _gameManagerService.FinishGame();
                     break;

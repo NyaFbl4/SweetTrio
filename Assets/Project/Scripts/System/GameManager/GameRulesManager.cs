@@ -187,7 +187,7 @@ namespace Project.Scripts.GameManager
 
         private void RerollBonusWidget()
         {
-            var dessertPrefab = GetRandomDessertPrefab();
+            var dessertPrefab = GetRandomCollectibleDessertPrefab();
             _hasBonusDessert = dessertPrefab != null;
             _bonusDessertType = dessertPrefab != null ? dessertPrefab.DessertType : default;
             _bonusMultiplier = Mathf.Round(UnityEngine.Random.Range(MinBonusMultiplier, MaxBonusMultiplier + 0.001f) * 100f) / 100f;
@@ -195,6 +195,17 @@ namespace Project.Scripts.GameManager
             var sprite = GetDessertSprite(dessertPrefab);
             _levelUIPresenter.SetBonusDessertSprite(sprite);
             _levelUIPresenter.SetBonusMultiplierText($"x{_bonusMultiplier:0.00}");
+        }
+
+        private DessertController GetRandomCollectibleDessertPrefab()
+        {
+            var collectibleTypes = _dessertSpawner.GetDessertTypesWithAtLeastCount(MatchCount);
+            if (collectibleTypes == null || collectibleTypes.Count == 0)
+                return GetRandomDessertPrefab();
+
+            var randomIndex = UnityEngine.Random.Range(0, collectibleTypes.Count);
+            var randomType = collectibleTypes[randomIndex];
+            return GetRandomDessertPrefabByType(randomType);
         }
 
         private DessertController GetRandomDessertPrefab()
@@ -209,6 +220,29 @@ namespace Project.Scripts.GameManager
                 if (dessertPrefabs[i] != null)
                 {
                     validPrefabs.Add(dessertPrefabs[i]);
+                }
+            }
+
+            if (validPrefabs.Count == 0)
+                return null;
+
+            var index = UnityEngine.Random.Range(0, validPrefabs.Count);
+            return validPrefabs[index];
+        }
+
+        private DessertController GetRandomDessertPrefabByType(EDessertType dessertType)
+        {
+            var dessertPrefabs = _levelConfig?.DessertPool?.DessertPrefabs;
+            if (dessertPrefabs == null || dessertPrefabs.Count == 0)
+                return null;
+
+            var validPrefabs = new List<DessertController>(dessertPrefabs.Count);
+            for (var i = 0; i < dessertPrefabs.Count; i++)
+            {
+                var prefab = dessertPrefabs[i];
+                if (prefab != null && prefab.DessertType == dessertType)
+                {
+                    validPrefabs.Add(prefab);
                 }
             }
 

@@ -252,6 +252,39 @@ namespace Assets.Project.Scripts.System.DessertCreator
             }
         }
 
+        public IReadOnlyList<EDessertType> GetDessertTypesWithAtLeastCount(int minimumCount)
+        {
+            if (minimumCount <= 0)
+                return new List<EDessertType>();
+
+            var countsByType = new Dictionary<EDessertType, int>();
+            for (var i = 0; i < _preparedDesserts.Count; i++)
+            {
+                var dessert = _preparedDesserts[i];
+                if (dessert == null)
+                    continue;
+
+                var type = dessert.DessertType;
+                if (!countsByType.TryGetValue(type, out var currentCount))
+                {
+                    currentCount = 0;
+                }
+
+                countsByType[type] = currentCount + 1;
+            }
+
+            var result = new List<EDessertType>();
+            foreach (var pair in countsByType)
+            {
+                if (pair.Value >= minimumCount)
+                {
+                    result.Add(pair.Key);
+                }
+            }
+
+            return result;
+        }
+
         private void ClearPreparedDesserts(bool notify = true)
         {
             while (_preparedDessertsQueue.Count > 0)

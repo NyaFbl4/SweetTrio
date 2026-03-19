@@ -78,6 +78,7 @@ namespace Project.Scripts.System.Installers
             builder.RegisterEntryPoint<LevelCounterUseCase>(Lifetime.Singleton).As<ILevelCounterUseCase>();
             builder.RegisterEntryPoint<DessertCountUseCase>(Lifetime.Singleton).As<IDessertCountUseCase>();
             builder.RegisterEntryPoint<TimerCountdownUseCase>(Lifetime.Singleton).As<ITimerCountdownUseCase>();
+            builder.RegisterEntryPoint<TimerPointsUseCase>(Lifetime.Singleton).As<ITimerPointsUseCase>();
         }
 
         private void RegisterViews(IContainerBuilder builder)
@@ -112,3 +113,4 @@ namespace Project.Scripts.System.Installers
         }
     }
 }
+
