@@ -2,6 +2,7 @@
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
+using Project.Scripts.UI.MainScreen;
 using VContainer;
 
 namespace Project.Scripts.UI.EndGame
@@ -11,17 +12,20 @@ namespace Project.Scripts.UI.EndGame
         private const string WinMessage = "Победа";
         private const string LoseMessage = "Поражение";
 
+        [Inject] private readonly IGameManagerService _gameManagerService;
         [Inject] private readonly IPublisher<ShowPopupDto> _showPopUpPublisher;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
 
         public override void Initialize()
         {
             base.Initialize();
+            _layoutView.ExitToMenuClicked += HandleExitToMenuClicked;
             IGameListener.Register(this);
         }
 
         public override void Dispose()
         {
+            _layoutView.ExitToMenuClicked -= HandleExitToMenuClicked;
             IGameListener.Unregister(this);
             base.Dispose();
         }
@@ -44,6 +48,21 @@ namespace Project.Scripts.UI.EndGame
         public void OnStartGame()
         {
             _hidePopUpPublisher.Publish(new HidePopupDto { TargetPopUpType = typeof(IEndGamePresenter) });
+        }
+
+        private void HandleExitToMenuClicked()
+        {
+            _gameManagerService.FinishGame();
+
+            _hidePopUpPublisher.Publish(new HidePopupDto
+            {
+                TargetPopUpType = typeof(IEndGamePresenter)
+            });
+
+            _showPopUpPublisher.Publish(new ShowPopupDto
+            {
+                TargetPopUpType = typeof(IMainMenuPresenter)
+            });
         }
     }
 }

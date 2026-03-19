@@ -1,10 +1,43 @@
+﻿using System;
 using Project.Scripts.Systems.UI;
-using Project.Scripts.UI.MainScreen;
+using UnityEngine;
+using UnityEngine.UIElements;
 
-public class MainMenuView : LayoutViewBase, IMainMenuView
+namespace Project.Scripts.UI.MainScreen
 {
-    public override void Awake()
+    public class MainMenuView : LayoutViewBase, IMainMenuView
     {
-        base.Awake();
+        private const string StartButtonName = "main-menu-start-button";
+
+        private Button _startButton;
+
+        public event Action StartLevelClicked;
+
+        public override void Awake()
+        {
+            base.Awake();
+
+            _startButton = _root.Q<Button>(StartButtonName);
+            if (_startButton == null)
+            {
+                Debug.LogError($"MainMenuView: Button '{StartButtonName}' not found in UXML.");
+                return;
+            }
+
+            _startButton.clicked += HandleStartButtonClicked;
+        }
+
+        private void OnDestroy()
+        {
+            if (_startButton != null)
+            {
+                _startButton.clicked -= HandleStartButtonClicked;
+            }
+        }
+
+        private void HandleStartButtonClicked()
+        {
+            StartLevelClicked?.Invoke();
+        }
     }
 }

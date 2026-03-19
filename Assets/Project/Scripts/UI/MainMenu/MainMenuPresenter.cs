@@ -1,25 +1,37 @@
-using System;
-using MessagePipe;
+﻿using MessagePipe;
+using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
 using VContainer;
-using VContainer.Unity;
 
 namespace Project.Scripts.UI.MainScreen
 {
-    public class MainMenuPresenter : LayoutPresenterBase<IMainMenuView>, IMainMenuPresenter, IInitializable, IDisposable
+    public class MainMenuPresenter : LayoutPresenterBase<IMainMenuView>, IMainMenuPresenter
     {
-        [Inject] private readonly IPublisher<ShowPopupDto> _showPopUpPublisher;
+        [Inject] private readonly IGameManagerService _gameManagerService;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
 
-        public void Initialize()
+        public override void Initialize()
         {
             base.Initialize();
+            _layoutView.StartLevelClicked += HandleStartLevelClicked;
+            _layoutView.Show();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            _layoutView.StartLevelClicked -= HandleStartLevelClicked;
             base.Dispose();
+        }
+
+        private void HandleStartLevelClicked()
+        {
+            _hidePopUpPublisher.Publish(new HidePopupDto
+            {
+                TargetPopUpType = typeof(IMainMenuPresenter)
+            });
+
+            _gameManagerService.StartGame();
         }
     }
 }

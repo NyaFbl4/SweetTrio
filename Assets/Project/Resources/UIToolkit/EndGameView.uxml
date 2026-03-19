@@ -24,7 +24,7 @@
                 width: 36%;
                 min-width: 260px;
                 max-width: 520px;
-                min-height: 160px;
+                min-height: 220px;
                 background-color: rgba(255, 255, 255, 0.92);
                 border-top-left-radius: 14px;
                 border-top-right-radius: 14px;
@@ -57,7 +57,23 @@
                     color: rgba(25, 25, 25, 1);
                 "
             />
+            <ui:Button
+                name="end-game-menu-button"
+                text="В меню"
+                style="
+                    margin-top: 20px;
+                    width: 180px;
+                    height: 52px;
+                    -unity-font-style: bold;
+                    font-size: 22px;
+                    color: rgba(20, 20, 20, 1);
+                    background-color: rgba(255, 255, 255, 0.88);
+                    border-top-left-radius: 10px;
+                    border-top-right-radius: 10px;
+                    border-bottom-left-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                "
+            />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
-
