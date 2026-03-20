@@ -10,7 +10,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
 {
     public class DessertSpawner : IDessertSpawner
     {
-        private readonly LevelConfig _levelConfig;
+        private readonly ILevelSelectionService _levelSelectionService;
         private readonly GameConfig _gameConfig;
         private readonly TransformController _transformController;
         private readonly IPublisher<DessertCountsDto> _dessertCountsPublisher;
@@ -61,12 +61,12 @@ namespace Assets.Project.Scripts.System.DessertCreator
         }
 
         public DessertSpawner(
-            LevelConfig levelConfig,
+            ILevelSelectionService levelSelectionService,
             GameConfig gameConfig,
             TransformController transformController,
             IPublisher<DessertCountsDto> dessertCountsPublisher)
         {
-            _levelConfig = levelConfig;
+            _levelSelectionService = levelSelectionService;
             _gameConfig = gameConfig;
             _transformController = transformController;
             _dessertCountsPublisher = dessertCountsPublisher;
@@ -74,13 +74,14 @@ namespace Assets.Project.Scripts.System.DessertCreator
 
         public void PrepareDeck()
         {
-            if (_levelConfig == null)
+            var levelConfig = _levelSelectionService.CurrentLevel;
+            if (levelConfig == null)
             {
-                Debug.LogError("LevelConfig is not assigned.");
+                Debug.LogError("Current level is not selected.");
                 return;
             }
 
-            if (_levelConfig.DessertPool == null || _levelConfig.DessertPool.DessertPrefabs == null)
+            if (levelConfig.DessertPool == null || levelConfig.DessertPool.DessertPrefabs == null)
             {
                 Debug.LogError("DessertPool is not assigned.");
                 return;
@@ -92,7 +93,7 @@ namespace Assets.Project.Scripts.System.DessertCreator
                 return;
             }
 
-            if (_levelConfig.CopiesPerDessert <= 0)
+            if (levelConfig.CopiesPerDessert <= 0)
             {
                 Debug.LogError("copiesPerDessert must be greater than 0.");
                 return;
@@ -101,16 +102,16 @@ namespace Assets.Project.Scripts.System.DessertCreator
             ClearPreparedDesserts(notify: false);
             _fieldDesserts.Clear();
 
-            for (var i = 0; i < _levelConfig.DessertPool.DessertPrefabs.Count; i++)
+            for (var i = 0; i < levelConfig.DessertPool.DessertPrefabs.Count; i++)
             {
-                var prefab = _levelConfig.DessertPool.DessertPrefabs[i];
+                var prefab = levelConfig.DessertPool.DessertPrefabs[i];
                 if (prefab == null)
                 {
                     Debug.LogWarning($"Dessert prefab at index {i} is null.");
                     continue;
                 }
 
-                for (var copy = 0; copy < _levelConfig.CopiesPerDessert; copy++)
+                for (var copy = 0; copy < levelConfig.CopiesPerDessert; copy++)
                 {
                     var instance = UnityEngine.Object.Instantiate(prefab, _transformController.DessertdContainer, false);
                     instance.gameObject.SetActive(false);

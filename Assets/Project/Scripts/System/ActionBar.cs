@@ -30,7 +30,7 @@ namespace Project.System
         [SerializeField] private int _slotVisualSortingOffset = -10;
         [Inject] private readonly IDessertSpawner _dessertSpawner;
         [Inject] private readonly ITimerCountdownUseCase _timerCountdownUseCase;
-        [Inject] private readonly LevelConfig _levelConfig;
+        [Inject] private readonly ILevelSelectionService _levelSelectionService;
         [Inject] private readonly IPublisher<DessertCountsDto> _dessertCountsPublisher;
         private readonly List<DessertController> _desserts = new();
 
@@ -154,9 +154,10 @@ namespace Project.System
             RebuildLayout();
             PublishCountsChanged();
 
-            if (_timerCountdownUseCase != null && _levelConfig != null)
+            var levelConfig = _levelSelectionService.CurrentLevel;
+            if (_timerCountdownUseCase != null && levelConfig != null)
             {
-                _timerCountdownUseCase.SubtractSeconds(_levelConfig.ActionBarOverflowPenaltySeconds);
+                _timerCountdownUseCase.SubtractSeconds(levelConfig.ActionBarOverflowPenaltySeconds);
             }
         }
 

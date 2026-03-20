@@ -11,7 +11,7 @@ namespace Project.Scripts.GameManager
     {
         private readonly IDessertSpawner _dessertSpawner;
         private readonly IActionBar _actionBar;
-        private readonly LevelConfig _levelConfig;
+        private readonly ILevelSelectionService _levelSelectionService;
         private readonly GameConfig _gameConfig;
 
         private bool _isAutoSpawnActive;
@@ -23,13 +23,13 @@ namespace Project.Scripts.GameManager
         public GameBootstrap(
             IDessertSpawner dessertSpawner,
             IActionBar actionBar,
-            LevelConfig levelConfig,
+            ILevelSelectionService levelSelectionService,
             GameConfig gameConfig,
             ISubscriber<ShuffleFieldCommandDto> shuffleFieldSubscriber)
         {
             _dessertSpawner = dessertSpawner;
             _actionBar = actionBar;
-            _levelConfig = levelConfig;
+            _levelSelectionService = levelSelectionService;
             _gameConfig = gameConfig;
 
             IGameListener.Register(this);
@@ -42,8 +42,12 @@ namespace Project.Scripts.GameManager
             if (!_isAutoSpawnActive)
                 return;
 
+            var levelConfig = _levelSelectionService.CurrentLevel;
+            if (levelConfig == null)
+                return;
+
             _spawnTimer += UnityEngine.Time.deltaTime;
-            if (_spawnTimer < _levelConfig.SpawnDelaySeconds)
+            if (_spawnTimer < levelConfig.SpawnDelaySeconds)
                 return;
 
             _spawnTimer = 0f;
@@ -82,6 +86,15 @@ namespace Project.Scripts.GameManager
 
         public void OnStartGame()
         {
+            if (_levelSelectionService.CurrentLevel == null)
+            {
+                _isAutoSpawnActive = false;
+                _isInitialSpawnInProgress = false;
+                _spawnRequestQueue.Clear();
+                _spawnTimer = 0f;
+                return;
+            }
+
             _actionBar.ClearField();
             _dessertSpawner.PrepareDeck();
             _spawnRequestQueue.Clear();

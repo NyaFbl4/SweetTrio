@@ -1,4 +1,4 @@
-﻿using Assets.Project.Scripts.Desserts;
+using Assets.Project.Scripts.Desserts;
 using Assets.Project.Scripts.System.DessertCreator;
 using MessagePipe;
 using Project.Scripts.GameManager;
@@ -20,6 +20,7 @@ namespace Project.Scripts.System.Installers
         [SerializeField] private LayoutsRepository _layoutsRepository;
         [SerializeField] private DessertPool _dessertsPool;
         [SerializeField] private LevelConfig _levelConfig;
+        [SerializeField] private LevelsCatalogConfig _levelsCatalogConfig;
         [SerializeField] private GameConfig _gameConfig;
         [SerializeField] private TransformController _transformController;
         [SerializeField] private ActionBar _actionBar;
@@ -38,6 +39,7 @@ namespace Project.Scripts.System.Installers
         {
             builder.RegisterMessagePipe();
             builder.RegisterEntryPoint<UIController>().As<IUIController>();
+            builder.RegisterEntryPoint<LevelSelectionService>(Lifetime.Singleton).As<ILevelSelectionService>();
             builder.RegisterEntryPoint<GameManagerService>().As<IGameManagerService>();
             builder.RegisterEntryPoint<GameBootstrap>(Lifetime.Singleton).As<IGameBootstrapControl>();
             builder.RegisterEntryPoint<GameRulesManager>(Lifetime.Singleton);
@@ -109,6 +111,7 @@ namespace Project.Scripts.System.Installers
         {
             builder.RegisterInstance(_dessertsPool);
             builder.RegisterInstance(_levelConfig);
+            builder.RegisterInstance(_levelsCatalogConfig);
             builder.RegisterInstance(_gameConfig);
             builder.RegisterInstance(_transformController);
         }

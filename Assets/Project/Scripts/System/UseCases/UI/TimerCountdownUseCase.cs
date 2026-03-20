@@ -14,7 +14,7 @@ namespace Project.Scripts.UI.UseCases
 
         private readonly ILevelUIPresenter _levelUIPresenter;
         private readonly IPublisher<GameStatusCommandDto> _gameStatusPublisher;
-        private readonly float _initialDurationSeconds;
+        private readonly ILevelSelectionService _levelSelectionService;
 
         private float _durationSeconds;
         private float _remainingSeconds;
@@ -27,21 +27,20 @@ namespace Project.Scripts.UI.UseCases
         public TimerCountdownUseCase(
             ILevelUIPresenter levelUIPresenter,
             IPublisher<GameStatusCommandDto> gameStatusPublisher,
-            LevelConfig levelConfig)
+            ILevelSelectionService levelSelectionService)
         {
             _levelUIPresenter = levelUIPresenter;
             _gameStatusPublisher = gameStatusPublisher;
-            _initialDurationSeconds = levelConfig != null && levelConfig.RoundDurationSeconds > 0f
-                ? levelConfig.RoundDurationSeconds
-                : DefaultRoundDurationSeconds;
+            _levelSelectionService = levelSelectionService;
 
-            _durationSeconds = Mathf.Max(0.01f, _initialDurationSeconds);
-            _remainingSeconds = _initialDurationSeconds;
+            _durationSeconds = Mathf.Max(0.01f, DefaultRoundDurationSeconds);
+            _remainingSeconds = DefaultRoundDurationSeconds;
         }
 
         public void Initialize()
         {
             IGameListener.Register(this);
+            Reset(ResolveRoundDurationSeconds());
             NotifyPresenter(forceTextUpdate: true);
         }
 
@@ -71,7 +70,7 @@ namespace Project.Scripts.UI.UseCases
         public void OnStartGame()
         {
             _timeoutTriggered = false;
-            Reset(_initialDurationSeconds);
+            Reset(ResolveRoundDurationSeconds());
             _isActive = true;
         }
 
@@ -138,6 +137,17 @@ namespace Project.Scripts.UI.UseCases
             var minutes = totalSeconds / 60;
             var seconds = totalSeconds % 60;
             return $"{minutes:00}:{seconds:00}";
+        }
+
+        private float ResolveRoundDurationSeconds()
+        {
+            var levelConfig = _levelSelectionService.CurrentLevel;
+            if (levelConfig != null && levelConfig.RoundDurationSeconds > 0f)
+            {
+                return levelConfig.RoundDurationSeconds;
+            }
+
+            return DefaultRoundDurationSeconds;
         }
     }
 }

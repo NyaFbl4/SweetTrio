@@ -13,27 +13,23 @@
             right: 0;
             top: 0;
             bottom: 0;
-            background-color: rgba(12, 24, 36, 0.82);
+            background-color: rgba(255, 255, 255, 1);
             align-items: center;
             justify-content: center;
         "
     >
         <ui:VisualElement
-            name="main-menu-panel"
+            name="main-menu-center-column"
             style="
-                width: 44%;
-                min-width: 300px;
-                max-width: 620px;
-                min-height: 260px;
-                background-color: rgba(247, 248, 250, 0.94);
-                border-top-left-radius: 18px;
-                border-top-right-radius: 18px;
-                border-bottom-left-radius: 18px;
-                border-bottom-right-radius: 18px;
+                width: 92%;
+                max-width: 860px;
+                min-height: 420px;
                 align-items: center;
                 justify-content: center;
-                padding-top: 24px;
-                padding-bottom: 24px;
+                padding-left: 24px;
+                padding-right: 24px;
+                padding-top: 28px;
+                padding-bottom: 28px;
             "
         >
             <ui:Label
@@ -42,37 +38,101 @@
                 style="
                     unity-text-align: middle-center;
                     -unity-font-style: bold;
-                    font-size: 46px;
-                    color: rgba(14, 20, 28, 1);
+                    font-size: 66px;
+                    color: rgba(18, 24, 34, 1);
                 "
             />
+
             <ui:Label
-                name="main-menu-subtitle-label"
-                text="Прототип главного меню"
+                name="main-menu-selected-level-label"
+                text="Текущий уровень: -"
                 style="
-                    margin-top: 8px;
+                    margin-top: 14px;
                     unity-text-align: middle-center;
-                    font-size: 22px;
-                    color: rgba(40, 48, 60, 0.92);
-                "
-            />
-            <ui:Button
-                name="main-menu-start-button"
-                text="Старт уровня"
-                style="
-                    margin-top: 26px;
-                    width: 220px;
-                    height: 62px;
                     -unity-font-style: bold;
                     font-size: 24px;
-                    color: rgba(18, 18, 18, 1);
-                    background-color: rgba(255, 221, 132, 0.95);
-                    border-top-left-radius: 12px;
-                    border-top-right-radius: 12px;
-                    border-bottom-left-radius: 12px;
-                    border-bottom-right-radius: 12px;
+                    color: rgba(56, 68, 86, 1);
                 "
             />
+
+            <ui:Button
+                name="main-menu-choose-level-button"
+                text="Выбрать уровень"
+                style="
+                    margin-top: 22px;
+                    width: 320px;
+                    height: 72px;
+                    -unity-font-style: bold;
+                    font-size: 26px;
+                    color: rgba(255, 255, 255, 1);
+                    background-color: rgba(33, 93, 196, 0.98);
+                    border-top-left-radius: 14px;
+                    border-top-right-radius: 14px;
+                    border-bottom-left-radius: 14px;
+                    border-bottom-right-radius: 14px;
+                "
+            />
+
+            <ui:VisualElement
+                name="main-menu-levels-tab"
+                style="
+                    width: 100%;
+                    max-width: 760px;
+                    margin-top: 20px;
+                    background-color: rgba(247, 249, 253, 1);
+                    border-top-left-radius: 16px;
+                    border-top-right-radius: 16px;
+                    border-bottom-left-radius: 16px;
+                    border-bottom-right-radius: 16px;
+                    border-left-width: 1px;
+                    border-right-width: 1px;
+                    border-top-width: 1px;
+                    border-bottom-width: 1px;
+                    border-left-color: rgba(207, 216, 230, 1);
+                    border-right-color: rgba(207, 216, 230, 1);
+                    border-top-color: rgba(207, 216, 230, 1);
+                    border-bottom-color: rgba(207, 216, 230, 1);
+                    padding-top: 14px;
+                    padding-bottom: 14px;
+                    padding-left: 14px;
+                    padding-right: 14px;
+                    display: none;
+                    flex-direction: column;
+                    max-height: 420px;
+                "
+            >
+                <ui:Label
+                    name="main-menu-levels-title-label"
+                    text="Уровни"
+                    style="
+                        unity-text-align: middle-center;
+                        -unity-font-style: bold;
+                        font-size: 32px;
+                        color: rgba(20, 28, 40, 1);
+                    "
+                />
+
+                <ui:Label
+                    name="main-menu-empty-levels-label"
+                    text="Добавьте конфиги уровней в каталог уровней"
+                    style="
+                        margin-top: 10px;
+                        unity-text-align: middle-center;
+                        font-size: 18px;
+                        color: rgba(84, 92, 106, 1);
+                        display: none;
+                    "
+                />
+
+                <ui:ScrollView
+                    name="main-menu-levels-list"
+                    style="
+                        margin-top: 10px;
+                        flex-grow: 1;
+                        min-height: 180px;
+                    "
+                />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

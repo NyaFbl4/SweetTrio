@@ -23,7 +23,7 @@ namespace Project.Scripts.GameManager
         private readonly IDessertSpawner _dessertSpawner;
         private readonly ILevelCounterUseCase _levelCounterUseCase;
         private readonly IPublisher<GameStatusCommandDto> _gameStatusPublisher;
-        private readonly LevelConfig _levelConfig;
+        private readonly ILevelSelectionService _levelSelectionService;
         private readonly ILevelUIPresenter _levelUIPresenter;
 
         private bool _isGameFinished;
@@ -37,14 +37,14 @@ namespace Project.Scripts.GameManager
             IDessertSpawner dessertSpawner,
             ILevelCounterUseCase levelCounterUseCase,
             IPublisher<GameStatusCommandDto> gameStatusPublisher,
-            LevelConfig levelConfig,
+            ILevelSelectionService levelSelectionService,
             ILevelUIPresenter levelUIPresenter)
         {
             _actionBar = actionBar;
             _dessertSpawner = dessertSpawner;
             _levelCounterUseCase = levelCounterUseCase;
             _gameStatusPublisher = gameStatusPublisher;
-            _levelConfig = levelConfig;
+            _levelSelectionService = levelSelectionService;
             _levelUIPresenter = levelUIPresenter;
         }
 
@@ -136,8 +136,9 @@ namespace Project.Scripts.GameManager
 
                 matchedType ??= dessert.DessertType;
 
-                var points = _levelConfig != null
-                    ? _levelConfig.GetPointsForDessert(dessert.DessertType, DefaultPointsPerDessert)
+                var levelConfig = _levelSelectionService.CurrentLevel;
+                var points = levelConfig != null
+                    ? levelConfig.GetPointsForDessert(dessert.DessertType, DefaultPointsPerDessert)
                     : DefaultPointsPerDessert;
                 totalPoints += points;
             }
@@ -210,7 +211,7 @@ namespace Project.Scripts.GameManager
 
         private DessertController GetRandomDessertPrefab()
         {
-            var dessertPrefabs = _levelConfig?.DessertPool?.DessertPrefabs;
+            var dessertPrefabs = _levelSelectionService.CurrentLevel?.DessertPool?.DessertPrefabs;
             if (dessertPrefabs == null || dessertPrefabs.Count == 0)
                 return null;
 
@@ -232,7 +233,7 @@ namespace Project.Scripts.GameManager
 
         private DessertController GetRandomDessertPrefabByType(EDessertType dessertType)
         {
-            var dessertPrefabs = _levelConfig?.DessertPool?.DessertPrefabs;
+            var dessertPrefabs = _levelSelectionService.CurrentLevel?.DessertPool?.DessertPrefabs;
             if (dessertPrefabs == null || dessertPrefabs.Count == 0)
                 return null;
 
