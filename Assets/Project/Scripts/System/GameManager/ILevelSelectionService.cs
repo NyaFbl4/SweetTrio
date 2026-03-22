@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Project.Scripts.GameManager
 {
@@ -8,5 +8,11 @@ namespace Project.Scripts.GameManager
         LevelConfig CurrentLevel { get; }
         bool HasAnyLevel { get; }
         void SelectLevel(LevelConfig levelConfig);
+    }
+
+    public interface ILevelProgressService
+    {
+        int GetBestStars(LevelConfig levelConfig);
+        void SaveBestStars(LevelConfig levelConfig, int starsCount);
     }
 }

@@ -9,8 +9,8 @@ namespace Project.Scripts.UI.EndGame
 {
     public class EndGamePresenter : LayoutPresenterBase<IEndGameView>, IEndGamePresenter, IGameStartListener
     {
-        private const string WinMessage = "Победа";
-        private const string LoseMessage = "Поражение";
+        private const string PassedTitle = "Победа";
+        private const string FailedTitle = "Поражение";
 
         [Inject] private readonly IGameManagerService _gameManagerService;
         [Inject] private readonly IPublisher<ShowPopupDto> _showPopUpPublisher;
@@ -30,18 +30,19 @@ namespace Project.Scripts.UI.EndGame
             base.Dispose();
         }
 
-        public void ShowWin(int score)
+        public void ShowResult(bool isPassed, int score, int starsCount, int totalStarsCount, string completionText)
         {
-            _layoutView.SetTitle(WinMessage);
+            _layoutView.SetTitle(isPassed ? PassedTitle : FailedTitle);
             _layoutView.SetScoreText($"Очки: {score}");
             _layoutView.SetScoreVisible(true);
-            _showPopUpPublisher.Publish(new ShowPopupDto { TargetPopUpType = typeof(IEndGamePresenter) });
-        }
 
-        public void ShowLose()
-        {
-            _layoutView.SetTitle(LoseMessage);
-            _layoutView.SetScoreVisible(false);
+            // Current EndGame design: title + score + stars + menu button.
+            _layoutView.SetCompletionText(string.Empty);
+            _layoutView.SetCompletionVisible(false);
+
+            _layoutView.SetStarsVisible(true);
+            _layoutView.SetStars(starsCount, totalStarsCount > 0 ? totalStarsCount : LevelConfig.TotalStarsCount);
+
             _showPopUpPublisher.Publish(new ShowPopupDto { TargetPopUpType = typeof(IEndGamePresenter) });
         }
 

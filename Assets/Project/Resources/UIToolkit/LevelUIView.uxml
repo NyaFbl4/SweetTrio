@@ -114,6 +114,34 @@
     </ui:VisualElement>
 
     <ui:VisualElement
+        name="menu-container"
+        style="
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            align-items: center;
+            justify-content: center;
+        "
+    >
+        <ui:Button
+            name="gameplay-menu-button"
+            text="В меню"
+            style="
+                width: 160px;
+                height: 70px;
+                border-top-left-radius: 14px;
+                border-top-right-radius: 14px;
+                border-bottom-left-radius: 14px;
+                border-bottom-right-radius: 14px;
+                -unity-font-style: bold;
+                font-size: 24px;
+                color: rgba(0, 0, 0, 1);
+                background-color: rgba(255, 255, 255, 0.76);
+            "
+        />
+    </ui:VisualElement>
+
+    <ui:VisualElement
         name="shuffle-container"
         style="
             position: absolute;

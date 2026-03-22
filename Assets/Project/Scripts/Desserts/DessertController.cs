@@ -58,7 +58,7 @@ namespace Assets.Project.Scripts.Desserts
 
         private void OnMouseDown()
         {
-            Debug.Log("Figure clicked: " + _dessertType);
+            // Debug.Log("Figure clicked: " + _dessertType);
             if (!_isInteractable)
                 return;
 

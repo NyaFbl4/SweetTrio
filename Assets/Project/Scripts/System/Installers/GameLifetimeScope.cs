@@ -40,6 +40,7 @@ namespace Project.Scripts.System.Installers
             builder.RegisterMessagePipe();
             builder.RegisterEntryPoint<UIController>().As<IUIController>();
             builder.RegisterEntryPoint<LevelSelectionService>(Lifetime.Singleton).As<ILevelSelectionService>();
+            builder.Register<LevelProgressService>(Lifetime.Singleton).As<ILevelProgressService>();
             builder.RegisterEntryPoint<GameManagerService>().As<IGameManagerService>();
             builder.RegisterEntryPoint<GameBootstrap>(Lifetime.Singleton).As<IGameBootstrapControl>();
             builder.RegisterEntryPoint<GameRulesManager>(Lifetime.Singleton);

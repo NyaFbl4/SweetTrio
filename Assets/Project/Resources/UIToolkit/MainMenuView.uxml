@@ -13,63 +13,120 @@
             right: 0;
             top: 0;
             bottom: 0;
-            background-color: rgba(255, 255, 255, 1);
+            background-color: rgba(43, 71, 146, 1);
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            padding-top: 18px;
+            padding-bottom: 18px;
         "
     >
         <ui:VisualElement
             name="main-menu-center-column"
             style="
-                width: 92%;
-                max-width: 860px;
-                min-height: 420px;
+                width: 96%;
+                max-width: 900px;
                 align-items: center;
-                justify-content: center;
-                padding-left: 24px;
-                padding-right: 24px;
-                padding-top: 28px;
-                padding-bottom: 28px;
+                justify-content: flex-start;
             "
         >
-            <ui:Label
-                name="main-menu-title-label"
-                text="Sweet Trio"
+            <ui:VisualElement
+                name="main-menu-banner-row"
                 style="
-                    unity-text-align: middle-center;
-                    -unity-font-style: bold;
-                    font-size: 66px;
-                    color: rgba(18, 24, 34, 1);
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    margin-bottom: 12px;
                 "
+            >
+                <ui:VisualElement
+                    name="main-menu-left-decor"
+                    style="
+                        width: 56px;
+                        height: 56px;
+                        border-top-left-radius: 28px;
+                        border-top-right-radius: 28px;
+                        border-bottom-left-radius: 28px;
+                        border-bottom-right-radius: 28px;
+                        background-color: rgba(255, 184, 64, 0.98);
+                        margin-right: 10px;
+                    "
+                />
+                <ui:VisualElement
+                    name="main-menu-banner"
+                    style="
+                        width: 410px;
+                        height: 118px;
+                        background-color: rgba(229, 73, 92, 1);
+                        border-top-left-radius: 24px;
+                        border-top-right-radius: 24px;
+                        border-bottom-left-radius: 24px;
+                        border-bottom-right-radius: 24px;
+                        border-left-width: 4px;
+                        border-right-width: 4px;
+                        border-top-width: 4px;
+                        border-bottom-width: 4px;
+                        border-left-color: rgba(255, 194, 103, 1);
+                        border-right-color: rgba(255, 194, 103, 1);
+                        border-top-color: rgba(255, 194, 103, 1);
+                        border-bottom-color: rgba(255, 194, 103, 1);
+                        align-items: center;
+                        justify-content: center;
+                    "
+                >
+                    <ui:Label
+                        name="main-menu-title-label"
+                        text="LEVEL"
+                        style="
+                            unity-text-align: middle-center;
+                            -unity-font-style: bold;
+                            font-size: 46px;
+                            color: rgba(255, 248, 234, 1);
+                            margin-top: -6px;
+                        "
+                    />
+                    <ui:Label
+                        name="main-menu-subtitle-label"
+                        text="SELECT"
+                        style="
+                            unity-text-align: middle-center;
+                            -unity-font-style: bold;
+                            font-size: 46px;
+                            color: rgba(255, 248, 234, 1);
+                            margin-top: -14px;
+                        "
+                    />
+                </ui:VisualElement>
+                <ui:VisualElement
+                    name="main-menu-right-decor"
+                    style="
+                        width: 56px;
+                        height: 56px;
+                        border-top-left-radius: 28px;
+                        border-top-right-radius: 28px;
+                        border-bottom-left-radius: 28px;
+                        border-bottom-right-radius: 28px;
+                        background-color: rgba(148, 226, 93, 1);
+                        margin-left: 10px;
+                    "
+                />
+            </ui:VisualElement>
+
+            <ui:Button
+                name="main-menu-choose-level-button"
+                text="Выбрать уровень"
+                style="display: none;"
             />
 
             <ui:Label
                 name="main-menu-selected-level-label"
                 text="Текущий уровень: -"
                 style="
-                    margin-top: 14px;
+                    display: none;
+                    margin-bottom: 8px;
                     unity-text-align: middle-center;
                     -unity-font-style: bold;
-                    font-size: 24px;
-                    color: rgba(56, 68, 86, 1);
-                "
-            />
-
-            <ui:Button
-                name="main-menu-choose-level-button"
-                text="Выбрать уровень"
-                style="
-                    margin-top: 22px;
-                    width: 320px;
-                    height: 72px;
-                    -unity-font-style: bold;
-                    font-size: 26px;
-                    color: rgba(255, 255, 255, 1);
-                    background-color: rgba(33, 93, 196, 0.98);
-                    border-top-left-radius: 14px;
-                    border-top-right-radius: 14px;
-                    border-bottom-left-radius: 14px;
-                    border-bottom-right-radius: 14px;
+                    font-size: 20px;
+                    color: rgba(235, 240, 255, 1);
                 "
             />
 
@@ -78,58 +135,37 @@
                 style="
                     width: 100%;
                     max-width: 760px;
-                    margin-top: 20px;
-                    background-color: rgba(247, 249, 253, 1);
-                    border-top-left-radius: 16px;
-                    border-top-right-radius: 16px;
-                    border-bottom-left-radius: 16px;
-                    border-bottom-right-radius: 16px;
-                    border-left-width: 1px;
-                    border-right-width: 1px;
-                    border-top-width: 1px;
-                    border-bottom-width: 1px;
-                    border-left-color: rgba(207, 216, 230, 1);
-                    border-right-color: rgba(207, 216, 230, 1);
-                    border-top-color: rgba(207, 216, 230, 1);
-                    border-bottom-color: rgba(207, 216, 230, 1);
-                    padding-top: 14px;
-                    padding-bottom: 14px;
-                    padding-left: 14px;
-                    padding-right: 14px;
-                    display: none;
+                    background-color: rgba(44, 79, 157, 0.62);
+                    border-top-left-radius: 18px;
+                    border-top-right-radius: 18px;
+                    border-bottom-left-radius: 18px;
+                    border-bottom-right-radius: 18px;
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    display: flex;
                     flex-direction: column;
-                    max-height: 420px;
+                    max-height: 560px;
                 "
             >
-                <ui:Label
-                    name="main-menu-levels-title-label"
-                    text="Уровни"
-                    style="
-                        unity-text-align: middle-center;
-                        -unity-font-style: bold;
-                        font-size: 32px;
-                        color: rgba(20, 28, 40, 1);
-                    "
-                />
-
                 <ui:Label
                     name="main-menu-empty-levels-label"
                     text="Добавьте конфиги уровней в каталог уровней"
                     style="
-                        margin-top: 10px;
+                        margin-top: 6px;
                         unity-text-align: middle-center;
-                        font-size: 18px;
-                        color: rgba(84, 92, 106, 1);
+                        font-size: 17px;
+                        color: rgba(232, 238, 255, 1);
                         display: none;
                     "
                 />
-
                 <ui:ScrollView
                     name="main-menu-levels-list"
                     style="
-                        margin-top: 10px;
+                        margin-top: 2px;
                         flex-grow: 1;
-                        min-height: 180px;
+                        min-height: 240px;
                     "
                 />
             </ui:VisualElement>

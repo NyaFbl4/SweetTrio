@@ -21,3 +21,7 @@ MonoBehaviour:
   _roundDurationSeconds: 90
   _actionBarOverflowPenaltySeconds: 12
   _dessertPointsConfig: {fileID: 11400000, guid: 30c4fb9b321f433883b7180c0a97516c, type: 2}
+  _oneStarScore: 900
+  _twoStarsScore: 2100
+  _threeStarsScore: 3600
+

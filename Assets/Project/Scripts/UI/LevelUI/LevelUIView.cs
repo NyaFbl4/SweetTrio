@@ -12,6 +12,7 @@ namespace Project.Scripts.UI.LevelUI
         private const string CountdownLabelName = "timer-countdown-label";
         private const string FillName = "timer-progress-fill";
         private const string ShuffleButtonName = "shuffle-button";
+        private const string ExitToMenuButtonName = "gameplay-menu-button";
         private const string BonusDessertImageName = "bonus-dessert-image";
         private const string BonusMultiplierLabelName = "bonus-multiplier-label";
 
@@ -22,8 +23,10 @@ namespace Project.Scripts.UI.LevelUI
         private VisualElement _fillElement;
         private VisualElement _bonusDessertImage;
         private Button _shuffleButton;
+        private Button _exitToMenuButton;
 
         public event Action ShuffleButtonClicked;
+        public event Action ExitToMenuClicked;
 
         public override void Awake()
         {
@@ -35,6 +38,7 @@ namespace Project.Scripts.UI.LevelUI
             _fillElement = _root.Q<VisualElement>(FillName);
             _bonusDessertImage = _root.Q<VisualElement>(BonusDessertImageName);
             _shuffleButton = _root.Q<Button>(ShuffleButtonName);
+            _exitToMenuButton = _root.Q<Button>(ExitToMenuButtonName);
 
             if (_counterLabel == null)
             {
@@ -74,6 +78,15 @@ namespace Project.Scripts.UI.LevelUI
             {
                 _shuffleButton.clicked += OnShuffleButtonClicked;
             }
+
+            if (_exitToMenuButton == null)
+            {
+                Debug.LogError($"LevelUIView: Button '{ExitToMenuButtonName}' not found in UXML.");
+            }
+            else
+            {
+                _exitToMenuButton.clicked += OnExitToMenuButtonClicked;
+            }
         }
 
         private void OnDestroy()
@@ -81,6 +94,11 @@ namespace Project.Scripts.UI.LevelUI
             if (_shuffleButton != null)
             {
                 _shuffleButton.clicked -= OnShuffleButtonClicked;
+            }
+
+            if (_exitToMenuButton != null)
+            {
+                _exitToMenuButton.clicked -= OnExitToMenuButtonClicked;
             }
         }
 
@@ -147,6 +165,11 @@ namespace Project.Scripts.UI.LevelUI
         private void OnShuffleButtonClicked()
         {
             ShuffleButtonClicked?.Invoke();
+        }
+
+        private void OnExitToMenuButtonClicked()
+        {
+            ExitToMenuClicked?.Invoke();
         }
     }
 }

@@ -126,6 +126,11 @@ namespace Assets.Project.Scripts.System.DessertCreator
                 _preparedDessertsQueue.Enqueue(_preparedDesserts[i]);
             }
 
+            if (_preparedDessertsQueue.Count == 0)
+            {
+                Debug.LogWarning("DessertSpawner.PrepareDeck(): no desserts were prepared. Check DessertPool and level settings.");
+            }
+
             NotifyCountsChanged();
         }
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -41,8 +41,6 @@ namespace Project.Scripts.GameManager
                 _availableLevels.Add(_fallbackLevelConfig);
             }
 
-            _availableLevels.Sort(CompareLevels);
-
             if (_availableLevels.Count == 0)
             {
                 CurrentLevel = null;
@@ -77,23 +75,39 @@ namespace Project.Scripts.GameManager
             CurrentLevel = levelConfig;
         }
 
-        private static int CompareLevels(LevelConfig left, LevelConfig right)
+    }
+
+    public class LevelProgressService : ILevelProgressService
+    {
+        private const string StarsKeyPrefix = "level_stars_";
+
+        public int GetBestStars(LevelConfig levelConfig)
         {
-            if (left == null && right == null)
+            if (levelConfig == null)
                 return 0;
 
-            if (left == null)
-                return 1;
+            var value = PlayerPrefs.GetInt(GetLevelStarsKey(levelConfig), 0);
+            return Mathf.Clamp(value, 0, LevelConfig.TotalStarsCount);
+        }
 
-            if (right == null)
-                return -1;
+        public void SaveBestStars(LevelConfig levelConfig, int starsCount)
+        {
+            if (levelConfig == null)
+                return;
 
-            var orderCompare = left.MenuOrder.CompareTo(right.MenuOrder);
-            if (orderCompare != 0)
-                return orderCompare;
+            var clampedStars = Mathf.Clamp(starsCount, 0, LevelConfig.TotalStarsCount);
+            var key = GetLevelStarsKey(levelConfig);
+            var currentBest = PlayerPrefs.GetInt(key, 0);
+            if (clampedStars <= currentBest)
+                return;
 
-            return string.Compare(left.LevelTitle, right.LevelTitle, global::System.StringComparison.Ordinal);
+            PlayerPrefs.SetInt(key, clampedStars);
+            PlayerPrefs.Save();
+        }
+
+        private static string GetLevelStarsKey(LevelConfig levelConfig)
+        {
+            return $"{StarsKeyPrefix}{levelConfig.name}";
         }
     }
 }
-

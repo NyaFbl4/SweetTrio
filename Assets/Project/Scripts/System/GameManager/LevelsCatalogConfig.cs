@@ -59,11 +59,7 @@ namespace Project.Scripts.GameManager
                 if (right == null)
                     return -1;
 
-                var orderCompare = left.MenuOrder.CompareTo(right.MenuOrder);
-                if (orderCompare != 0)
-                    return orderCompare;
-
-                return string.Compare(left.LevelTitle, right.LevelTitle, global::System.StringComparison.Ordinal);
+                return string.Compare(left.name, right.name, global::System.StringComparison.Ordinal);
             });
 
             _levels = collectedLevels;

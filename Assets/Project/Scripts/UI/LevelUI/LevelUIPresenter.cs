@@ -2,6 +2,7 @@
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
+using Project.Scripts.UI.MainScreen;
 using UnityEngine;
 using VContainer;
 
@@ -9,6 +10,7 @@ namespace Project.Scripts.UI.LevelUI
 {
     public class LevelUIPresenter : LayoutPresenterBase<ILevelUIView>, ILevelUIPresenter, IGameStartListener, IGameFinishListener
     {
+        [Inject] private readonly IGameManagerService _gameManagerService;
         [Inject] private readonly IPublisher<ShuffleFieldCommandDto> _shuffleFieldPublisher;
         [Inject] private readonly IPublisher<ShowPopupDto> _showPopUpPublisher;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
@@ -18,11 +20,13 @@ namespace Project.Scripts.UI.LevelUI
             base.Initialize();
             IGameListener.Register(this);
             _layoutView.ShuffleButtonClicked += HandleShuffleButtonClicked;
+            _layoutView.ExitToMenuClicked += HandleExitToMenuClicked;
         }
 
         public override void Dispose()
         {
             _layoutView.ShuffleButtonClicked -= HandleShuffleButtonClicked;
+            _layoutView.ExitToMenuClicked -= HandleExitToMenuClicked;
             IGameListener.Unregister(this);
             base.Dispose();
         }
@@ -81,6 +85,16 @@ namespace Project.Scripts.UI.LevelUI
         private void HandleShuffleButtonClicked()
         {
             _shuffleFieldPublisher.Publish(new ShuffleFieldCommandDto());
+        }
+
+        private void HandleExitToMenuClicked()
+        {
+            _gameManagerService.FinishGame();
+
+            _showPopUpPublisher.Publish(new ShowPopupDto
+            {
+                TargetPopUpType = typeof(IMainMenuPresenter)
+            });
         }
     }
 }

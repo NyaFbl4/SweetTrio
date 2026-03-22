@@ -1,4 +1,4 @@
-ï»¿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <ui:UXML
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ui="UnityEngine.UIElements"
@@ -57,9 +57,29 @@
                     color: rgba(25, 25, 25, 1);
                 "
             />
+            <ui:Label
+                name="end-game-completion-label"
+                text=""
+                style="
+                    margin-top: 8px;
+                    unity-text-align: middle-center;
+                    font-size: 20px;
+                    color: rgba(35, 35, 35, 1);
+                "
+            />
+            <ui:VisualElement
+                name="end-game-stars-container"
+                style="
+                    margin-top: 16px;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 28px;
+                "
+            />
             <ui:Button
                 name="end-game-menu-button"
-                text="Ð’ Ð¼ÐµÐ½ÑŽ"
+                text="Â ìåíþ"
                 style="
                     margin-top: 20px;
                     width: 180px;

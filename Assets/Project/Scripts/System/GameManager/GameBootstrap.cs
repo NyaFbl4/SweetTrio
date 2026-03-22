@@ -54,6 +54,12 @@ namespace Project.Scripts.GameManager
 
             if (_isInitialSpawnInProgress)
             {
+                if (_dessertSpawner.RemainingDessertsCount <= 0)
+                {
+                    _isInitialSpawnInProgress = false;
+                    return;
+                }
+
                 if (_dessertSpawner.FieldDessertsCount >= _gameConfig.MaxDessertsOnField)
                 {
                     _isInitialSpawnInProgress = false;
@@ -72,6 +78,13 @@ namespace Project.Scripts.GameManager
 
             if (_spawnRequestQueue.Count == 0)
                 return;
+
+            if (_dessertSpawner.RemainingDessertsCount <= 0)
+            {
+                _spawnRequestQueue.Clear();
+                _isAutoSpawnActive = false;
+                return;
+            }
 
             if (_dessertSpawner.FieldDessertsCount >= _gameConfig.MaxDessertsOnField)
                 return;
@@ -100,8 +113,8 @@ namespace Project.Scripts.GameManager
             _spawnRequestQueue.Clear();
 
             _spawnTimer = 0f;
-            _isAutoSpawnActive = true;
-            _isInitialSpawnInProgress = true;
+            _isAutoSpawnActive = _dessertSpawner.RemainingDessertsCount > 0;
+            _isInitialSpawnInProgress = _isAutoSpawnActive;
         }
 
         public void OnFinishGame()

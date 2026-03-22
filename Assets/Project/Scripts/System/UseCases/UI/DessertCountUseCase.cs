@@ -40,7 +40,7 @@ namespace Project.Scripts.UI.UseCases
 
         public void Refresh()
         {
-            _value = _dessertSpawner?.TotalDessertsCount ?? 0;
+            _value = _dessertSpawner?.FieldDessertsCount ?? 0;
             NotifyPresenter();
         }
 
@@ -52,7 +52,7 @@ namespace Project.Scripts.UI.UseCases
 
         private void HandleCountsChanged(DessertCountsDto counts)
         {
-            _value = counts.TotalDessertsCount;
+            _value = counts.FieldDessertsCount;
             NotifyPresenter();
         }
 
@@ -62,3 +62,4 @@ namespace Project.Scripts.UI.UseCases
         }
     }
 }
+

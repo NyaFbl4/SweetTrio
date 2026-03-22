@@ -1,3 +1,4 @@
+п»їusing System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
 using Project.Scripts.GameManager;
@@ -9,51 +10,35 @@ namespace Project.Scripts.UI.MainScreen
 {
     public class MainMenuPresenter : LayoutPresenterBase<IMainMenuView>, IMainMenuPresenter
     {
-        private const string ChooseLevelButtonText = "Выбрать уровень";
-        private const string HideLevelsButtonText = "Скрыть уровни";
-        private const string LevelsNotConfiguredText = "Нет уровней";
+        private const string LevelsNotConfiguredText = "РќРµС‚ СѓСЂРѕРІРЅРµР№";
 
         [Inject] private readonly IGameManagerService _gameManagerService;
         [Inject] private readonly ILevelSelectionService _levelSelectionService;
+        [Inject] private readonly ILevelProgressService _levelProgressService;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
-
-        private bool _isLevelsTabVisible;
 
         public override void Initialize()
         {
             base.Initialize();
 
-            _layoutView.ChooseLevelClicked += HandleChooseLevelClicked;
             _layoutView.LevelSelected += HandleLevelSelected;
 
             RefreshLevels();
-            _isLevelsTabVisible = false;
-            ApplyLevelsTabState();
+            _layoutView.SetLevelsTabVisible(true);
             _layoutView.Show();
         }
 
         public override async UniTask ActivateAsync()
         {
             RefreshLevels();
-            _isLevelsTabVisible = false;
-            ApplyLevelsTabState();
+            _layoutView.SetLevelsTabVisible(true);
             await base.ActivateAsync();
         }
 
         public override void Dispose()
         {
-            _layoutView.ChooseLevelClicked -= HandleChooseLevelClicked;
             _layoutView.LevelSelected -= HandleLevelSelected;
             base.Dispose();
-        }
-
-        private void HandleChooseLevelClicked()
-        {
-            if (!_levelSelectionService.HasAnyLevel)
-                return;
-
-            _isLevelsTabVisible = !_isLevelsTabVisible;
-            ApplyLevelsTabState();
         }
 
         private void HandleLevelSelected(LevelConfig levelConfig)
@@ -63,9 +48,6 @@ namespace Project.Scripts.UI.MainScreen
                 return;
 
             _layoutView.SetSelectedLevel(_levelSelectionService.CurrentLevel);
-
-            _isLevelsTabVisible = false;
-            ApplyLevelsTabState();
 
             _hidePopUpPublisher.Publish(new HidePopupDto
             {
@@ -79,22 +61,25 @@ namespace Project.Scripts.UI.MainScreen
         {
             var levels = _levelSelectionService.AvailableLevels;
             var selectedLevel = _levelSelectionService.CurrentLevel;
-            _layoutView.SetLevels(levels, selectedLevel);
+            var savedStars = BuildSavedStars(levels);
+
+            _layoutView.SetLevels(levels, selectedLevel, savedStars);
             _layoutView.SetSelectedLevel(selectedLevel);
+            _layoutView.SetChooseLevelButtonText(LevelsNotConfiguredText);
         }
 
-        private void ApplyLevelsTabState()
+        private IReadOnlyList<int> BuildSavedStars(IReadOnlyList<LevelConfig> levels)
         {
-            _layoutView.SetLevelsTabVisible(_isLevelsTabVisible);
+            if (levels == null || levels.Count == 0)
+                return new List<int>();
 
-            if (_levelSelectionService.HasAnyLevel)
+            var result = new List<int>(levels.Count);
+            for (var i = 0; i < levels.Count; i++)
             {
-                _layoutView.SetChooseLevelButtonText(_isLevelsTabVisible ? HideLevelsButtonText : ChooseLevelButtonText);
+                result.Add(_levelProgressService.GetBestStars(levels[i]));
             }
-            else
-            {
-                _layoutView.SetChooseLevelButtonText(LevelsNotConfiguredText);
-            }
+
+            return result;
         }
     }
 }
