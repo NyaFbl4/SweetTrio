@@ -1,0 +1,95 @@
+{
+  "defaultLanguage": "ru",
+  "entries": [
+    {
+      "key": "main_menu.title",
+      "ru": "ВЫБОР УРОВНЯ",
+      "en": "LEVEL SELECT"
+    },
+    {
+      "key": "main_menu.current_level_format",
+      "ru": "Текущий уровень: {0}",
+      "en": "Current level: {0}"
+    },
+    {
+      "key": "main_menu.choose_level",
+      "ru": "Выбрать уровень",
+      "en": "Choose level"
+    },
+    {
+      "key": "main_menu.empty_levels",
+      "ru": "Добавьте конфиги уровней в каталог уровней",
+      "en": "Add level configs to level catalog"
+    },
+    {
+      "key": "main_menu.no_levels",
+      "ru": "Нет уровней",
+      "en": "No levels"
+    },
+    {
+      "key": "end_game.title_win",
+      "ru": "Победа",
+      "en": "Victory"
+    },
+    {
+      "key": "end_game.title_lose",
+      "ru": "Поражение",
+      "en": "Defeat"
+    },
+    {
+      "key": "end_game.score_format",
+      "ru": "Очки: {0}",
+      "en": "Score: {0}"
+    },
+    {
+      "key": "end_game.menu_button",
+      "ru": "В меню",
+      "en": "Menu"
+    },
+    {
+      "key": "hud.score_format",
+      "ru": "Очки: {0}",
+      "en": "Score: {0}"
+    },
+    {
+      "key": "hud.desserts_format",
+      "ru": "Десерты: {0}",
+      "en": "Desserts: {0}"
+    },
+    {
+      "key": "hud.shuffle_button",
+      "ru": "Перемешать",
+      "en": "Shuffle"
+    },
+    {
+      "key": "hud.menu_button",
+      "ru": "В меню",
+      "en": "Menu"
+    },
+    {
+      "key": "game_status.not_enough_to_pass_format",
+      "ru": "Не хватило {0} очков до прохождения",
+      "en": "Need {0} more points to pass"
+    },
+    {
+      "key": "game_status.level_not_passed",
+      "ru": "Уровень не пройден",
+      "en": "Level failed"
+    },
+    {
+      "key": "game_status.max_result_format",
+      "ru": "Максимальный результат: {0}/{1} звезд",
+      "en": "Best result: {0}/{1} stars"
+    },
+    {
+      "key": "game_status.passed_stars_format",
+      "ru": "Пройдено на {0}/{1} звезд",
+      "en": "Completed with {0}/{1} stars"
+    },
+    {
+      "key": "game_status.to_next_star_format",
+      "ru": "Пройдено на {0}/{1}. До {2}-й звезды: {3}",
+      "en": "Completed with {0}/{1}. To star {2}: {3}"
+    }
+  ]
+}

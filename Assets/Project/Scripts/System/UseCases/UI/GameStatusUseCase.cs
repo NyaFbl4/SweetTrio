@@ -1,6 +1,7 @@
 ﻿using System;
 using MessagePipe;
 using Project.Scripts.GameManager;
+using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI.Dtos;
 using Project.Scripts.UI.EndGame;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace Project.Scripts.UI.UseCases
         [Inject] private readonly ITimerPointsUseCase _timerPointsUseCase;
         [Inject] private readonly ILevelSelectionService _levelSelectionService;
         [Inject] private readonly ILevelProgressService _levelProgressService;
+        [Inject] private readonly ILocalizationService _localizationService;
 
         private IDisposable _subscription = DisposableBag.Empty;
 
@@ -70,27 +72,45 @@ namespace Project.Scripts.UI.UseCases
             _gameManagerService.FinishGame();
         }
 
-        private static string BuildCompletionText(LevelConfig levelConfig, int score, int starsCount, int totalStarsCount)
+        private string BuildCompletionText(LevelConfig levelConfig, int score, int starsCount, int totalStarsCount)
         {
             if (starsCount <= 0)
             {
                 var passScore = ResolveThreshold(levelConfig, 1);
                 var missing = Mathf.Max(0, passScore - score);
                 return missing > 0
-                    ? $"Не хватило {missing} очков до прохождения"
-                    : "Уровень не пройден";
+                    ? FormatLocalizedText(LocalizationKeys.GameStatusNotEnoughToPassFormat, "Need {0} more points to pass", missing)
+                    : GetLocalizedText(LocalizationKeys.GameStatusLevelNotPassed, "Level failed");
             }
 
             if (starsCount >= totalStarsCount)
-                return $"Максимальный результат: {totalStarsCount}/{totalStarsCount} звезд";
+            {
+                return FormatLocalizedText(
+                    LocalizationKeys.GameStatusMaxResultFormat,
+                    "Best result: {0}/{1} stars",
+                    totalStarsCount,
+                    totalStarsCount);
+            }
 
             var nextStarNumber = starsCount + 1;
             var nextStarScore = ResolveNextStarScore(levelConfig, score);
             if (nextStarScore <= score)
-                return $"Пройдено на {starsCount}/{totalStarsCount} звезд";
+            {
+                return FormatLocalizedText(
+                    LocalizationKeys.GameStatusPassedStarsFormat,
+                    "Completed with {0}/{1} stars",
+                    starsCount,
+                    totalStarsCount);
+            }
 
             var missingForNextStar = nextStarScore - score;
-            return $"Пройдено на {starsCount}/{totalStarsCount}. До {nextStarNumber}-й звезды: {missingForNextStar}";
+            return FormatLocalizedText(
+                LocalizationKeys.GameStatusToNextStarFormat,
+                "Completed with {0}/{1}. To star {2}: {3}",
+                starsCount,
+                totalStarsCount,
+                nextStarNumber,
+                missingForNextStar);
         }
 
         private static int ResolveStarsCount(LevelConfig levelConfig, int score)
@@ -150,7 +170,31 @@ namespace Project.Scripts.UI.UseCases
                 _ => FallbackOneStarScore
             };
         }
+
+        private string GetLocalizedText(string key, string fallback)
+        {
+            if (_localizationService == null)
+                return fallback;
+
+            var text = _localizationService.Get(key);
+            return string.IsNullOrWhiteSpace(text) ? fallback : text;
+        }
+
+        private string FormatLocalizedText(string key, string fallbackFormat, params object[] args)
+        {
+            if (_localizationService != null)
+            {
+                return _localizationService.Format(key, args);
+            }
+
+            try
+            {
+                return string.Format(fallbackFormat, args);
+            }
+            catch (FormatException)
+            {
+                return fallbackFormat;
+            }
+        }
     }
 }
-
-

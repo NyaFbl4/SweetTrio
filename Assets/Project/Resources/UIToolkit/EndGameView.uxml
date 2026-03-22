@@ -79,7 +79,7 @@
             />
             <ui:Button
                 name="end-game-menu-button"
-                text="В меню"
+                text="Р’ РјРµРЅСЋ"
                 style="
                     margin-top: 20px;
                     width: 180px;

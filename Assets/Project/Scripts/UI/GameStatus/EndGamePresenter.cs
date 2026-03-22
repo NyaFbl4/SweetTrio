@@ -1,5 +1,6 @@
 ﻿using MessagePipe;
 using Project.Scripts.GameManager;
+using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
 using Project.Scripts.UI.MainScreen;
@@ -9,10 +10,8 @@ namespace Project.Scripts.UI.EndGame
 {
     public class EndGamePresenter : LayoutPresenterBase<IEndGameView>, IEndGamePresenter, IGameStartListener
     {
-        private const string PassedTitle = "Победа";
-        private const string FailedTitle = "Поражение";
-
         [Inject] private readonly IGameManagerService _gameManagerService;
+        [Inject] private readonly ILocalizationService _localizationService;
         [Inject] private readonly IPublisher<ShowPopupDto> _showPopUpPublisher;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
 
@@ -32,8 +31,17 @@ namespace Project.Scripts.UI.EndGame
 
         public void ShowResult(bool isPassed, int score, int starsCount, int totalStarsCount, string completionText)
         {
-            _layoutView.SetTitle(isPassed ? PassedTitle : FailedTitle);
-            _layoutView.SetScoreText($"Очки: {score}");
+            var titleKey = isPassed ? LocalizationKeys.EndGameTitleWin : LocalizationKeys.EndGameTitleLose;
+            var title = _localizationService != null
+                ? _localizationService.Get(titleKey)
+                : (isPassed ? "Victory" : "Defeat");
+
+            var scoreText = _localizationService != null
+                ? _localizationService.Format(LocalizationKeys.EndGameScoreFormat, score)
+                : $"Score: {score}";
+
+            _layoutView.SetTitle(title);
+            _layoutView.SetScoreText(scoreText);
             _layoutView.SetScoreVisible(true);
 
             // Current EndGame design: title + score + stars + menu button.

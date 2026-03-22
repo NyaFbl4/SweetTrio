@@ -1,84 +1,91 @@
 using System;
 using System.Collections.Generic;
 using Project.Scripts.GameManager;
+using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
 namespace Project.Scripts.UI.MainScreen
 {
     public class MainMenuView : LayoutViewBase, IMainMenuView
     {
-        private const string ChooseLevelButtonName = "main-menu-choose-level-button";
-        private const string LegacyStartButtonName = "main-menu-start-button";
-        private const string LevelsTabName = "main-menu-levels-tab";
-        private const string LevelsListName = "main-menu-levels-list";
-        private const string SelectedLevelLabelName = "main-menu-selected-level-label";
-        private const string EmptyLevelsLabelName = "main-menu-empty-levels-label";
-        private const string CenterColumnName = "main-menu-center-column";
+        private const int LevelsPerPage = 12;
+        private const int LevelsPerRow = 3;
 
-        private static readonly Color CardBackground = new(0.86f, 0.2f, 0.2f, 1f);
-        private static readonly Color CardSelectedBackground = new(0.93f, 0.29f, 0.25f, 1f);
-        private static readonly Color CardBorder = new(0.62f, 0.07f, 0.11f, 1f);
-        private static readonly Color StarEmptyFill = new(1f, 1f, 1f, 0f);
-        private static readonly Color StarEmptyBorder = new(1f, 1f, 1f, 1f);
-        private static readonly Color StarEarnedFill = new(1f, 0.87f, 0.24f, 1f);
-        private static readonly Color StarEarnedBorder = new(1f, 0.87f, 0.24f, 1f);
+        [Inject] private readonly ILocalizationService _localizationService;
 
-        private Button _chooseLevelButton;
+        private Button _paginationPrevButton;
+        private Button _paginationNextButton;
+        private VisualElement _overlay;
+        private VisualElement _banner;
         private VisualElement _levelsTab;
         private ScrollView _levelsList;
+        private Label _titleLabel;
         private Label _selectedLevelLabel;
         private Label _emptyLevelsLabel;
         private VisualElement _centerColumn;
+        private VisualElement _paginationIndicatorsContainer;
+
         private readonly List<Button> _levelButtons = new();
+        private readonly List<LevelEntry> _levels = new();
+
+        private VisualTreeAsset _levelCellTemplate;
 
         private LevelConfig _selectedLevel;
+        private int _currentPageIndex;
+        private int _totalPages = 1;
 
-        public event Action ChooseLevelClicked;
         public event Action<LevelConfig> LevelSelected;
 
         public override void Awake()
         {
             base.Awake();
 
-            _chooseLevelButton = _root.Q<Button>(ChooseLevelButtonName) ?? _root.Q<Button>(LegacyStartButtonName);
-            _levelsTab = _root.Q<VisualElement>(LevelsTabName);
-            _levelsList = _root.Q<ScrollView>(LevelsListName);
-            _selectedLevelLabel = _root.Q<Label>(SelectedLevelLabelName);
-            _emptyLevelsLabel = _root.Q<Label>(EmptyLevelsLabelName);
-            _centerColumn = _root.Q<VisualElement>(CenterColumnName);
+            _paginationPrevButton = _root.Q<Button>("main-menu-pagination-prev-button");
+            _paginationNextButton = _root.Q<Button>("main-menu-pagination-next-button");
+            _overlay = _root.Q<VisualElement>("main-menu-overlay");
+            _banner = _root.Q<VisualElement>("main-menu-banner");
+            _titleLabel = _root.Q<Label>("main-menu-title-label");
+            _levelsTab = _root.Q<VisualElement>("main-menu-levels-tab");
+            _levelsList = _root.Q<ScrollView>("main-menu-levels-list");
+            _selectedLevelLabel = _root.Q<Label>("main-menu-selected-level-label");
+            _emptyLevelsLabel = _root.Q<Label>("main-menu-empty-levels-label");
+            _centerColumn = _root.Q<VisualElement>("main-menu-center-column");
+            _paginationIndicatorsContainer = _root.Q<VisualElement>("main-menu-pagination-indicators");
 
             EnsureRequiredElements();
+            LoadTemplates();
 
-            if (_chooseLevelButton != null)
-            {
-                _chooseLevelButton.clicked += HandleChooseLevelClicked;
-            }
+            if (_paginationPrevButton != null)
+                _paginationPrevButton.clicked += HandlePaginationPrevClicked;
 
+            if (_paginationNextButton != null)
+                _paginationNextButton.clicked += HandlePaginationNextClicked;
+
+            ApplyTexts();
             SetLevelsTabVisible(true);
             SetSelectedLevel(null);
+            UpdatePaginationState();
         }
 
         private void OnDestroy()
         {
-            if (_chooseLevelButton != null)
-            {
-                _chooseLevelButton.clicked -= HandleChooseLevelClicked;
-            }
+            if (_paginationPrevButton != null)
+                _paginationPrevButton.clicked -= HandlePaginationPrevClicked;
+
+            if (_paginationNextButton != null)
+                _paginationNextButton.clicked -= HandlePaginationNextClicked;
 
             _levelButtons.Clear();
+            _levels.Clear();
         }
 
         public void SetLevels(IReadOnlyList<LevelConfig> levels, LevelConfig selectedLevel, IReadOnlyList<int> savedStars)
         {
-            if (_levelsList == null)
-                return;
+            _levels.Clear();
 
-            _levelsList.Clear();
-            _levelButtons.Clear();
-
-            var hasLevels = false;
             if (levels != null)
             {
                 for (var i = 0; i < levels.Count; i++)
@@ -87,26 +94,23 @@ namespace Project.Scripts.UI.MainScreen
                     if (levelConfig == null)
                         continue;
 
-                    hasLevels = true;
-                    var levelNumber = i + 1;
-                    var levelCopy = levelConfig;
-                    var earnedStars = 0;
+                    var stars = 0;
                     if (savedStars != null && i < savedStars.Count)
                     {
-                        earnedStars = Mathf.Clamp(savedStars[i], 0, LevelConfig.TotalStarsCount);
+                        stars = Mathf.Clamp(savedStars[i], 0, LevelConfig.TotalStarsCount);
                     }
 
-                    var levelButton = CreateLevelButton(levelCopy, levelNumber, earnedStars);
-                    _levelsList.Add(levelButton);
-                    _levelButtons.Add(levelButton);
+                    _levels.Add(new LevelEntry(levelConfig, i + 1, stars));
                 }
             }
 
-            if (_emptyLevelsLabel != null)
-            {
-                _emptyLevelsLabel.style.display = hasLevels ? DisplayStyle.None : DisplayStyle.Flex;
-            }
+            _totalPages = Mathf.Max(1, Mathf.CeilToInt(_levels.Count / (float)LevelsPerPage));
+            _currentPageIndex = ResolveInitialPageIndex(selectedLevel);
 
+            if (_emptyLevelsLabel != null)
+                _emptyLevelsLabel.style.display = _levels.Count > 0 ? DisplayStyle.None : DisplayStyle.Flex;
+
+            RenderCurrentPage();
             SetSelectedLevel(selectedLevel);
         }
 
@@ -118,138 +122,142 @@ namespace Project.Scripts.UI.MainScreen
             _levelsTab.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
-        public void SetChooseLevelButtonText(string text)
-        {
-            if (_chooseLevelButton == null)
-                return;
-
-            _chooseLevelButton.text = text;
-        }
-
         public void SetSelectedLevel(LevelConfig selectedLevel)
         {
             _selectedLevel = selectedLevel;
 
             if (_selectedLevelLabel != null)
             {
-                var title = _selectedLevel != null ? _selectedLevel.name : "";
-                _selectedLevelLabel.text = string.IsNullOrWhiteSpace(title) ? "" : $"Текущий уровень: {title}";
+                var title = _selectedLevel != null ? _selectedLevel.name : string.Empty;
+                _selectedLevelLabel.text = string.IsNullOrWhiteSpace(title)
+                    ? string.Empty
+                    : FormatLocalizedText(LocalizationKeys.MainMenuCurrentLevelFormat, "Current level: {0}", title);
             }
 
+            EnsureSelectedLevelPageVisible();
+            RefreshLevelButtonSelection();
+        }
+
+        private int ResolveInitialPageIndex(LevelConfig selectedLevel)
+        {
+            if (selectedLevel == null || _levels.Count == 0)
+                return 0;
+
+            for (var i = 0; i < _levels.Count; i++)
+            {
+                if (_levels[i].LevelConfig == selectedLevel)
+                    return i / LevelsPerPage;
+            }
+
+            return 0;
+        }
+
+        private void EnsureSelectedLevelPageVisible()
+        {
+            if (_selectedLevel == null || _levels.Count == 0)
+                return;
+
+            for (var i = 0; i < _levels.Count; i++)
+            {
+                if (_levels[i].LevelConfig != _selectedLevel)
+                    continue;
+
+                var requiredPage = i / LevelsPerPage;
+                if (requiredPage != _currentPageIndex)
+                {
+                    _currentPageIndex = requiredPage;
+                    RenderCurrentPage();
+                }
+
+                return;
+            }
+        }
+
+        private void RenderCurrentPage()
+        {
+            if (_levelsList == null)
+                return;
+
+            _currentPageIndex = Mathf.Clamp(_currentPageIndex, 0, Mathf.Max(0, _totalPages - 1));
+
+            _levelsList.Clear();
+            _levelButtons.Clear();
+
+            if (_levels.Count > 0)
+            {
+                var startIndex = _currentPageIndex * LevelsPerPage;
+                var endIndex = Mathf.Min(startIndex + LevelsPerPage, _levels.Count);
+                VisualElement currentRow = null;
+                var rowItemIndex = 0;
+
+                for (var i = startIndex; i < endIndex; i++)
+                {
+                    if (rowItemIndex % LevelsPerRow == 0)
+                    {
+                        currentRow = CreateLevelsRowContainer();
+                        _levelsList.Add(currentRow);
+                    }
+
+                    var entry = _levels[i];
+                    var levelButton = CreateLevelButton(entry.LevelConfig, entry.LevelNumber, entry.EarnedStarsCount);
+                    currentRow?.Add(levelButton);
+                    _levelButtons.Add(levelButton);
+                    rowItemIndex++;
+                }
+            }
+
+            UpdatePaginationState();
             RefreshLevelButtonSelection();
         }
 
         private Button CreateLevelButton(LevelConfig levelConfig, int levelNumber, int earnedStarsCount)
         {
-            var button = new Button(() => HandleLevelSelected(levelConfig))
-            {
-                text = string.Empty,
-                userData = levelConfig
-            };
+            var templateButton = CreateLevelButtonFromTemplate(levelConfig, levelNumber, earnedStarsCount);
+            return templateButton ?? CreateLevelButtonFallback(levelConfig, levelNumber);
+        }
 
-            button.style.width = 164f;
-            button.style.height = 164f;
-            button.style.marginTop = 8f;
-            button.style.marginBottom = 8f;
-            button.style.marginLeft = 8f;
-            button.style.marginRight = 8f;
-            button.style.paddingTop = 6f;
-            button.style.paddingBottom = 8f;
-            button.style.paddingLeft = 8f;
-            button.style.paddingRight = 8f;
-            button.style.flexDirection = FlexDirection.Column;
-            button.style.alignItems = Align.Center;
-            button.style.justifyContent = Justify.SpaceBetween;
-            button.style.backgroundColor = CardBackground;
-            button.style.borderTopLeftRadius = 20f;
-            button.style.borderTopRightRadius = 20f;
-            button.style.borderBottomLeftRadius = 20f;
-            button.style.borderBottomRightRadius = 20f;
-            button.style.borderLeftWidth = 3f;
-            button.style.borderRightWidth = 3f;
-            button.style.borderTopWidth = 3f;
-            button.style.borderBottomWidth = 3f;
-            button.style.borderLeftColor = CardBorder;
-            button.style.borderRightColor = CardBorder;
-            button.style.borderTopColor = CardBorder;
-            button.style.borderBottomColor = CardBorder;
+        private Button CreateLevelButtonFromTemplate(LevelConfig levelConfig, int levelNumber, int earnedStarsCount)
+        {
+            if (_levelCellTemplate == null)
+                return null;
 
-            var starsRow = new VisualElement();
-            starsRow.style.flexDirection = FlexDirection.Row;
-            starsRow.style.alignItems = Align.Center;
-            starsRow.style.justifyContent = Justify.Center;
-            starsRow.style.marginTop = 2f;
-            button.Add(starsRow);
-            for (var i = 0; i < 3; i++)
-            {
-                var starCircle = new VisualElement();
-                starCircle.style.width = 20f;
-                starCircle.style.height = 20f;
-                starCircle.style.marginLeft = 3f;
-                starCircle.style.marginRight = 3f;
-                starCircle.style.borderTopLeftRadius = 10f;
-                starCircle.style.borderTopRightRadius = 10f;
-                starCircle.style.borderBottomLeftRadius = 10f;
-                starCircle.style.borderBottomRightRadius = 10f;
-                starCircle.style.borderLeftWidth = 2f;
-                starCircle.style.borderRightWidth = 2f;
-                starCircle.style.borderTopWidth = 2f;
-                starCircle.style.borderBottomWidth = 2f;
-                starCircle.style.borderLeftColor = StarEmptyBorder;
-                starCircle.style.borderRightColor = StarEmptyBorder;
-                starCircle.style.borderTopColor = StarEmptyBorder;
-                starCircle.style.borderBottomColor = StarEmptyBorder;
-                var isEarned = i < earnedStarsCount;
-                starCircle.style.borderLeftColor = isEarned ? StarEarnedBorder : StarEmptyBorder;
-                starCircle.style.borderRightColor = isEarned ? StarEarnedBorder : StarEmptyBorder;
-                starCircle.style.borderTopColor = isEarned ? StarEarnedBorder : StarEmptyBorder;
-                starCircle.style.borderBottomColor = isEarned ? StarEarnedBorder : StarEmptyBorder;
-                starCircle.style.backgroundColor = isEarned ? StarEarnedFill : StarEmptyFill;
-                starsRow.Add(starCircle);
-            }
+            var templateRoot = _levelCellTemplate.CloneTree();
+            var button = templateRoot.Q<Button>("main-menu-level-cell-button") ?? templateRoot.Q<Button>();
+            if (button == null)
+                return null;
 
-            var plate = new VisualElement();
-            plate.style.width = 120f;
-            plate.style.height = 102f;
-            plate.style.backgroundColor = new Color(0.36f, 0.53f, 0.86f, 1f);
-            plate.style.borderTopLeftRadius = 16f;
-            plate.style.borderTopRightRadius = 16f;
-            plate.style.borderBottomLeftRadius = 16f;
-            plate.style.borderBottomRightRadius = 16f;
-            plate.style.borderLeftWidth = 3f;
-            plate.style.borderRightWidth = 3f;
-            plate.style.borderTopWidth = 3f;
-            plate.style.borderBottomWidth = 3f;
-            plate.style.borderLeftColor = new Color(0.26f, 0.36f, 0.68f, 1f);
-            plate.style.borderRightColor = new Color(0.26f, 0.36f, 0.68f, 1f);
-            plate.style.borderTopColor = new Color(0.26f, 0.36f, 0.68f, 1f);
-            plate.style.borderBottomColor = new Color(0.26f, 0.36f, 0.68f, 1f);
-            plate.style.alignItems = Align.Center;
-            plate.style.justifyContent = Justify.Center;
-            plate.style.marginBottom = 6f;
+            button.text = string.Empty;
+            button.userData = levelConfig;
+            button.clicked += () => HandleLevelSelected(levelConfig);
 
-            var numberCircle = new VisualElement();
-            numberCircle.style.width = 68f;
-            numberCircle.style.height = 68f;
-            numberCircle.style.borderTopLeftRadius = 34f;
-            numberCircle.style.borderTopRightRadius = 34f;
-            numberCircle.style.borderBottomLeftRadius = 34f;
-            numberCircle.style.borderBottomRightRadius = 34f;
-            numberCircle.style.backgroundColor = new Color(0.18f, 0.33f, 0.67f, 1f);
-            numberCircle.style.alignItems = Align.Center;
-            numberCircle.style.justifyContent = Justify.Center;
+            var starsStrip = button.Q<VisualElement>("main-menu-level-cell-stars");
+            ApplyStarsState(starsStrip, earnedStarsCount);
 
-            var levelNumberLabel = new Label(levelNumber.ToString());
-            levelNumberLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
-            levelNumberLabel.style.fontSize = 34f;
-            levelNumberLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            levelNumberLabel.style.color = Color.white;
-            numberCircle.Add(levelNumberLabel);
-
-            plate.Add(numberCircle);
-            button.Add(plate);
+            var levelNumberLabel = button.Q<Label>("main-menu-level-cell-number-label");
+            if (levelNumberLabel != null)
+                levelNumberLabel.text = levelNumber.ToString();
 
             return button;
+        }
+
+        private Button CreateLevelButtonFallback(LevelConfig levelConfig, int levelNumber)
+        {
+            return new Button(() => HandleLevelSelected(levelConfig))
+            {
+                userData = levelConfig,
+                text = levelNumber.ToString()
+            };
+        }
+
+        private static VisualElement CreateLevelsRowContainer()
+        {
+            var row = new VisualElement();
+            row.style.width = Length.Percent(100f);
+            row.style.flexDirection = FlexDirection.Row;
+            row.style.justifyContent = Justify.Center;
+            row.style.alignItems = Align.FlexStart;
+            row.style.marginBottom = 2f;
+            return row;
         }
 
         private void RefreshLevelButtonSelection()
@@ -260,13 +268,68 @@ namespace Project.Scripts.UI.MainScreen
                 var buttonLevel = levelButton.userData as LevelConfig;
                 var isSelected = buttonLevel != null && buttonLevel == _selectedLevel;
 
-                levelButton.style.backgroundColor = isSelected ? CardSelectedBackground : CardBackground;
-                levelButton.style.scale = isSelected ? new Scale(new Vector3(1.03f, 1.03f, 1f)) : new Scale(Vector3.one);
+                if (isSelected)
+                    levelButton.AddToClassList("main-menu-level-cell-button--selected");
+                else
+                    levelButton.RemoveFromClassList("main-menu-level-cell-button--selected");
+
+                levelButton.style.scale = isSelected ? new Scale(new Vector3(1.05f, 1.05f, 1f)) : new Scale(Vector3.one);
             }
         }
-        private void HandleChooseLevelClicked()
+
+        private static void ApplyStarsState(VisualElement starsStrip, int earnedStarsCount)
         {
-            ChooseLevelClicked?.Invoke();
+            if (starsStrip == null)
+                return;
+
+            for (var i = 0; i <= LevelConfig.TotalStarsCount; i++)
+            {
+                starsStrip.RemoveFromClassList("main-menu-level-cell-stars--" + i);
+            }
+
+            var clampedStars = Mathf.Clamp(earnedStarsCount, 0, LevelConfig.TotalStarsCount);
+            starsStrip.AddToClassList("main-menu-level-cell-stars--" + clampedStars);
+        }
+
+        private void UpdatePaginationState()
+        {
+            if (_paginationPrevButton != null)
+            {
+                var canGoPrev = _currentPageIndex > 0;
+                _paginationPrevButton.SetEnabled(canGoPrev);
+                _paginationPrevButton.style.opacity = canGoPrev ? 1f : 0.45f;
+            }
+
+            if (_paginationNextButton != null)
+            {
+                var canGoNext = _currentPageIndex < _totalPages - 1;
+                _paginationNextButton.SetEnabled(canGoNext);
+                _paginationNextButton.style.opacity = canGoNext ? 1f : 0.45f;
+            }
+
+            RebuildPageIndicators();
+        }
+
+        private void RebuildPageIndicators()
+        {
+            if (_paginationIndicatorsContainer == null)
+                return;
+
+            _paginationIndicatorsContainer.Clear();
+            for (var i = 0; i < _totalPages; i++)
+            {
+                var outerCircle = new VisualElement();
+                outerCircle.AddToClassList("main-menu-page-indicator-outer");
+
+                var innerCircle = new VisualElement();
+                innerCircle.AddToClassList("main-menu-page-indicator-inner");
+                innerCircle.AddToClassList(i == _currentPageIndex
+                    ? "main-menu-page-indicator-inner--active"
+                    : "main-menu-page-indicator-inner--inactive");
+
+                outerCircle.Add(innerCircle);
+                _paginationIndicatorsContainer.Add(outerCircle);
+            }
         }
 
         private void HandleLevelSelected(LevelConfig levelConfig)
@@ -274,83 +337,45 @@ namespace Project.Scripts.UI.MainScreen
             LevelSelected?.Invoke(levelConfig);
         }
 
+        private void HandlePaginationPrevClicked()
+        {
+            if (_currentPageIndex <= 0)
+                return;
+
+            _currentPageIndex--;
+            RenderCurrentPage();
+        }
+
+        private void HandlePaginationNextClicked()
+        {
+            if (_currentPageIndex >= _totalPages - 1)
+                return;
+
+            _currentPageIndex++;
+            RenderCurrentPage();
+        }
+
         private void EnsureRequiredElements()
         {
             if (_root == null)
                 return;
 
-            if (_centerColumn == null)
-            {
-                _centerColumn = new VisualElement
-                {
-                    name = CenterColumnName
-                };
-                _centerColumn.style.width = Length.Percent(96f);
-                _centerColumn.style.maxWidth = 900f;
-                _centerColumn.style.alignItems = Align.Center;
-                _centerColumn.style.justifyContent = Justify.FlexStart;
-                _root.Add(_centerColumn);
-            }
+            _overlay ??= _root.Q<VisualElement>("main-menu-overlay") ?? _root;
+            _banner ??= _root.Q<VisualElement>("main-menu-banner");
+            _titleLabel ??= _root.Q<Label>("main-menu-title-label");
+            _levelsTab ??= _root.Q<VisualElement>("main-menu-levels-tab");
+            _levelsList ??= _root.Q<ScrollView>("main-menu-levels-list");
+            _selectedLevelLabel ??= _root.Q<Label>("main-menu-selected-level-label");
+            _emptyLevelsLabel ??= _root.Q<Label>("main-menu-empty-levels-label");
+            _centerColumn ??= _root.Q<VisualElement>("main-menu-center-column");
+            _paginationIndicatorsContainer ??= _root.Q<VisualElement>("main-menu-pagination-indicators");
 
-            if (_chooseLevelButton == null)
+            if (_levelsList != null)
+                ConfigureLevelsListLayout();
+            if (_levelsTab == null || _levelsList == null || _paginationIndicatorsContainer == null)
             {
-                _chooseLevelButton = new Button
-                {
-                    name = ChooseLevelButtonName,
-                    text = "Выбрать уровень"
-                };
-                _chooseLevelButton.style.display = DisplayStyle.None;
-                _centerColumn.Add(_chooseLevelButton);
+                Debug.LogError("MainMenuView: Required elements not found in UXML.");
             }
-
-            if (_selectedLevelLabel == null)
-            {
-                _selectedLevelLabel = new Label
-                {
-                    name = SelectedLevelLabelName
-                };
-                _selectedLevelLabel.style.display = DisplayStyle.None;
-                _centerColumn.Add(_selectedLevelLabel);
-            }
-
-            if (_levelsTab == null)
-            {
-                _levelsTab = new VisualElement
-                {
-                    name = LevelsTabName
-                };
-                _levelsTab.style.display = DisplayStyle.Flex;
-                _levelsTab.style.flexDirection = FlexDirection.Column;
-                _levelsTab.style.width = Length.Percent(100f);
-                _levelsTab.style.maxWidth = 760f;
-                _levelsTab.style.maxHeight = 560f;
-                _centerColumn.Add(_levelsTab);
-            }
-
-            if (_emptyLevelsLabel == null)
-            {
-                _emptyLevelsLabel = new Label("Добавьте конфиги уровней в каталог уровней")
-                {
-                    name = EmptyLevelsLabelName
-                };
-                _emptyLevelsLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
-                _emptyLevelsLabel.style.fontSize = 17f;
-                _emptyLevelsLabel.style.color = new Color(0.91f, 0.94f, 1f, 1f);
-                _levelsTab.Add(_emptyLevelsLabel);
-            }
-
-            if (_levelsList == null)
-            {
-                _levelsList = new ScrollView
-                {
-                    name = LevelsListName
-                };
-                _levelsList.style.flexGrow = 1f;
-                _levelsList.style.minHeight = 240f;
-                _levelsTab.Add(_levelsList);
-            }
-
-            ConfigureLevelsListLayout();
         }
 
         private void ConfigureLevelsListLayout()
@@ -358,18 +383,78 @@ namespace Project.Scripts.UI.MainScreen
             if (_levelsList == null)
                 return;
 
-            _levelsList.style.paddingLeft = 4f;
-            _levelsList.style.paddingRight = 4f;
+            _levelsList.style.backgroundColor = Color.clear;
+            _levelsList.verticalScrollerVisibility = ScrollerVisibility.Hidden;
+            _levelsList.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+            _levelsList.style.paddingLeft = 0f;
+            _levelsList.style.paddingRight = 0f;
 
             var content = _levelsList.contentContainer;
-            content.style.flexDirection = FlexDirection.Row;
-            content.style.flexWrap = Wrap.Wrap;
-            content.style.justifyContent = Justify.Center;
-            content.style.alignItems = Align.FlexStart;
+            content.style.width = Length.Percent(100f);
+            content.style.flexDirection = FlexDirection.Column;
+            content.style.flexWrap = Wrap.NoWrap;
+            content.style.justifyContent = Justify.FlexStart;
+            content.style.alignItems = Align.Stretch;
+            content.style.alignContent = Align.Stretch;
+        }
+
+        private void LoadTemplates()
+        {
+            _levelCellTemplate = Resources.Load<VisualTreeAsset>("UIToolkit/MainMenuLevelCell");
+            if (_levelCellTemplate == null)
+            {
+                Debug.LogError("MainMenuView: MainMenuLevelCell template not found in Resources/UIToolkit.");
+            }
+        }
+
+        private void ApplyTexts()
+        {
+            if (_titleLabel != null)
+                _titleLabel.text = GetLocalizedText(LocalizationKeys.MainMenuTitle, "LEVEL SELECT");
+
+            if (_emptyLevelsLabel != null)
+                _emptyLevelsLabel.text = GetLocalizedText(LocalizationKeys.MainMenuEmptyLevels, "Add level configs to level catalog");
+        }
+
+        private string GetLocalizedText(string key, string fallback)
+        {
+            if (_localizationService == null)
+                return fallback;
+
+            var text = _localizationService.Get(key);
+            return string.IsNullOrWhiteSpace(text) ? fallback : text;
+        }
+
+        private string FormatLocalizedText(string key, string fallbackFormat, params object[] args)
+        {
+            if (_localizationService != null)
+                return _localizationService.Format(key, args);
+
+            try
+            {
+                return string.Format(fallbackFormat, args);
+            }
+            catch (FormatException)
+            {
+                return fallbackFormat;
+            }
+        }
+
+        private readonly struct LevelEntry
+        {
+            public LevelEntry(LevelConfig levelConfig, int levelNumber, int earnedStarsCount)
+            {
+                LevelConfig = levelConfig;
+                LevelNumber = levelNumber;
+                EarnedStarsCount = earnedStarsCount;
+            }
+
+            public LevelConfig LevelConfig { get; }
+            public int LevelNumber { get; }
+            public int EarnedStarsCount { get; }
         }
     }
 }
-
 
 
 

@@ -1,0 +1,54 @@
+.main-menu-level-cell-button--selected {
+    background-color: rgba(250, 201, 126, 1);
+}
+
+.main-menu-level-cell-stars--0 {
+    background-image: resource('UI/EndGamePanel/star_4');
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.main-menu-level-cell-stars--1 {
+    background-image: resource('UI/EndGamePanel/star_3');
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.main-menu-level-cell-stars--2 {
+    background-image: resource('UI/EndGamePanel/star_2');
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.main-menu-level-cell-stars--3 {
+    background-image: resource('UI/EndGamePanel/star_1');
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.main-menu-page-indicator-outer {
+    width: 22px;
+    height: 22px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-top-left-radius: 11px;
+    border-top-right-radius: 11px;
+    border-bottom-left-radius: 11px;
+    border-bottom-right-radius: 11px;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+}
+
+.main-menu-page-indicator-inner {
+    width: 10px;
+    height: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.main-menu-page-indicator-inner--active {
+    background-color: rgba(209, 46, 69, 1);
+}
+
+.main-menu-page-indicator-inner--inactive {
+    background-color: rgba(173, 173, 173, 1);
+}

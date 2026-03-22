@@ -1,7 +1,9 @@
 ﻿using System;
+using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
 namespace Project.Scripts.UI.LevelUI
 {
@@ -15,6 +17,8 @@ namespace Project.Scripts.UI.LevelUI
         private const string ExitToMenuButtonName = "gameplay-menu-button";
         private const string BonusDessertImageName = "bonus-dessert-image";
         private const string BonusMultiplierLabelName = "bonus-multiplier-label";
+
+        [Inject] private readonly ILocalizationService _localizationService;
 
         private Label _counterLabel;
         private Label _totalDessertsLabel;
@@ -76,6 +80,7 @@ namespace Project.Scripts.UI.LevelUI
             }
             else
             {
+                _shuffleButton.text = GetLocalizedText(LocalizationKeys.HudShuffleButton, _shuffleButton.text);
                 _shuffleButton.clicked += OnShuffleButtonClicked;
             }
 
@@ -85,6 +90,7 @@ namespace Project.Scripts.UI.LevelUI
             }
             else
             {
+                _exitToMenuButton.text = GetLocalizedText(LocalizationKeys.HudMenuButton, _exitToMenuButton.text);
                 _exitToMenuButton.clicked += OnExitToMenuButtonClicked;
             }
         }
@@ -160,6 +166,15 @@ namespace Project.Scripts.UI.LevelUI
                 return;
 
             _bonusMultiplierLabel.text = text;
+        }
+
+        private string GetLocalizedText(string key, string fallback)
+        {
+            if (_localizationService == null)
+                return fallback;
+
+            var text = _localizationService.Get(key);
+            return string.IsNullOrWhiteSpace(text) ? fallback : text;
         }
 
         private void OnShuffleButtonClicked()

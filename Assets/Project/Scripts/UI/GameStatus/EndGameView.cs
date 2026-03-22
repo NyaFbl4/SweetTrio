@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
 namespace Project.Scripts.UI.EndGame
 {
@@ -18,6 +20,8 @@ namespace Project.Scripts.UI.EndGame
 
         private static readonly Color ActiveStarColor = new(1f, 0.85f, 0.2f, 1f);
         private static readonly Color InactiveStarColor = new(0.76f, 0.78f, 0.83f, 1f);
+
+        [Inject] private readonly ILocalizationService _localizationService;
 
         private Label _titleLabel;
         private Label _scoreLabel;
@@ -138,6 +142,7 @@ namespace Project.Scripts.UI.EndGame
                 return;
             }
 
+            _exitToMenuButton.text = GetLocalizedText(LocalizationKeys.EndGameMenuButton, "Menu");
             _exitToMenuButton.clicked -= HandleExitToMenuClicked;
             _exitToMenuButton.clicked += HandleExitToMenuClicked;
 
@@ -231,7 +236,7 @@ namespace Project.Scripts.UI.EndGame
             _exitToMenuButton = new Button
             {
                 name = ExitToMenuButtonName,
-                text = "В меню"
+                text = GetLocalizedText(LocalizationKeys.EndGameMenuButton, "Menu")
             };
             _exitToMenuButton.style.marginTop = 20f;
             _exitToMenuButton.style.width = 180f;
@@ -265,6 +270,15 @@ namespace Project.Scripts.UI.EndGame
                 _starsContainer.Add(starDot);
                 _starDots.Add(starDot);
             }
+        }
+
+        private string GetLocalizedText(string key, string fallback)
+        {
+            if (_localizationService == null)
+                return fallback;
+
+            var text = _localizationService.Get(key);
+            return string.IsNullOrWhiteSpace(text) ? fallback : text;
         }
 
         private void HandleExitToMenuClicked()

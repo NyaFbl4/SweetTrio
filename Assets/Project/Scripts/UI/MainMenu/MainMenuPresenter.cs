@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using MessagePipe;
 using Project.Scripts.GameManager;
@@ -10,8 +10,6 @@ namespace Project.Scripts.UI.MainScreen
 {
     public class MainMenuPresenter : LayoutPresenterBase<IMainMenuView>, IMainMenuPresenter
     {
-        private const string LevelsNotConfiguredText = "Нет уровней";
-
         [Inject] private readonly IGameManagerService _gameManagerService;
         [Inject] private readonly ILevelSelectionService _levelSelectionService;
         [Inject] private readonly ILevelProgressService _levelProgressService;
@@ -65,7 +63,6 @@ namespace Project.Scripts.UI.MainScreen
 
             _layoutView.SetLevels(levels, selectedLevel, savedStars);
             _layoutView.SetSelectedLevel(selectedLevel);
-            _layoutView.SetChooseLevelButtonText(LevelsNotConfiguredText);
         }
 
         private IReadOnlyList<int> BuildSavedStars(IReadOnlyList<LevelConfig> levels)

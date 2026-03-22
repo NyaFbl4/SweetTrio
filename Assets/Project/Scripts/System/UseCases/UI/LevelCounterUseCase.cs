@@ -1,18 +1,23 @@
-using VContainer.Unity;
+﻿using Project.Scripts.System.Localization;
 using Project.Scripts.UI.LevelUI;
+using VContainer.Unity;
 
 namespace Project.Scripts.UI.UseCases
 {
     public class LevelCounterUseCase : ILevelCounterUseCase, IInitializable
     {
         private readonly ILevelUIPresenter _levelUIPresenter;
+        private readonly ILocalizationService _localizationService;
         private int _value;
 
         public int CurrentValue => _value;
 
-        public LevelCounterUseCase(ILevelUIPresenter levelUIPresenter)
+        public LevelCounterUseCase(
+            ILevelUIPresenter levelUIPresenter,
+            ILocalizationService localizationService)
         {
             _levelUIPresenter = levelUIPresenter;
+            _localizationService = localizationService;
         }
 
         public void Initialize()
@@ -57,7 +62,11 @@ namespace Project.Scripts.UI.UseCases
 
         private void NotifyPresenter()
         {
-            _levelUIPresenter.SetCounterText($"Score: {_value}");
+            var text = _localizationService != null
+                ? _localizationService.Format(LocalizationKeys.HudScoreFormat, _value)
+                : $"Score: {_value}";
+
+            _levelUIPresenter.SetCounterText(text);
         }
     }
 }
