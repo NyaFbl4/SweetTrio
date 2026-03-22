@@ -19,10 +19,3 @@ TrueTypeFontImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 302343
-  packageName: Plugin Your Games (Unified API for WebGL and mobile stores)
-  packageVersion: 2.007
-  assetPath: Assets/PluginYourGames/Example/Content/Font/Roboto-Regular.ttf
-  uploadId: 819944
