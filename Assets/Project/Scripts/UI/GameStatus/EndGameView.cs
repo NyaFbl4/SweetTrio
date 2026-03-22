@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
@@ -10,14 +10,6 @@ namespace Project.Scripts.UI.EndGame
 {
     public class EndGameView : LayoutViewBase, IEndGameView
     {
-        private const string OverlayName = "end-game-overlay";
-        private const string PanelName = "end-game-panel";
-        private const string TitleLabelName = "end-game-title-label";
-        private const string ScoreLabelName = "end-game-score-label";
-        private const string CompletionLabelName = "end-game-completion-label";
-        private const string StarsContainerName = "end-game-stars-container";
-        private const string ExitToMenuButtonName = "end-game-menu-button";
-
         private static readonly Color ActiveStarColor = new(1f, 0.85f, 0.2f, 1f);
         private static readonly Color InactiveStarColor = new(0.76f, 0.78f, 0.83f, 1f);
 
@@ -154,11 +146,11 @@ namespace Project.Scripts.UI.EndGame
 
         private void QueryElements()
         {
-            _titleLabel = _root.Q<Label>(TitleLabelName);
-            _scoreLabel = _root.Q<Label>(ScoreLabelName);
-            _completionLabel = _root.Q<Label>(CompletionLabelName);
-            _starsContainer = _root.Q<VisualElement>(StarsContainerName);
-            _exitToMenuButton = _root.Q<Button>(ExitToMenuButtonName);
+            _titleLabel = _root.Q<Label>("end-game-title-label");
+            _scoreLabel = _root.Q<Label>("end-game-score-label");
+            _completionLabel = _root.Q<Label>("end-game-completion-label");
+            _starsContainer = _root.Q<VisualElement>("end-game-stars-container");
+            _exitToMenuButton = _root.Q<Button>("end-game-menu-button");
         }
 
         private void BuildFallbackCenteredLayout()
@@ -168,7 +160,7 @@ namespace Project.Scripts.UI.EndGame
 
             _root.Clear();
 
-            var overlay = new VisualElement { name = OverlayName };
+            var overlay = new VisualElement { name = "end-game-overlay" };
             overlay.style.position = Position.Absolute;
             overlay.style.left = 0f;
             overlay.style.right = 0f;
@@ -179,7 +171,7 @@ namespace Project.Scripts.UI.EndGame
             overlay.style.justifyContent = Justify.Center;
             _root.Add(overlay);
 
-            var panel = new VisualElement { name = PanelName };
+            var panel = new VisualElement { name = "end-game-panel" };
             panel.style.width = 420f;
             panel.style.minHeight = 260f;
             panel.style.maxWidth = 520f;
@@ -196,7 +188,7 @@ namespace Project.Scripts.UI.EndGame
 
             _titleLabel = new Label
             {
-                name = TitleLabelName
+                name = "end-game-title-label"
             };
             _titleLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
             _titleLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
@@ -206,7 +198,7 @@ namespace Project.Scripts.UI.EndGame
 
             _scoreLabel = new Label
             {
-                name = ScoreLabelName
+                name = "end-game-score-label"
             };
             _scoreLabel.style.marginTop = 12f;
             _scoreLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
@@ -217,14 +209,14 @@ namespace Project.Scripts.UI.EndGame
 
             _completionLabel = new Label
             {
-                name = CompletionLabelName
+                name = "end-game-completion-label"
             };
             _completionLabel.style.display = DisplayStyle.None;
             panel.Add(_completionLabel);
 
             _starsContainer = new VisualElement
             {
-                name = StarsContainerName
+                name = "end-game-stars-container"
             };
             _starsContainer.style.marginTop = 16f;
             _starsContainer.style.flexDirection = FlexDirection.Row;
@@ -235,7 +227,7 @@ namespace Project.Scripts.UI.EndGame
 
             _exitToMenuButton = new Button
             {
-                name = ExitToMenuButtonName,
+                name = "end-game-menu-button",
                 text = GetLocalizedText(LocalizationKeys.EndGameMenuButton, "Menu")
             };
             _exitToMenuButton.style.marginTop = 20f;

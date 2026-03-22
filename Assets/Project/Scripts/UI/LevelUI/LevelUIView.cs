@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
 using UnityEngine;
@@ -9,15 +9,6 @@ namespace Project.Scripts.UI.LevelUI
 {
     public class LevelUIView : LayoutViewBase, ILevelUIView
     {
-        private const string CounterLabelName = "level-counter-label";
-        private const string TotalDessertsLabelName = "total-desserts-label";
-        private const string CountdownLabelName = "timer-countdown-label";
-        private const string FillName = "timer-progress-fill";
-        private const string ShuffleButtonName = "shuffle-button";
-        private const string ExitToMenuButtonName = "gameplay-menu-button";
-        private const string BonusDessertImageName = "bonus-dessert-image";
-        private const string BonusMultiplierLabelName = "bonus-multiplier-label";
-
         [Inject] private readonly ILocalizationService _localizationService;
 
         private Label _counterLabel;
@@ -35,48 +26,48 @@ namespace Project.Scripts.UI.LevelUI
         public override void Awake()
         {
             base.Awake();
-            _counterLabel = _root.Q<Label>(CounterLabelName);
-            _totalDessertsLabel = _root.Q<Label>(TotalDessertsLabelName);
-            _countdownLabel = _root.Q<Label>(CountdownLabelName);
-            _bonusMultiplierLabel = _root.Q<Label>(BonusMultiplierLabelName);
-            _fillElement = _root.Q<VisualElement>(FillName);
-            _bonusDessertImage = _root.Q<VisualElement>(BonusDessertImageName);
-            _shuffleButton = _root.Q<Button>(ShuffleButtonName);
-            _exitToMenuButton = _root.Q<Button>(ExitToMenuButtonName);
+            _counterLabel = _root.Q<Label>("level-counter-label");
+            _totalDessertsLabel = _root.Q<Label>("total-desserts-label");
+            _countdownLabel = _root.Q<Label>("timer-countdown-label");
+            _bonusMultiplierLabel = _root.Q<Label>("bonus-multiplier-label");
+            _fillElement = _root.Q<VisualElement>("timer-progress-fill");
+            _bonusDessertImage = _root.Q<VisualElement>("bonus-dessert-image");
+            _shuffleButton = _root.Q<Button>("shuffle-button");
+            _exitToMenuButton = _root.Q<Button>("gameplay-menu-button");
 
             if (_counterLabel == null)
             {
-                Debug.LogError($"LevelUIView: Label '{CounterLabelName}' not found in UXML.");
+                Debug.LogError("LevelUIView: Label 'level-counter-label' not found in UXML.");
             }
 
             if (_totalDessertsLabel == null)
             {
-                Debug.LogError($"LevelUIView: Label '{TotalDessertsLabelName}' not found in UXML.");
+                Debug.LogError("LevelUIView: Label 'total-desserts-label' not found in UXML.");
             }
 
             if (_countdownLabel == null)
             {
-                Debug.LogError($"LevelUIView: Label '{CountdownLabelName}' not found in UXML.");
+                Debug.LogError("LevelUIView: Label 'timer-countdown-label' not found in UXML.");
             }
 
             if (_bonusMultiplierLabel == null)
             {
-                Debug.LogError($"LevelUIView: Label '{BonusMultiplierLabelName}' not found in UXML.");
+                Debug.LogError("LevelUIView: Label 'bonus-multiplier-label' not found in UXML.");
             }
 
             if (_fillElement == null)
             {
-                Debug.LogError($"LevelUIView: VisualElement '{FillName}' not found in UXML.");
+                Debug.LogError("LevelUIView: VisualElement 'timer-progress-fill' not found in UXML.");
             }
 
             if (_bonusDessertImage == null)
             {
-                Debug.LogError($"LevelUIView: VisualElement '{BonusDessertImageName}' not found in UXML.");
+                Debug.LogError("LevelUIView: VisualElement 'bonus-dessert-image' not found in UXML.");
             }
 
             if (_shuffleButton == null)
             {
-                Debug.LogError($"LevelUIView: Button '{ShuffleButtonName}' not found in UXML.");
+                Debug.LogError("LevelUIView: Button 'shuffle-button' not found in UXML.");
             }
             else
             {
@@ -86,7 +77,7 @@ namespace Project.Scripts.UI.LevelUI
 
             if (_exitToMenuButton == null)
             {
-                Debug.LogError($"LevelUIView: Button '{ExitToMenuButtonName}' not found in UXML.");
+                Debug.LogError("LevelUIView: Button 'gameplay-menu-button' not found in UXML.");
             }
             else
             {

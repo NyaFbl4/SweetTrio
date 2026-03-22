@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Assets.Project.Scripts.System.DessertCreator;
 using Assets.Project.Scripts.System.DessertCreator.Dtos;
 using MessagePipe;
@@ -45,7 +45,7 @@ namespace Project.Scripts.UI.UseCases
 
         public void Refresh()
         {
-            _value = _dessertSpawner?.FieldDessertsCount ?? 0;
+            _value = _dessertSpawner?.ActiveDessertsCount ?? 0;
             NotifyPresenter();
         }
 
@@ -57,7 +57,7 @@ namespace Project.Scripts.UI.UseCases
 
         private void HandleCountsChanged(DessertCountsDto counts)
         {
-            _value = counts.FieldDessertsCount;
+            _value = counts.ActiveDessertsCount;
             NotifyPresenter();
         }
 

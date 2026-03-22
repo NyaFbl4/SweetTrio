@@ -6,26 +6,23 @@ namespace Project.Scripts.UI.TimerUI
 {
     public class TimerUIView : LayoutViewBase, ITimerUIView
     {
-        private const string CountdownLabelName = "timer-countdown-label";
-        private const string FillName = "timer-progress-fill";
-
         private Label _countdownLabel;
         private VisualElement _fillElement;
 
         public override void Awake()
         {
             base.Awake();
-            _countdownLabel = _root.Q<Label>(CountdownLabelName);
-            _fillElement = _root.Q<VisualElement>(FillName);
+            _countdownLabel = _root.Q<Label>("timer-countdown-label");
+            _fillElement = _root.Q<VisualElement>("timer-progress-fill");
 
             if (_countdownLabel == null)
             {
-                Debug.LogError($"TimerUIView: Label '{CountdownLabelName}' not found in UXML.");
+                Debug.LogError("TimerUIView: Label 'timer-countdown-label' not found in UXML.");
             }
 
             if (_fillElement == null)
             {
-                Debug.LogError($"TimerUIView: VisualElement '{FillName}' not found in UXML.");
+                Debug.LogError("TimerUIView: VisualElement 'timer-progress-fill' not found in UXML.");
             }
         }
 
