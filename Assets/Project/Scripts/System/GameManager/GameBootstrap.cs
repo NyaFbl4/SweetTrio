@@ -77,7 +77,17 @@ namespace Project.Scripts.GameManager
             }
 
             if (_spawnRequestQueue.Count == 0)
+            {
+                // Recovery path: if field has room but queue is empty (e.g. objects left field
+                // without click), restart initial fill to avoid permanent spawn stall.
+                if (_dessertSpawner.RemainingDessertsCount > 0 &&
+                    _dessertSpawner.FieldDessertsCount < _gameConfig.MaxDessertsOnField)
+                {
+                    _isInitialSpawnInProgress = true;
+                }
+
                 return;
+            }
 
             if (_dessertSpawner.RemainingDessertsCount <= 0)
             {
@@ -93,7 +103,7 @@ namespace Project.Scripts.GameManager
             var queuedSpawned = _dessertSpawner.SpawnNext();
             if (queuedSpawned == null)
             {
-                _isAutoSpawnActive = false;
+                _isInitialSpawnInProgress = _dessertSpawner.RemainingDessertsCount > 0;
             }
         }
 
@@ -130,9 +140,14 @@ namespace Project.Scripts.GameManager
 
         public void RestartInitialSpawn()
         {
-            if (!_isAutoSpawnActive)
+            if (_dessertSpawner.RemainingDessertsCount <= 0)
+            {
+                _isAutoSpawnActive = false;
+                _isInitialSpawnInProgress = false;
                 return;
+            }
 
+            _isAutoSpawnActive = true;
             _spawnTimer = 0f;
             _spawnRequestQueue.Clear();
             _isInitialSpawnInProgress = true;

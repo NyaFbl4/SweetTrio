@@ -163,7 +163,6 @@ namespace Assets.Project.Scripts.System.DessertCreator
             var dessert = _preparedDessertsQueue.Dequeue();
             dessert.transform.SetParent(_transformController.SpawnPoint, false);
             dessert.transform.localPosition = Vector3.zero;
-            dessert.transform.localRotation = Quaternion.identity;
             dessert.transform.localScale = Vector3.one * _gameConfig.SpawnDessertScale;
             dessert.gameObject.SetActive(true);
             dessert.PrepareForField();

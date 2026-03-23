@@ -8,6 +8,8 @@ namespace Assets.Project.Scripts.Desserts
         private bool _isInteractable = true;
         private bool _isInActionBar;
         private Rigidbody2D _rigidbody2D;
+        private Quaternion _fieldLocalRotation;
+        private bool _hasFieldLocalRotation;
 
         public EDessertType DessertType => _dessertType;
         public bool IsInActionBar => _isInActionBar;
@@ -15,6 +17,7 @@ namespace Assets.Project.Scripts.Desserts
         private void Awake()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            CacheFieldLocalRotation();
         }
 
         public void MoveToActionBar(Transform newPosition)
@@ -32,8 +35,10 @@ namespace Assets.Project.Scripts.Desserts
 
         public void PrepareForField()
         {
+            CacheFieldLocalRotation();
             _isInteractable = true;
             _isInActionBar = false;
+            transform.localRotation = _fieldLocalRotation;
             SetRigidBodySimulated(true);
         }
 
@@ -78,6 +83,15 @@ namespace Assets.Project.Scripts.Desserts
             _rigidbody2D.linearVelocity = Vector2.zero;
             _rigidbody2D.angularVelocity = 0f;
             _rigidbody2D.simulated = isSimulated;
+        }
+
+        private void CacheFieldLocalRotation()
+        {
+            if (_hasFieldLocalRotation)
+                return;
+
+            _fieldLocalRotation = transform.localRotation;
+            _hasFieldLocalRotation = true;
         }
     }
 }
