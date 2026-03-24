@@ -1,5 +1,6 @@
-﻿using Project.Scripts.System.Localization;
+﻿using Project.Scripts.GameManager;
 using Project.Scripts.UI.LevelUI;
+using UnityEngine;
 using VContainer.Unity;
 
 namespace Project.Scripts.UI.UseCases
@@ -7,21 +8,24 @@ namespace Project.Scripts.UI.UseCases
     public class LevelCounterUseCase : ILevelCounterUseCase, IInitializable
     {
         private readonly ILevelUIPresenter _levelUIPresenter;
-        private readonly ILocalizationService _localizationService;
+        private readonly ILevelSelectionService _levelSelectionService;
+        private LevelConfig _cachedLevelConfig;
         private int _value;
+        private int _targetScore;
 
         public int CurrentValue => _value;
 
         public LevelCounterUseCase(
             ILevelUIPresenter levelUIPresenter,
-            ILocalizationService localizationService)
+            ILevelSelectionService levelSelectionService)
         {
             _levelUIPresenter = levelUIPresenter;
-            _localizationService = localizationService;
+            _levelSelectionService = levelSelectionService;
         }
 
         public void Initialize()
         {
+            RefreshTargetScore();
             NotifyPresenter();
         }
 
@@ -62,11 +66,37 @@ namespace Project.Scripts.UI.UseCases
 
         private void NotifyPresenter()
         {
-            var text = _localizationService != null
-                ? _localizationService.Format(LocalizationKeys.HudScoreFormat, _value)
-                : $"Score: {_value}";
+            RefreshTargetScore();
+
+            var text = _targetScore > 0
+                ? $"{_value}/{_targetScore}"
+                : _value.ToString();
 
             _levelUIPresenter.SetCounterText(text);
+
+            var normalized = _targetScore > 0
+                ? Mathf.Clamp01((float)_value / _targetScore)
+                : 0f;
+            _levelUIPresenter.SetProgress(normalized);
+        }
+
+        private int ResolveTargetScore()
+        {
+            var levelConfig = _cachedLevelConfig;
+            if (levelConfig == null)
+                return 0;
+
+            return Mathf.Max(0, levelConfig.ThreeStarsScore);
+        }
+
+        private void RefreshTargetScore()
+        {
+            var currentLevel = _levelSelectionService.CurrentLevel;
+            if (ReferenceEquals(currentLevel, _cachedLevelConfig) && _targetScore > 0)
+                return;
+
+            _cachedLevelConfig = currentLevel;
+            _targetScore = ResolveTargetScore();
         }
     }
 }

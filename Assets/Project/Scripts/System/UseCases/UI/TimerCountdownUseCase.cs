@@ -120,9 +120,6 @@ namespace Project.Scripts.UI.UseCases
 
         private void NotifyPresenter(bool forceTextUpdate)
         {
-            var normalized = Mathf.Clamp01(_remainingSeconds / _durationSeconds);
-            _levelUIPresenter.SetProgress(normalized);
-
             var roundedSeconds = Mathf.CeilToInt(_remainingSeconds);
             if (!forceTextUpdate && roundedSeconds == _lastShownSeconds)
                 return;

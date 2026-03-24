@@ -14,8 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.GameManager.LevelsCatalogConfig
   _levels:
   - {fileID: 11400000, guid: 2e8c309a63a0eaf4abaafb5d260a52b5, type: 2}
-  - {fileID: 11400000, guid: ad3f7163380a4ff9bfca43ecc0a918f9, type: 2}
+  - {fileID: 11400000, guid: 968ac407edea85e47a6821a7551c1781, type: 2}
+  - {fileID: 11400000, guid: 29eb54ca8cfa14a458fccdde8f638876, type: 2}
+  - {fileID: 11400000, guid: 3254b8caa5cddfc469a91712a07034d4, type: 2}
+  - {fileID: 11400000, guid: 5a3a6f0cf3414f7c963b7d57f798a115, type: 2}
+  - {fileID: 11400000, guid: 534355b72c724b5a948f2f6392d90972, type: 2}
+  - {fileID: 11400000, guid: 3c1c7cfbd108495a8cc061305794d6e0, type: 2}
+  - {fileID: 11400000, guid: fe3cde007a26416e830ac754983e0397, type: 2}
   - {fileID: 11400000, guid: 4ecbd1b9079b4406ab74573eeb240079, type: 2}
+  - {fileID: 11400000, guid: df439ee12bc442299842b69aa411d6d1, type: 2}
+  - {fileID: 11400000, guid: ad3f7163380a4ff9bfca43ecc0a918f9, type: 2}
   - {fileID: 11400000, guid: 43872bdc01944fa1b4c3bd68c512ecf2, type: 2}
   - {fileID: 11400000, guid: 3facac6d226343a59017d0d3c420c475, type: 2}
   - {fileID: 11400000, guid: 25fbd7594631494a835703e60707d7a0, type: 2}
@@ -24,16 +32,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 752c0c1e6dc04601bd5289746f0b06af, type: 2}
   - {fileID: 11400000, guid: 9378e412ef2041ec98c418a6524d6004, type: 2}
   - {fileID: 11400000, guid: 32a234c101cf435ab3a2017a37e7e916, type: 2}
-  - {fileID: 11400000, guid: 968ac407edea85e47a6821a7551c1781, type: 2}
   - {fileID: 11400000, guid: 529ef64923f84175882c13cddaf9b901, type: 2}
-  - {fileID: 11400000, guid: 29eb54ca8cfa14a458fccdde8f638876, type: 2}
-  - {fileID: 11400000, guid: 3254b8caa5cddfc469a91712a07034d4, type: 2}
-  - {fileID: 11400000, guid: 5a3a6f0cf3414f7c963b7d57f798a115, type: 2}
-  - {fileID: 11400000, guid: 534355b72c724b5a948f2f6392d90972, type: 2}
-  - {fileID: 11400000, guid: 3c1c7cfbd108495a8cc061305794d6e0, type: 2}
-  - {fileID: 11400000, guid: fe3cde007a26416e830ac754983e0397, type: 2}
-  - {fileID: 11400000, guid: df439ee12bc442299842b69aa411d6d1, type: 2}
   _defaultLevel: {fileID: 11400000, guid: 2e8c309a63a0eaf4abaafb5d260a52b5, type: 2}
-  _autoCollectInEditor: 1
+  _autoCollectInEditor: 0
   _searchFolders:
   - Assets/Project/Configs

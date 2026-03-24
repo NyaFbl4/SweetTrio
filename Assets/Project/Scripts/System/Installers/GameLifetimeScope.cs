@@ -52,15 +52,11 @@ namespace Project.Scripts.System.Installers
 
             if (_actionBar != null)
             {
-                builder.RegisterComponent(_actionBar)
-                    .AsSelf()
-                    .As<IActionBar>();
+                builder.RegisterComponent(_actionBar).AsSelf().As<IActionBar>();
             }
             else
             {
-                builder.RegisterComponentInHierarchy<ActionBar>()
-                    .AsSelf()
-                    .As<IActionBar>();
+                builder.RegisterComponentInHierarchy<ActionBar>().AsSelf().As<IActionBar>();
             }
         }
 
@@ -97,9 +93,7 @@ namespace Project.Scripts.System.Installers
                 if (prefab == null)
                     continue;
 
-                builder.RegisterComponentInNewPrefab(prefab, Lifetime.Scoped)
-                    .AsSelf()
-                    .AsImplementedInterfaces();
+                builder.RegisterComponentInNewPrefab(prefab, Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
             }
         }
 

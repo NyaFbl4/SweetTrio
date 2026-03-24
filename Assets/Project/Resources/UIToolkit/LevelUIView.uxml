@@ -1,223 +1,36 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ui="UnityEngine.UIElements"
-    xmlns:uie="UnityEditor.UIElements"
-    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
->
-    <ui:VisualElement
-        name="top-counter-container"
-        style="
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 16px;
-            align-items: center;
-            justify-content: center;
-        "
-    >
-        <ui:VisualElement
-            name="counter-panel"
-            style="
-                width: 280px;
-                min-height: 92px;
-                background-color: rgba(255, 255, 255, 0.62);
-                border-top-left-radius: 12px;
-                border-top-right-radius: 12px;
-                border-bottom-left-radius: 12px;
-                border-bottom-right-radius: 12px;
-                align-items: center;
-                justify-content: center;
-                flex-direction: column;
-                padding-top: 8px;
-                padding-bottom: 8px;
-            "
-        >
-            <ui:Label
-                name="level-counter-label"
-                text="Score: 0"
-                style="
-                    unity-text-align: middle-center;
-                    -unity-font-style: bold;
-                    font-size: 28px;
-                    color: rgba(0, 0, 0, 1);
-                "
-            />
-            <ui:Label
-                name="total-desserts-label"
-                text="Desserts: 0"
-                style="
-                    unity-text-align: middle-center;
-                    font-size: 20px;
-                    color: rgba(0, 0, 0, 1);
-                "
-            />
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="top-hud-container" style="position: absolute; left: 0; right: 0; top: 0; align-items: center; justify-content: flex-start; pointer-events: none;">
+        <ui:VisualElement name="top-hud-panel" style="width: 100%; max-width: 1240px; min-width: 340px; height: 200px; position: relative; background-image: resource(&apos;UI/Level UI/up 1&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill; top: 0;">
+            <ui:VisualElement name="score-progress-track" style="position: absolute; left: 136px; right: 136px; top: 34px; height: 78px; overflow: visible; justify-content: center; align-items: center; background-image: none; background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill;">
+                <ui:VisualElement name="level-progress-bar" style="position: absolute; left: 4px; right: 7px; top: -33px; height: 100px; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; background-color: rgba(0, 0, 0, 0); background-image: resource(&apos;UI/Level UI/bgload&apos;); -unity-background-scale-mode: scale-to-fit; overflow: hidden; display: none;">
+                    <ui:VisualElement name="level-progress-fill" style="position: absolute; left: 2px; top: 9px; bottom: 1px; width: 672px; background-color: rgba(0, 0, 0, 0); background-image: resource(&apos;UI/Level UI/load&apos;); -unity-background-scale-mode: scale-to-fit; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="progress-star-markers" style="position: absolute; left: 6px; right: 6px; top: -10px; height: 24px; pointer-events: none; display: none;">
+                    <ui:VisualElement name="progress-star-1" style="position: absolute; width: 42px; height: 50px; left: 312px; background-image: resource(&apos;UI/Level UI/star_1&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: scale-to-fit; top: 6px;" />
+                    <ui:VisualElement name="progress-star-2" style="position: absolute; width: 96px; height: 50px; left: 426px; background-image: resource(&apos;UI/Level UI/star_2&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: scale-to-fit; top: 3px;" />
+                    <ui:VisualElement name="progress-star-3" style="position: absolute; width: 120px; height: 50px; right: -20px; background-image: resource(&apos;UI/Level UI/star_3&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: scale-to-fit; top: 3px;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="hud-stats-row" style="position: absolute; left: 22px; right: 22px; bottom: 62px; height: 86px; flex-direction: row; align-items: center; justify-content: space-between;">
+                <ui:VisualElement name="timer-widget" style="width: 27%; min-width: 156px; height: 76px; padding-left: 10px; padding-right: 10px; flex-direction: row; align-items: center; justify-content: center; background-image: resource(&apos;UI/Level UI/table&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill;">
+                    <ui:VisualElement name="timer-icon" style="width: 34px; height: 34px; margin-right: 8px; background-image: resource(&apos;UI/Level UI/clock&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: scale-to-fit;" />
+                    <ui:Label name="timer-countdown-label" text="00:00" style="unity-text-align: middle-center; -unity-font-style: bold; font-size: 28px; color: rgb(255, 255, 255); -unity-text-outline-width: 2px; -unity-text-outline-color: rgba(114, 40, 40, 0.75);" />
+                </ui:VisualElement>
+                <ui:VisualElement name="bonus-widget" style="width: 200px; min-width: 178px; height: 200px; align-items: center; justify-content: center; flex-direction: column; background-image: resource(&apos;UI/Level UI/panel_no_bg_fixed&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill; top: 61px;">
+                    <ui:VisualElement name="bonus-dessert-image" style="width: 82px; height: 82px; margin-bottom: 10px; background-color: rgba(157, 178, 160, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; -unity-background-scale-mode: scale-to-fit; background-position-x: center; background-position-y: center; background-repeat: no-repeat;" />
+                    <ui:Label name="bonus-multiplier-label" text="x1.00" style="unity-text-align: middle-center; -unity-font-style: bold; font-size: 34px; color: rgb(255, 255, 255); -unity-text-outline-width: 2px; -unity-text-outline-color: rgba(114, 40, 40, 0.75);" />
+                </ui:VisualElement>
+                <ui:VisualElement name="desserts-widget" style="width: 27%; min-width: 244px; height: 76px; padding-left: 10px; padding-right: 10px; flex-direction: column; align-items: center; justify-content: center; background-image: resource(&apos;UI/Level UI/table&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill;">
+                    <ui:Label text="DESSERTS" style="unity-text-align: middle-center; font-size: 12px; color: rgba(255, 230, 178, 0.95); margin-top: 3px;" />
+                    <ui:Label name="total-desserts-label" text="0" style="unity-text-align: middle-center; -unity-font-style: bold; font-size: 34px; color: rgb(255, 255, 255); margin-top: -3px; -unity-text-outline-width: 2px; -unity-text-outline-color: rgba(114, 40, 40, 0.75);" />
+                </ui:VisualElement>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
-
-    <ui:VisualElement
-        name="bonus-widget-container"
-        style="
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 124px;
-            align-items: center;
-            justify-content: center;
-        "
-    >
-        <ui:VisualElement
-            name="bonus-widget-panel"
-            style="
-                width: 230px;
-                height: 84px;
-                background-color: rgba(255, 255, 255, 0.58);
-                border-top-left-radius: 12px;
-                border-top-right-radius: 12px;
-                border-bottom-left-radius: 12px;
-                border-bottom-right-radius: 12px;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                gap: 12px;
-                padding-left: 10px;
-                padding-right: 10px;
-            "
-        >
-            <ui:VisualElement
-                name="bonus-dessert-image"
-                style="
-                    width: 56px;
-                    height: 56px;
-                    background-color: rgba(0, 0, 0, 0);
-                    border-top-left-radius: 8px;
-                    border-top-right-radius: 8px;
-                    border-bottom-left-radius: 8px;
-                    border-bottom-right-radius: 8px;
-                    -unity-background-scale-mode: scale-to-fit;
-                    background-position-x: center;
-                    background-position-y: center;
-                    background-repeat: no-repeat;
-                "
-            />
-            <ui:Label
-                name="bonus-multiplier-label"
-                text="x1.50"
-                style="
-                    unity-text-align: middle-center;
-                    -unity-font-style: bold;
-                    font-size: 30px;
-                    color: rgba(0, 0, 0, 1);
-                "
-            />
-        </ui:VisualElement>
+    <ui:VisualElement name="menu-container" style="position: absolute; left: 16px; bottom: 22px; align-items: center; justify-content: center;">
+        <ui:Button name="gameplay-menu-button" text="Menu" style="width: 188px; height: 62px; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; -unity-font-style: bold; font-size: 24px; color: rgb(255, 245, 220); -unity-text-outline-width: 2px; -unity-text-outline-color: rgba(108, 34, 56, 0.86); background-image: resource(&apos;UI/Level UI/table_1&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill;" />
     </ui:VisualElement>
-
-    <ui:VisualElement
-        name="menu-container"
-        style="
-            position: absolute;
-            left: 16px;
-            top: 16px;
-            align-items: center;
-            justify-content: center;
-        "
-    >
-        <ui:Button
-            name="gameplay-menu-button"
-            text="В меню"
-            style="
-                width: 160px;
-                height: 70px;
-                border-top-left-radius: 14px;
-                border-top-right-radius: 14px;
-                border-bottom-left-radius: 14px;
-                border-bottom-right-radius: 14px;
-                -unity-font-style: bold;
-                font-size: 24px;
-                color: rgba(0, 0, 0, 1);
-                background-color: rgba(255, 255, 255, 0.76);
-            "
-        />
-    </ui:VisualElement>
-
-    <ui:VisualElement
-        name="shuffle-container"
-        style="
-            position: absolute;
-            right: 16px;
-            top: 16px;
-            align-items: center;
-            justify-content: center;
-        "
-    >
-        <ui:Button
-            name="shuffle-button"
-            text="Shuffle"
-            style="
-                width: 160px;
-                height: 70px;
-                border-top-left-radius: 14px;
-                border-top-right-radius: 14px;
-                border-bottom-left-radius: 14px;
-                border-bottom-right-radius: 14px;
-                -unity-font-style: bold;
-                font-size: 24px;
-                color: rgba(0, 0, 0, 1);
-                background-color: rgba(255, 255, 255, 0.76);
-            "
-        />
-    </ui:VisualElement>
-
-    <ui:VisualElement
-        name="bottom-timer-container"
-        style="
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 16px;
-            align-items: center;
-            justify-content: center;
-        "
-    >
-        <ui:VisualElement
-            name="timer-panel"
-            style="
-                width: 80%;
-                min-width: 220px;
-                height: 48px;
-                background-color: rgba(255, 255, 255, 0.35);
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
-                border-bottom-left-radius: 8px;
-                border-bottom-right-radius: 8px;
-                position: relative;
-                overflow: hidden;
-                justify-content: center;
-                align-items: center;
-            "
-        >
-            <ui:VisualElement
-                name="timer-progress-fill"
-                style="
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    bottom: 0;
-                    width: 100%;
-                    background-color: rgba(95, 185, 110, 0.8);
-                "
-            />
-            <ui:Label
-                name="timer-countdown-label"
-                text="00:00"
-                style="
-                    unity-text-align: middle-center;
-                    -unity-font-style: bold;
-                    font-size: 22px;
-                    color: rgba(0, 0, 0, 1);
-                "
-            />
-        </ui:VisualElement>
+    <ui:VisualElement name="shuffle-container" style="position: absolute; right: 16px; bottom: 22px; align-items: center; justify-content: center;">
+        <ui:Button name="shuffle-button" text="Shuffle" style="width: 188px; height: 62px; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; -unity-font-style: bold; font-size: 24px; color: rgb(255, 245, 220); -unity-text-outline-width: 2px; -unity-text-outline-color: rgba(108, 34, 56, 0.86); background-image: resource(&apos;UI/Level UI/table_1&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill;" />
     </ui:VisualElement>
 </ui:UXML>

@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using Project.Scripts.GameManager;
 using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
 using UnityEngine;
@@ -10,12 +11,17 @@ namespace Project.Scripts.UI.LevelUI
     public class LevelUIView : LayoutViewBase, ILevelUIView
     {
         [Inject] private readonly ILocalizationService _localizationService;
+        [Inject] private readonly ILevelSelectionService _levelSelectionService;
 
         private Label _counterLabel;
         private Label _totalDessertsLabel;
         private Label _countdownLabel;
         private Label _bonusMultiplierLabel;
-        private VisualElement _fillElement;
+        private VisualElement _levelProgressBar;
+        private VisualElement _levelProgressFill;
+        private VisualElement _progressStar1;
+        private VisualElement _progressStar2;
+        private VisualElement _progressStar3;
         private VisualElement _bonusDessertImage;
         private Button _shuffleButton;
         private Button _exitToMenuButton;
@@ -30,15 +36,14 @@ namespace Project.Scripts.UI.LevelUI
             _totalDessertsLabel = _root.Q<Label>("total-desserts-label");
             _countdownLabel = _root.Q<Label>("timer-countdown-label");
             _bonusMultiplierLabel = _root.Q<Label>("bonus-multiplier-label");
-            _fillElement = _root.Q<VisualElement>("timer-progress-fill");
+            _levelProgressBar = _root.Q<VisualElement>("level-progress-bar");
+            _levelProgressFill = _root.Q<VisualElement>("level-progress-fill");
+            _progressStar1 = _root.Q<VisualElement>("progress-star-1");
+            _progressStar2 = _root.Q<VisualElement>("progress-star-2");
+            _progressStar3 = _root.Q<VisualElement>("progress-star-3");
             _bonusDessertImage = _root.Q<VisualElement>("bonus-dessert-image");
             _shuffleButton = _root.Q<Button>("shuffle-button");
             _exitToMenuButton = _root.Q<Button>("gameplay-menu-button");
-
-            if (_counterLabel == null)
-            {
-                Debug.LogError("LevelUIView: Label 'level-counter-label' not found in UXML.");
-            }
 
             if (_totalDessertsLabel == null)
             {
@@ -55,10 +60,7 @@ namespace Project.Scripts.UI.LevelUI
                 Debug.LogError("LevelUIView: Label 'bonus-multiplier-label' not found in UXML.");
             }
 
-            if (_fillElement == null)
-            {
-                Debug.LogError("LevelUIView: VisualElement 'timer-progress-fill' not found in UXML.");
-            }
+            ConfigureProgressBar();
 
             if (_bonusDessertImage == null)
             {
@@ -84,6 +86,8 @@ namespace Project.Scripts.UI.LevelUI
                 _exitToMenuButton.text = GetLocalizedText(LocalizationKeys.HudMenuButton, _exitToMenuButton.text);
                 _exitToMenuButton.clicked += OnExitToMenuButtonClicked;
             }
+
+            ConfigureProgressStars();
         }
 
         private void OnDestroy()
@@ -130,11 +134,11 @@ namespace Project.Scripts.UI.LevelUI
 
         public void SetProgress(float value01)
         {
-            if (_fillElement == null)
+            if (_levelProgressFill == null)
                 return;
 
-            var clampedValue = Mathf.Clamp01(value01);
-            _fillElement.style.width = Length.Percent(clampedValue * 100f);
+            _levelProgressFill.style.width = Length.Percent(Mathf.Clamp01(value01) * 100f);
+            _levelProgressFill.MarkDirtyRepaint();
         }
 
         public void SetBonusDessertSprite(Sprite sprite)
@@ -157,6 +161,82 @@ namespace Project.Scripts.UI.LevelUI
                 return;
 
             _bonusMultiplierLabel.text = text;
+        }
+
+        private void ConfigureProgressBar()
+        {
+            if (_levelProgressBar == null)
+            {
+                Debug.LogError("LevelUIView: VisualElement 'level-progress-bar' not found in UXML.");
+                return;
+            }
+
+            if (_levelProgressFill == null)
+            {
+                Debug.LogError("LevelUIView: VisualElement 'level-progress-fill' not found in UXML.");
+                return;
+            }
+
+            var backgroundSprite = Resources.Load<Sprite>("UI/Level UI/bgload");
+            if (backgroundSprite == null)
+            {
+                Debug.LogError("LevelUIView: sprite 'UI/Level UI/bgload' not found.");
+            }
+
+            _levelProgressBar.style.backgroundImage = backgroundSprite != null
+                ? new StyleBackground(backgroundSprite)
+                : StyleKeyword.None;
+            _levelProgressBar.style.backgroundColor = Color.clear;
+            _levelProgressBar.style.unityBackgroundImageTintColor = Color.white;
+            _levelProgressBar.style.overflow = Overflow.Hidden;
+
+            var fillSprite = Resources.Load<Sprite>("UI/Level UI/load");
+            if (fillSprite == null)
+            {
+                Debug.LogError("LevelUIView: sprite 'UI/Level UI/load' not found.");
+            }
+
+            _levelProgressFill.style.backgroundImage = fillSprite != null
+                ? new StyleBackground(fillSprite)
+                : StyleKeyword.None;
+            _levelProgressFill.style.backgroundColor = Color.clear;
+            _levelProgressFill.style.unityBackgroundImageTintColor = Color.white;
+            _levelProgressFill.style.left = 0f;
+            _levelProgressFill.style.top = 0f;
+            _levelProgressFill.style.bottom = 0f;
+            _levelProgressFill.style.width = Length.Percent(0f);
+        }
+
+        private void ConfigureProgressStars()
+        {
+            var levelConfig = _levelSelectionService?.CurrentLevel;
+            if (levelConfig == null)
+                return;
+
+            var threeStarsScore = Mathf.Max(1, levelConfig.ThreeStarsScore);
+            var oneRatio = Mathf.Clamp01((float)levelConfig.OneStarScore / threeStarsScore);
+            var twoRatio = Mathf.Clamp01((float)levelConfig.TwoStarsScore / threeStarsScore);
+            var threeRatio = Mathf.Clamp01((float)levelConfig.ThreeStarsScore / threeStarsScore);
+
+            SetProgressStarPosition(_progressStar1, oneRatio, pinToEnd: false);
+            SetProgressStarPosition(_progressStar2, twoRatio, pinToEnd: false);
+            SetProgressStarPosition(_progressStar3, threeRatio, pinToEnd: true);
+        }
+
+        private static void SetProgressStarPosition(VisualElement starMarker, float ratio, bool pinToEnd)
+        {
+            if (starMarker == null)
+                return;
+
+            if (pinToEnd)
+            {
+                starMarker.style.left = StyleKeyword.Auto;
+                starMarker.style.right = 0f;
+                return;
+            }
+
+            starMarker.style.right = StyleKeyword.Auto;
+            starMarker.style.left = Length.Percent(Mathf.Clamp01(ratio) * 100f);
         }
 
         private string GetLocalizedText(string key, string fallback)

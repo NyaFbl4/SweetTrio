@@ -2,7 +2,6 @@ using System;
 using Assets.Project.Scripts.System.DessertCreator;
 using Assets.Project.Scripts.System.DessertCreator.Dtos;
 using MessagePipe;
-using Project.Scripts.System.Localization;
 using Project.Scripts.UI.LevelUI;
 using VContainer.Unity;
 
@@ -13,7 +12,6 @@ namespace Project.Scripts.UI.UseCases
         private readonly ILevelUIPresenter _levelUIPresenter;
         private readonly IDessertSpawner _dessertSpawner;
         private readonly ISubscriber<DessertCountsDto> _dessertCountsSubscriber;
-        private readonly ILocalizationService _localizationService;
 
         private IDisposable _subscription = DisposableBag.Empty;
         private int _value;
@@ -23,13 +21,11 @@ namespace Project.Scripts.UI.UseCases
         public DessertCountUseCase(
             ILevelUIPresenter levelUIPresenter,
             IDessertSpawner dessertSpawner,
-            ISubscriber<DessertCountsDto> dessertCountsSubscriber,
-            ILocalizationService localizationService)
+            ISubscriber<DessertCountsDto> dessertCountsSubscriber)
         {
             _levelUIPresenter = levelUIPresenter;
             _dessertSpawner = dessertSpawner;
             _dessertCountsSubscriber = dessertCountsSubscriber;
-            _localizationService = localizationService;
         }
 
         public void Initialize()
@@ -63,11 +59,7 @@ namespace Project.Scripts.UI.UseCases
 
         private void NotifyPresenter()
         {
-            var text = _localizationService != null
-                ? _localizationService.Format(LocalizationKeys.HudDessertsFormat, _value)
-                : $"Desserts: {_value}";
-
-            _levelUIPresenter.SetTotalDessertsText(text);
+            _levelUIPresenter.SetTotalDessertsText(_value.ToString());
         }
     }
 }
