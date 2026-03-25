@@ -67,12 +67,7 @@ namespace Project.Scripts.UI.UseCases
         private void NotifyPresenter()
         {
             RefreshTargetScore();
-
-            var text = _targetScore > 0
-                ? $"{_value}/{_targetScore}"
-                : _value.ToString();
-
-            _levelUIPresenter.SetCounterText(text);
+            _levelUIPresenter.SetCounter(_value);
 
             var normalized = _targetScore > 0
                 ? Mathf.Clamp01((float)_value / _targetScore)

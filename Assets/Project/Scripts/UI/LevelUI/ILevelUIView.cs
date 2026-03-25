@@ -8,6 +8,7 @@ namespace Project.Scripts.UI.LevelUI
     {
         event Action ShuffleButtonClicked;
         event Action ExitToMenuClicked;
+        event Action PauseButtonClicked;
 
         void SetCounter(int value);
         void SetCounterText(string text);

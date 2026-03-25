@@ -7,6 +7,7 @@ using Project.Scripts.Systems.UI;
 using Project.Scripts.UI.EndGame;
 using Project.Scripts.UI.LevelUI;
 using Project.Scripts.UI.MainScreen;
+using Project.Scripts.UI.PauseUI;
 using Project.Scripts.UI.UseCases;
 using Project.System;
 using UnityEngine;
@@ -102,6 +103,7 @@ namespace Project.Scripts.System.Installers
             builder.RegisterEntryPoint<MainMenuPresenter>(Lifetime.Singleton).As<IMainMenuPresenter>();
             builder.RegisterEntryPoint<LevelUIPresenter>(Lifetime.Singleton).As<ILevelUIPresenter>();
             builder.RegisterEntryPoint<EndGamePresenter>(Lifetime.Singleton).As<IEndGamePresenter>();
+            builder.RegisterEntryPoint<PauseUIPresenter>(Lifetime.Singleton).As<IPauseUIPresenter>();
         }
 
         private void RegisterConfigs(IContainerBuilder builder)

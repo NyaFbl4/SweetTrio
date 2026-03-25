@@ -6,6 +6,7 @@ namespace Project.Scripts.UI.EndGame
     public interface IEndGameView : ILayoutView
     {
         event Action ExitToMenuClicked;
+        event Action SecondaryButtonClicked;
 
         void SetTitle(string message);
         void SetScoreText(string text);

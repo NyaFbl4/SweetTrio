@@ -2,6 +2,7 @@
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
+using Project.Scripts.UI.PauseUI;
 using Project.Scripts.UI.MainScreen;
 using UnityEngine;
 using VContainer;
@@ -21,12 +22,14 @@ namespace Project.Scripts.UI.LevelUI
             IGameListener.Register(this);
             _layoutView.ShuffleButtonClicked += HandleShuffleButtonClicked;
             _layoutView.ExitToMenuClicked += HandleExitToMenuClicked;
+            _layoutView.PauseButtonClicked += HandlePauseButtonClicked;
         }
 
         public override void Dispose()
         {
             _layoutView.ShuffleButtonClicked -= HandleShuffleButtonClicked;
             _layoutView.ExitToMenuClicked -= HandleExitToMenuClicked;
+            _layoutView.PauseButtonClicked -= HandlePauseButtonClicked;
             IGameListener.Unregister(this);
             base.Dispose();
         }
@@ -78,6 +81,11 @@ namespace Project.Scripts.UI.LevelUI
         {
             _hidePopUpPublisher.Publish(new HidePopupDto
             {
+                TargetPopUpType = typeof(IPauseUIPresenter)
+            });
+
+            _hidePopUpPublisher.Publish(new HidePopupDto
+            {
                 TargetPopUpType = typeof(ILevelUIPresenter)
             });
         }
@@ -94,6 +102,14 @@ namespace Project.Scripts.UI.LevelUI
             _showPopUpPublisher.Publish(new ShowPopupDto
             {
                 TargetPopUpType = typeof(IMainMenuPresenter)
+            });
+        }
+
+        private void HandlePauseButtonClicked()
+        {
+            _showPopUpPublisher.Publish(new ShowPopupDto
+            {
+                TargetPopUpType = typeof(IPauseUIPresenter)
             });
         }
     }

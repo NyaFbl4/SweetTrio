@@ -25,14 +25,19 @@ namespace Project.Scripts.UI.LevelUI
         private VisualElement _bonusDessertImage;
         private Button _shuffleButton;
         private Button _exitToMenuButton;
+        private Button _pauseButton;
 
         public event Action ShuffleButtonClicked;
         public event Action ExitToMenuClicked;
+        public event Action PauseButtonClicked;
 
         public override void Awake()
         {
             base.Awake();
-            _counterLabel = _root.Q<Label>("level-counter-label");
+            var scorePanel = _root.Q<VisualElement>("score-panel");
+            _counterLabel = _root.Q<Label>("score-counter-label")
+                            ?? _root.Q<Label>("level-counter-label")
+                            ?? scorePanel?.Q<Label>();
             _totalDessertsLabel = _root.Q<Label>("total-desserts-label");
             _countdownLabel = _root.Q<Label>("timer-countdown-label");
             _bonusMultiplierLabel = _root.Q<Label>("bonus-multiplier-label");
@@ -44,6 +49,12 @@ namespace Project.Scripts.UI.LevelUI
             _bonusDessertImage = _root.Q<VisualElement>("bonus-dessert-image");
             _shuffleButton = _root.Q<Button>("shuffle-button");
             _exitToMenuButton = _root.Q<Button>("gameplay-menu-button");
+            _pauseButton = _root.Q<Button>("pause-button");
+
+            if (_counterLabel == null)
+            {
+                Debug.LogError("LevelUIView: Score label not found. Expected 'score-counter-label' in 'score-panel'.");
+            }
 
             if (_totalDessertsLabel == null)
             {
@@ -87,6 +98,15 @@ namespace Project.Scripts.UI.LevelUI
                 _exitToMenuButton.clicked += OnExitToMenuButtonClicked;
             }
 
+            if (_pauseButton == null)
+            {
+                Debug.LogError("LevelUIView: Button 'pause-button' not found in UXML.");
+            }
+            else
+            {
+                _pauseButton.clicked += OnPauseButtonClicked;
+            }
+
             ConfigureProgressStars();
         }
 
@@ -100,6 +120,11 @@ namespace Project.Scripts.UI.LevelUI
             if (_exitToMenuButton != null)
             {
                 _exitToMenuButton.clicked -= OnExitToMenuButtonClicked;
+            }
+
+            if (_pauseButton != null)
+            {
+                _pauseButton.clicked -= OnPauseButtonClicked;
             }
         }
 
@@ -256,6 +281,11 @@ namespace Project.Scripts.UI.LevelUI
         private void OnExitToMenuButtonClicked()
         {
             ExitToMenuClicked?.Invoke();
+        }
+
+        private void OnPauseButtonClicked()
+        {
+            PauseButtonClicked?.Invoke();
         }
     }
 }

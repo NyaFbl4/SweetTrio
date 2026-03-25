@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xmlns:uie="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+>
+    <ui:VisualElement
+        name="pause-overlay"
+        style="
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.55);
+            align-items: center;
+            justify-content: center;
+        "
+    >
+        <ui:VisualElement
+            name="pause-panel"
+            style="
+                width: 360px;
+                height: 560px;
+                align-items: center;
+                justify-content: flex-start;
+                background-image: resource('UI/EndGamePanel/bg');
+                background-color: rgba(0, 0, 0, 0);
+                -unity-background-scale-mode: scale-to-fit;
+            "
+        >
+            <ui:Label
+                name="pause-title-label"
+                text="PAUSE"
+                style="
+                    margin-top: 64px;
+                    unity-text-align: middle-center;
+                    -unity-font-style: bold;
+                    font-size: 42px;
+                    color: rgba(255, 242, 230, 1);
+                    -unity-text-outline-width: 2px;
+                    -unity-text-outline-color: rgba(158, 54, 78, 1);
+                "
+            />
+            <ui:VisualElement
+                name="pause-buttons-row"
+                style="
+                    margin-top: 220px;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                "
+            >
+                <ui:Button
+                    name="pause-settings-button"
+                    style="
+                        width: 84px;
+                        height: 84px;
+                        border-left-width: 0;
+                        border-right-width: 0;
+                        border-top-width: 0;
+                        border-bottom-width: 0;
+                        padding-left: 0;
+                        padding-right: 0;
+                        padding-top: 0;
+                        padding-bottom: 0;
+                        background-image: resource('UI/Buttons/setting');
+                        background-color: rgba(0, 0, 0, 0);
+                        -unity-background-scale-mode: stretch-to-fill;
+                    "
+                />
+                <ui:Button
+                    name="pause-play-button"
+                    style="
+                        margin-left: 24px;
+                        width: 84px;
+                        height: 84px;
+                        border-left-width: 0;
+                        border-right-width: 0;
+                        border-top-width: 0;
+                        border-bottom-width: 0;
+                        padding-left: 0;
+                        padding-right: 0;
+                        padding-top: 0;
+                        padding-bottom: 0;
+                        background-image: resource('UI/Buttons/play');
+                        background-color: rgba(0, 0, 0, 0);
+                        -unity-background-scale-mode: stretch-to-fill;
+                    "
+                />
+                <ui:Button
+                    name="pause-menu-button"
+                    style="
+                        margin-left: 24px;
+                        width: 84px;
+                        height: 84px;
+                        border-left-width: 0;
+                        border-right-width: 0;
+                        border-top-width: 0;
+                        border-bottom-width: 0;
+                        padding-left: 0;
+                        padding-right: 0;
+                        padding-top: 0;
+                        padding-bottom: 0;
+                        background-image: resource('UI/Buttons/menu');
+                        background-color: rgba(0, 0, 0, 0);
+                        -unity-background-scale-mode: stretch-to-fill;
+                    "
+                />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
