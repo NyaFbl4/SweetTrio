@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Project.Scripts.Systems.UI;
 using UnityEngine;
@@ -25,7 +25,7 @@ namespace Project.Scripts.UI.EndGame
         private Button _primaryActionButton;
         private Button _secondaryActionButton;
 
-        public event Action ExitToMenuClicked;
+        public event Action PrimaryButtonClicked;
         public event Action SecondaryButtonClicked;
 
         public override void Awake()
@@ -172,7 +172,7 @@ namespace Project.Scripts.UI.EndGame
 
         private void HandlePrimaryActionClicked()
         {
-            ExitToMenuClicked?.Invoke();
+            PrimaryButtonClicked?.Invoke();
         }
 
         private void HandleSecondaryActionClicked()

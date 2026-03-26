@@ -18,13 +18,15 @@ namespace Project.Scripts.UI.EndGame
         public override void Initialize()
         {
             base.Initialize();
-            _layoutView.ExitToMenuClicked += HandleExitToMenuClicked;
+            _layoutView.PrimaryButtonClicked += HandlePrimaryButtonClicked;
+            _layoutView.SecondaryButtonClicked += HandleSecondaryButtonClicked;
             IGameListener.Register(this);
         }
 
         public override void Dispose()
         {
-            _layoutView.ExitToMenuClicked -= HandleExitToMenuClicked;
+            _layoutView.PrimaryButtonClicked -= HandlePrimaryButtonClicked;
+            _layoutView.SecondaryButtonClicked -= HandleSecondaryButtonClicked;
             IGameListener.Unregister(this);
             base.Dispose();
         }
@@ -44,7 +46,6 @@ namespace Project.Scripts.UI.EndGame
             _layoutView.SetScoreText(scoreText);
             _layoutView.SetScoreVisible(true);
 
-            // Current EndGame design: title + score + stars + menu button.
             _layoutView.SetCompletionText(string.Empty);
             _layoutView.SetCompletionVisible(false);
 
@@ -59,7 +60,12 @@ namespace Project.Scripts.UI.EndGame
             _hidePopUpPublisher.Publish(new HidePopupDto { TargetPopUpType = typeof(IEndGamePresenter) });
         }
 
-        private void HandleExitToMenuClicked()
+        private void HandlePrimaryButtonClicked()
+        {
+            _gameManagerService.StartGame();
+        }
+
+        private void HandleSecondaryButtonClicked()
         {
             _gameManagerService.FinishGame();
 

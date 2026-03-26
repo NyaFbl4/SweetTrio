@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using Project.Scripts.Systems.UI;
 
 namespace Project.Scripts.UI.EndGame
 {
     public interface IEndGameView : ILayoutView
     {
-        event Action ExitToMenuClicked;
+        event Action PrimaryButtonClicked;
         event Action SecondaryButtonClicked;
 
         void SetTitle(string message);
