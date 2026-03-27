@@ -14,6 +14,7 @@ namespace Project.Scripts.UI.LevelUI
         [Inject] private readonly ILevelSelectionService _levelSelectionService;
 
         private Label _counterLabel;
+        private Label _dessertsLabel;
         private Label _totalDessertsLabel;
         private Label _countdownLabel;
         private Label _bonusMultiplierLabel;
@@ -38,6 +39,7 @@ namespace Project.Scripts.UI.LevelUI
             _counterLabel = _root.Q<Label>("score-counter-label")
                             ?? _root.Q<Label>("level-counter-label")
                             ?? scorePanel?.Q<Label>();
+            _dessertsLabel = _root.Q<Label>("desserts-label");
             _totalDessertsLabel = _root.Q<Label>("total-desserts-label");
             _countdownLabel = _root.Q<Label>("timer-countdown-label");
             _bonusMultiplierLabel = _root.Q<Label>("bonus-multiplier-label");
@@ -59,6 +61,15 @@ namespace Project.Scripts.UI.LevelUI
             if (_totalDessertsLabel == null)
             {
                 Debug.LogError("LevelUIView: Label 'total-desserts-label' not found in UXML.");
+            }
+
+            if (_dessertsLabel == null)
+            {
+                Debug.LogError("LevelUIView: Label 'desserts-label' not found in UXML.");
+            }
+            else
+            {
+                _dessertsLabel.text = GetLocalizedText(LocalizationKeys.HudDessertsLabel, _dessertsLabel.text);
             }
 
             if (_countdownLabel == null)
@@ -84,7 +95,7 @@ namespace Project.Scripts.UI.LevelUI
             }
             else
             {
-                _shuffleButton.text = GetLocalizedText(LocalizationKeys.HudShuffleButton, _shuffleButton.text);
+                _shuffleButton.text = string.Empty;
                 _shuffleButton.clicked += OnShuffleButtonClicked;
             }
 
@@ -289,3 +300,4 @@ namespace Project.Scripts.UI.LevelUI
         }
     }
 }
+

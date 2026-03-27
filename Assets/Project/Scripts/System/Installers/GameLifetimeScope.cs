@@ -1,4 +1,4 @@
-using Assets.Project.Scripts.Desserts;
+﻿using Assets.Project.Scripts.Desserts;
 using Assets.Project.Scripts.System.DessertCreator;
 using MessagePipe;
 using Project.Scripts.GameManager;
@@ -8,6 +8,7 @@ using Project.Scripts.UI.EndGame;
 using Project.Scripts.UI.LevelUI;
 using Project.Scripts.UI.MainScreen;
 using Project.Scripts.UI.PauseUI;
+using Project.Scripts.UI.SettingsUI;
 using Project.Scripts.UI.UseCases;
 using Project.System;
 using UnityEngine;
@@ -104,6 +105,7 @@ namespace Project.Scripts.System.Installers
             builder.RegisterEntryPoint<LevelUIPresenter>(Lifetime.Singleton).As<ILevelUIPresenter>();
             builder.RegisterEntryPoint<EndGamePresenter>(Lifetime.Singleton).As<IEndGamePresenter>();
             builder.RegisterEntryPoint<PauseUIPresenter>(Lifetime.Singleton).As<IPauseUIPresenter>();
+            builder.RegisterEntryPoint<SettingsUIPresenter>(Lifetime.Singleton).As<ISettingsUIPresenter>();
         }
 
         private void RegisterConfigs(IContainerBuilder builder)
@@ -116,3 +118,5 @@ namespace Project.Scripts.System.Installers
         }
     }
 }
+
+

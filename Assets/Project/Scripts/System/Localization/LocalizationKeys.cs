@@ -14,6 +14,7 @@ namespace Project.Scripts.System.Localization
         public const string EndGameMenuButton = "end_game.menu_button";
 
         public const string HudScoreFormat = "hud.score_format";
+        public const string HudDessertsLabel = "hud.desserts_label";
         public const string HudDessertsFormat = "hud.desserts_format";
         public const string HudShuffleButton = "hud.shuffle_button";
         public const string HudMenuButton = "hud.menu_button";

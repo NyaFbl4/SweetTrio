@@ -15,19 +15,13 @@ namespace Project.System
     public class ActionBar : MonoBehaviour, IActionBar
     {
         private const int MatchCount = 3;
-        private const string SlotVisualName = "SlotVisual";
-        private const string LegacyBackgroundName = "Square";
+        private static readonly Vector3 DessertSlotLocalOffset = new(0f, 0.2f, 0f);
 
         [SerializeField] private Transform _actionBarContainer;
         [SerializeField] private int _maxCount = 7;
         [SerializeField] private int _baseSortingOrder = 100;
         [SerializeField] private List<Transform> _slots = new();
         [SerializeField, Min(0.1f)] private float _autoSlotSpacing = 0.9f;
-        [SerializeField] private bool _createSlotVisuals = true;
-        [SerializeField] private Sprite _slotVisualSprite;
-        [SerializeField] private Color _slotVisualColor = new Color(1f, 1f, 1f, 0.35f);
-        [SerializeField] private Vector3 _slotVisualScale = new(0.7f, 0.7f, 1f);
-        [SerializeField] private int _slotVisualSortingOffset = -10;
         [Inject] private readonly IDessertSpawner _dessertSpawner;
         [Inject] private readonly ITimerCountdownUseCase _timerCountdownUseCase;
         [Inject] private readonly ILevelSelectionService _levelSelectionService;
@@ -199,7 +193,7 @@ namespace Project.System
 
                 var slot = GetSlotByIndex(i);
                 dessert.transform.SetParent(slot, worldPositionStays: false);
-                dessert.transform.localPosition = Vector3.zero;
+                dessert.transform.localPosition = DessertSlotLocalOffset;
                 dessert.transform.localRotation = Quaternion.identity;
                 dessert.transform.localScale = Vector3.one * 0.85f;
                 ApplyRenderOrder(dessert, _baseSortingOrder + i);
@@ -223,8 +217,6 @@ namespace Project.System
         {
             if (_actionBarContainer == null)
                 return;
-
-            DisableLegacyBackground();
 
             if (_slots == null)
             {
@@ -253,14 +245,6 @@ namespace Project.System
                     _slots.Add(slotTransform);
                 }
             }
-
-            if (!_createSlotVisuals)
-                return;
-
-            for (var i = 0; i < _slots.Count; i++)
-            {
-                EnsureSlotVisual(_slots[i]);
-            }
         }
 
         private Transform GetSlotByIndex(int index)
@@ -280,56 +264,6 @@ namespace Project.System
                     _slots.RemoveAt(i);
                 }
             }
-        }
-
-        private void DisableLegacyBackground()
-        {
-            var legacyBackground = transform.Find(LegacyBackgroundName);
-            if (legacyBackground == null)
-                return;
-
-            var legacyRenderer = legacyBackground.GetComponent<SpriteRenderer>();
-            if (_slotVisualSprite == null && legacyRenderer != null && legacyRenderer.sprite != null)
-            {
-                _slotVisualSprite = legacyRenderer.sprite;
-            }
-
-            if (legacyBackground.gameObject.activeSelf)
-            {
-                legacyBackground.gameObject.SetActive(false);
-            }
-        }
-
-        private void EnsureSlotVisual(Transform slot)
-        {
-            if (slot == null)
-                return;
-
-            var slotVisual = slot.Find(SlotVisualName);
-            if (slotVisual == null)
-            {
-                var visualObject = new GameObject(SlotVisualName);
-                slotVisual = visualObject.transform;
-                slotVisual.SetParent(slot, worldPositionStays: false);
-            }
-
-            slotVisual.localPosition = Vector3.zero;
-            slotVisual.localRotation = Quaternion.identity;
-            slotVisual.localScale = _slotVisualScale;
-
-            var spriteRenderer = slotVisual.GetComponent<SpriteRenderer>();
-            if (spriteRenderer == null)
-            {
-                spriteRenderer = slotVisual.gameObject.AddComponent<SpriteRenderer>();
-            }
-
-            var sprite = _slotVisualSprite != null
-                ? _slotVisualSprite
-                : Resources.GetBuiltinResource<Sprite>("UI/Skin/Background.psd");
-
-            spriteRenderer.sprite = sprite;
-            spriteRenderer.color = _slotVisualColor;
-            spriteRenderer.sortingOrder = _baseSortingOrder + _slotVisualSortingOffset;
         }
 
         private void PublishCountsChanged()

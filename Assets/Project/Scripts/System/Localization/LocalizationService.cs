@@ -139,6 +139,7 @@ namespace Project.Scripts.System.Localization
             AddEntry(LocalizationKeys.EndGameMenuButton, "В меню", "Menu");
 
             AddEntry(LocalizationKeys.HudScoreFormat, "Очки: {0}", "Score: {0}");
+            AddEntry(LocalizationKeys.HudDessertsLabel, "Десерты", "Desserts");
             AddEntry(LocalizationKeys.HudDessertsFormat, "Десерты: {0}", "Desserts: {0}");
             AddEntry(LocalizationKeys.HudShuffleButton, "Перемешать", "Shuffle");
             AddEntry(LocalizationKeys.HudMenuButton, "В меню", "Menu");

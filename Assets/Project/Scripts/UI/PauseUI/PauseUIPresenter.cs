@@ -4,6 +4,7 @@ using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
 using Project.Scripts.UI.MainScreen;
+using Project.Scripts.UI.SettingsUI;
 using UnityEngine;
 using VContainer;
 
@@ -14,7 +15,6 @@ namespace Project.Scripts.UI.PauseUI
         [Inject] private readonly IGameManagerService _gameManagerService;
         [Inject] private readonly IPublisher<ShowPopupDto> _showPopUpPublisher;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
-        [Inject] private readonly IPublisher<OpenPauseSettingsDto> _openPauseSettingsPublisher;
 
         public override void Initialize()
         {
@@ -72,7 +72,10 @@ namespace Project.Scripts.UI.PauseUI
 
         private void HandleSettingsClicked()
         {
-            _openPauseSettingsPublisher.Publish(new OpenPauseSettingsDto());
+            _showPopUpPublisher.Publish(new ShowPopupDto
+            {
+                TargetPopUpType = typeof(ISettingsUIPresenter)
+            });
         }
 
         private void HandleMenuClicked()

@@ -1,0 +1,17 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="settings-overlay" style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.45); align-items: center; justify-content: center;">
+        <ui:VisualElement name="settings-panel" style="width: 760px; height: 620px; background-image: resource('UI/Settings Panel/bg'); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill; position: relative;">
+            <ui:Button name="settings-close-button" style="position: absolute; right: 64px; top: 64px; width: 74px; height: 74px; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; background-image: resource('UI/Settings Panel/close_2'); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill;" />
+            <ui:VisualElement name="settings-content" style="position: absolute; left: 104px; right: 104px; top: 176px; bottom: 118px; background-image: resource('UI/Settings Panel/table'); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill; padding-left: 56px; padding-right: 56px; padding-top: 70px; padding-bottom: 50px;">
+                <ui:VisualElement name="settings-music-row" style="height: 92px; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <ui:Label name="settings-music-label" text="MUSIC" style="color: rgb(104, 52, 22); -unity-font-style: bold; font-size: 34px; letter-spacing: 1px;" />
+                    <ui:Button name="settings-music-toggle-button" style="width: 128px; height: 46px; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; background-image: resource('UI/Settings Panel/on'); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="settings-sound-row" style="height: 92px; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <ui:Label name="settings-sound-label" text="SOUND" style="color: rgb(104, 52, 22); -unity-font-style: bold; font-size: 34px; letter-spacing: 1px;" />
+                    <ui:Button name="settings-sound-toggle-button" style="width: 128px; height: 46px; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; background-image: resource('UI/Settings Panel/on'); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

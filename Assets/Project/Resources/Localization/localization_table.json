@@ -52,6 +52,11 @@
       "en": "Score: {0}"
     },
     {
+      "key": "hud.desserts_label",
+      "ru": "Десерты",
+      "en": "Desserts"
+    },
+    {
       "key": "hud.desserts_format",
       "ru": "Десерты: {0}",
       "en": "Desserts: {0}"
