@@ -14,7 +14,7 @@
             </ui:VisualElement>
             <ui:VisualElement name="hud-stats-row" style="position: absolute; left: 22px; right: 22px; bottom: 62px; height: 86px; flex-direction: row; align-items: center; justify-content: space-between;">
                 <ui:VisualElement name="timer-widget" style="width: 27%; min-width: 156px; height: 76px; padding-left: 10px; padding-right: 10px; flex-direction: row; align-items: center; justify-content: center; background-image: resource(&apos;UI/Level UI/table&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill;">
-                    <ui:VisualElement name="timer-icon" style="width: 34px; height: 34px; margin-right: 8px; background-image: resource(&apos;UI/Level UI/clock&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: scale-to-fit;" />
+                    <ui:VisualElement name="timer-icon" style="width: 50px; height: 50px; margin-right: 8px; background-image: resource(&apos;UI/Level UI/clock&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: scale-to-fit;" />
                     <ui:Label name="timer-countdown-label" text="00:00" style="unity-text-align: middle-center; -unity-font-style: bold; font-size: 28px; color: rgb(255, 255, 255); -unity-text-outline-width: 2px; -unity-text-outline-color: rgba(114, 40, 40, 0.75);" />
                 </ui:VisualElement>
                 <ui:VisualElement name="bonus-widget" style="width: 200px; min-width: 178px; height: 200px; align-items: center; justify-content: center; flex-direction: column; background-image: resource(&apos;UI/Level UI/panel_no_bg_fixed&apos;); background-color: rgba(0, 0, 0, 0); -unity-background-scale-mode: stretch-to-fill; top: 74px;">

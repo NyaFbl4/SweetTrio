@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Project.Scripts.Systems.UI;
 using UnityEngine;
@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 namespace Project.Scripts.UI.EndGame
 {
-    public class EndGameView : LayoutViewBase, IEndGameView
+    public class EndGameView : AnimatedPopupViewBase, IEndGameView
     {
         private static readonly string[] StarsSpriteByActiveCount =
         {
@@ -25,6 +25,9 @@ namespace Project.Scripts.UI.EndGame
         private Button _primaryActionButton;
         private Button _secondaryActionButton;
 
+        protected override string OverlayElementName => "end-game-overlay";
+        protected override string PanelElementName => "end-game-panel";
+
         public event Action PrimaryButtonClicked;
         public event Action SecondaryButtonClicked;
 
@@ -36,10 +39,16 @@ namespace Project.Scripts.UI.EndGame
             EnsureRequiredElements();
 
             if (_primaryActionButton != null)
+            {
+                UIButtonAnimationUtility.EnableDefault(_primaryActionButton);
                 _primaryActionButton.clicked += HandlePrimaryActionClicked;
+            }
 
             if (_secondaryActionButton != null)
+            {
+                UIButtonAnimationUtility.EnableDefault(_secondaryActionButton);
                 _secondaryActionButton.clicked += HandleSecondaryActionClicked;
+            }
 
             SetCompletionVisible(false);
             SetStars(activeStarsCount: 0, totalStarsCount: 3);
@@ -181,3 +190,4 @@ namespace Project.Scripts.UI.EndGame
         }
     }
 }
+

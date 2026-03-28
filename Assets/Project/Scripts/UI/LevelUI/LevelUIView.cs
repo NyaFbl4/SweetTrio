@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using Cysharp.Threading.Tasks;
 using Project.Scripts.GameManager;
 using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
@@ -27,6 +28,10 @@ namespace Project.Scripts.UI.LevelUI
         private Button _shuffleButton;
         private Button _exitToMenuButton;
         private Button _pauseButton;
+
+        private int _displayedCounterValue;
+        private bool _counterInitialized;
+        private int _counterAnimationVersion;
 
         public event Action ShuffleButtonClicked;
         public event Action ExitToMenuClicked;
@@ -95,6 +100,7 @@ namespace Project.Scripts.UI.LevelUI
             }
             else
             {
+                UIButtonAnimationUtility.EnableDefault(_shuffleButton);
                 _shuffleButton.text = string.Empty;
                 _shuffleButton.clicked += OnShuffleButtonClicked;
             }
@@ -105,6 +111,7 @@ namespace Project.Scripts.UI.LevelUI
             }
             else
             {
+                UIButtonAnimationUtility.EnableDefault(_exitToMenuButton);
                 _exitToMenuButton.text = GetLocalizedText(LocalizationKeys.HudMenuButton, _exitToMenuButton.text);
                 _exitToMenuButton.clicked += OnExitToMenuButtonClicked;
             }
@@ -115,6 +122,7 @@ namespace Project.Scripts.UI.LevelUI
             }
             else
             {
+                UIButtonAnimationUtility.EnableDefault(_pauseButton);
                 _pauseButton.clicked += OnPauseButtonClicked;
             }
 
@@ -123,6 +131,8 @@ namespace Project.Scripts.UI.LevelUI
 
         private void OnDestroy()
         {
+            _counterAnimationVersion++;
+
             if (_shuffleButton != null)
             {
                 _shuffleButton.clicked -= OnShuffleButtonClicked;
@@ -141,7 +151,25 @@ namespace Project.Scripts.UI.LevelUI
 
         public void SetCounter(int value)
         {
-            SetCounterText(value.ToString());
+            var safeValue = Mathf.Max(0, value);
+
+            if (!_counterInitialized)
+            {
+                _counterInitialized = true;
+                _displayedCounterValue = safeValue;
+                SetCounterText(safeValue.ToString());
+                return;
+            }
+
+            if (safeValue <= _displayedCounterValue)
+            {
+                _counterAnimationVersion++;
+                _displayedCounterValue = safeValue;
+                SetCounterText(safeValue.ToString());
+                return;
+            }
+
+            AnimateCounterIncreaseAsync(safeValue).Forget();
         }
 
         public void SetCounterText(string text)
@@ -197,6 +225,42 @@ namespace Project.Scripts.UI.LevelUI
                 return;
 
             _bonusMultiplierLabel.text = text;
+        }
+
+        private async UniTaskVoid AnimateCounterIncreaseAsync(int targetValue)
+        {
+            var version = ++_counterAnimationVersion;
+            var startValue = _displayedCounterValue;
+            var delta = targetValue - startValue;
+            if (delta <= 0)
+                return;
+
+            var duration = Mathf.Clamp(0.12f + delta * 0.002f, 0.12f, 0.55f);
+            var elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                if (version != _counterAnimationVersion)
+                    return;
+
+                elapsed += Time.unscaledDeltaTime;
+                var t = Mathf.Clamp01(elapsed / duration);
+                var eased = 1f - Mathf.Pow(1f - t, 3f);
+                var currentValue = Mathf.RoundToInt(Mathf.Lerp(startValue, targetValue, eased));
+                if (currentValue != _displayedCounterValue)
+                {
+                    _displayedCounterValue = currentValue;
+                    SetCounterText(_displayedCounterValue.ToString());
+                }
+
+                await UniTask.Yield(PlayerLoopTiming.Update);
+            }
+
+            if (version != _counterAnimationVersion)
+                return;
+
+            _displayedCounterValue = targetValue;
+            SetCounterText(_displayedCounterValue.ToString());
         }
 
         private void ConfigureProgressBar()

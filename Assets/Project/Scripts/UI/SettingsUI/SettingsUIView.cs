@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace Project.Scripts.UI.SettingsUI
 {
-    public class SettingsUIView : LayoutViewBase, ISettingsUIView
+    public class SettingsUIView : AnimatedPopupViewBase, ISettingsUIView
     {
         private const string ToggleOnPath = "UI/Settings Panel/on";
         private const string ToggleOffPath = "UI/Settings Panel/off";
@@ -15,6 +15,9 @@ namespace Project.Scripts.UI.SettingsUI
         private Button _soundToggleButton;
         private Texture2D _toggleOnTexture;
         private Texture2D _toggleOffTexture;
+
+        protected override string OverlayElementName => "settings-overlay";
+        protected override string PanelElementName => "settings-panel";
 
         public event Action CloseClicked;
         public event Action MusicToggleClicked;
@@ -31,17 +34,26 @@ namespace Project.Scripts.UI.SettingsUI
             if (_closeButton == null)
                 Debug.LogError("SettingsUIView: Button 'settings-close-button' not found in UXML.");
             else
+            {
+                UIButtonAnimationUtility.EnableDefault(_closeButton);
                 _closeButton.clicked += HandleCloseClicked;
+            }
 
             if (_musicToggleButton == null)
                 Debug.LogError("SettingsUIView: Button 'settings-music-toggle-button' not found in UXML.");
             else
+            {
+                UIButtonAnimationUtility.EnableDefault(_musicToggleButton);
                 _musicToggleButton.clicked += HandleMusicToggleClicked;
+            }
 
             if (_soundToggleButton == null)
                 Debug.LogError("SettingsUIView: Button 'settings-sound-toggle-button' not found in UXML.");
             else
+            {
+                UIButtonAnimationUtility.EnableDefault(_soundToggleButton);
                 _soundToggleButton.clicked += HandleSoundToggleClicked;
+            }
 
             _toggleOnTexture = Resources.Load<Texture2D>(ToggleOnPath);
             _toggleOffTexture = Resources.Load<Texture2D>(ToggleOffPath);
@@ -104,3 +116,4 @@ namespace Project.Scripts.UI.SettingsUI
         }
     }
 }
+

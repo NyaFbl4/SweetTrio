@@ -59,10 +59,16 @@ namespace Project.Scripts.UI.MainScreen
             LoadTemplates();
 
             if (_paginationPrevButton != null)
+            {
+                UIButtonAnimationUtility.EnableDefault(_paginationPrevButton);
                 _paginationPrevButton.clicked += HandlePaginationPrevClicked;
+            }
 
             if (_paginationNextButton != null)
+            {
+                UIButtonAnimationUtility.EnableDefault(_paginationNextButton);
                 _paginationNextButton.clicked += HandlePaginationNextClicked;
+            }
 
             ApplyTexts();
             SetLevelsTabVisible(true);
@@ -237,16 +243,20 @@ namespace Project.Scripts.UI.MainScreen
             if (levelNumberLabel != null)
                 levelNumberLabel.text = levelNumber.ToString();
 
+            UIButtonAnimationUtility.EnableDefault(button);
             return button;
         }
 
         private Button CreateLevelButtonFallback(LevelConfig levelConfig, int levelNumber)
         {
-            return new Button(() => HandleLevelSelected(levelConfig))
+            var button = new Button(() => HandleLevelSelected(levelConfig))
             {
                 userData = levelConfig,
                 text = levelNumber.ToString()
             };
+
+            UIButtonAnimationUtility.EnableDefault(button);
+            return button;
         }
 
         private static VisualElement CreateLevelsRowContainer()
@@ -273,7 +283,7 @@ namespace Project.Scripts.UI.MainScreen
                 else
                     levelButton.RemoveFromClassList("main-menu-level-cell-button--selected");
 
-                levelButton.style.scale = isSelected ? new Scale(new Vector3(1.05f, 1.05f, 1f)) : new Scale(Vector3.one);
+                UIButtonAnimationUtility.SetBaseScale(levelButton, isSelected ? 1.05f : 1f);
             }
         }
 
@@ -455,7 +465,4 @@ namespace Project.Scripts.UI.MainScreen
         }
     }
 }
-
-
-
 
