@@ -1,4 +1,4 @@
-namespace Project.Scripts.System.Localization
+﻿namespace Project.Scripts.System.Localization
 {
     public static class LocalizationKeys
     {
@@ -12,6 +12,8 @@ namespace Project.Scripts.System.Localization
         public const string EndGameTitleLose = "end_game.title_lose";
         public const string EndGameScoreFormat = "end_game.score_format";
         public const string EndGameMenuButton = "end_game.menu_button";
+
+        public const string PauseTitle = "pause.title";
 
         public const string HudScoreFormat = "hud.score_format";
         public const string HudDessertsLabel = "hud.desserts_label";

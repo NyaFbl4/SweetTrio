@@ -87,30 +87,48 @@ namespace Project.Scripts.GameManager
 
         public void StartGame()
         {
-            foreach (var gameListener in _gameListeners)
+            _gameState = EGameState.Play;
+            Time.timeScale = 1f;
+
+            var listenersSnapshot = _gameListeners.ToArray();
+            for (var i = 0; i < listenersSnapshot.Length; i++)
             {
-                if (gameListener is IGameStartListener gameStartListener)
+                var gameListener = listenersSnapshot[i];
+                if (gameListener is not IGameStartListener gameStartListener)
+                    continue;
+
+                try
                 {
                     gameStartListener.OnStartGame();
                 }
+                catch (Exception exception)
+                {
+                    Debug.LogException(exception);
+                }
             }
-
-            _gameState = EGameState.Play;
-            Time.timeScale = 1f;
         }
 
         public void FinishGame()
         {
-            foreach (var gameListener in _gameListeners)
+            _gameState = EGameState.Finish;
+            Time.timeScale = 0f;
+
+            var listenersSnapshot = _gameListeners.ToArray();
+            for (var i = 0; i < listenersSnapshot.Length; i++)
             {
-                if (gameListener is IGameFinishListener gameFinishListener)
+                var gameListener = listenersSnapshot[i];
+                if (gameListener is not IGameFinishListener gameFinishListener)
+                    continue;
+
+                try
                 {
                     gameFinishListener.OnFinishGame();
                 }
+                catch (Exception exception)
+                {
+                    Debug.LogException(exception);
+                }
             }
-
-            Time.timeScale = 0f;
-            _gameState = EGameState.Finish;
         }
 
     }

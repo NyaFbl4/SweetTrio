@@ -1,12 +1,17 @@
-using System;
+﻿using System;
+using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
 namespace Project.Scripts.UI.PauseUI
 {
     public class PauseUIView : AnimatedPopupViewBase, IPauseUIView
     {
+        [Inject] private readonly ILocalizationService _localizationService;
+
+        private Label _titleLabel;
         private Button _playButton;
         private Button _settingsButton;
         private Button _menuButton;
@@ -22,9 +27,15 @@ namespace Project.Scripts.UI.PauseUI
         {
             base.Awake();
 
+            _titleLabel = _root.Q<Label>("pause-title-label");
             _playButton = _root.Q<Button>("pause-play-button");
             _settingsButton = _root.Q<Button>("pause-settings-button");
             _menuButton = _root.Q<Button>("pause-menu-button");
+
+            if (_titleLabel == null)
+                Debug.LogError("PauseUIView: Label 'pause-title-label' not found in UXML.");
+            else
+                _titleLabel.text = GetLocalizedText(LocalizationKeys.PauseTitle, _titleLabel.text);
 
             if (_playButton == null)
                 Debug.LogError("PauseUIView: Button 'pause-play-button' not found in UXML.");
@@ -63,6 +74,15 @@ namespace Project.Scripts.UI.PauseUI
                 _menuButton.clicked -= HandleMenuClicked;
         }
 
+        private string GetLocalizedText(string key, string fallback)
+        {
+            if (_localizationService == null)
+                return fallback;
+
+            var text = _localizationService.Get(key);
+            return string.IsNullOrWhiteSpace(text) ? fallback : text;
+        }
+
         private void HandlePlayClicked()
         {
             PlayClicked?.Invoke();
@@ -79,4 +99,3 @@ namespace Project.Scripts.UI.PauseUI
         }
     }
 }
-

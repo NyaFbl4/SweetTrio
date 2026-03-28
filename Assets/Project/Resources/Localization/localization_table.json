@@ -1,4 +1,4 @@
-{
+﻿{
   "defaultLanguage": "ru",
   "entries": [
     {
@@ -45,6 +45,11 @@
       "key": "end_game.menu_button",
       "ru": "В меню",
       "en": "Menu"
+    },
+    {
+      "key": "pause.title",
+      "ru": "ПАУЗА",
+      "en": "PAUSE"
     },
     {
       "key": "hud.score_format",

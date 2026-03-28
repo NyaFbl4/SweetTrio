@@ -4,16 +4,17 @@ using MessagePipe;
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
+using Project.Scripts.UI.RulesUI;
 using VContainer;
 
 namespace Project.Scripts.UI.MainScreen
 {
     public class MainMenuPresenter : LayoutPresenterBase<IMainMenuView>, IMainMenuPresenter
     {
-        [Inject] private readonly IGameManagerService _gameManagerService;
         [Inject] private readonly ILevelSelectionService _levelSelectionService;
         [Inject] private readonly ILevelProgressService _levelProgressService;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
+        [Inject] private readonly IRulesUIController _rulesUIController;
 
         public override void Initialize()
         {
@@ -52,7 +53,7 @@ namespace Project.Scripts.UI.MainScreen
                 TargetPopUpType = typeof(IMainMenuPresenter)
             });
 
-            _gameManagerService.StartGame();
+            _rulesUIController.ShowBeforeLevelStart();
         }
 
         private void RefreshLevels()
@@ -80,3 +81,4 @@ namespace Project.Scripts.UI.MainScreen
         }
     }
 }
+

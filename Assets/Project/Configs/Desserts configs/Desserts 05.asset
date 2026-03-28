@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2c13c7a3043f464eab61fe176919974, type: 3}
+  m_Name: Desserts 05
+  m_EditorClassIdentifier: Assembly-CSharp::Dessert.DessertConfig
+  _dessertPrefabs:
+  - {fileID: 9094558141650339143, guid: 001b72c8896054e489d329e023c1eced, type: 3}
+  - {fileID: 9094558141650339143, guid: cffefb6794605e246a896d84d717cf46, type: 3}
+  - {fileID: 9094558141650339143, guid: af3c53f8245f74c43933fbcd0d3975b6, type: 3}
+  - {fileID: 9094558141650339143, guid: 959e4dea300c4d9b9a9d6aa002986295, type: 3}
+  - {fileID: 9094558141650339143, guid: e03c11b4a6d448ff8e73b98a4f134f17, type: 3}
+  - {fileID: 9094558141650339143, guid: 9592d5b780a6413e891e4d210080f5b7, type: 3}
+  - {fileID: 9094558141650339143, guid: 51fdb460031248c8aaa80209fe99b05c, type: 3}
+  - {fileID: 9094558141650339143, guid: c04c53f9282249c5b1d98f4756b8feb2, type: 3}
+  - {fileID: 9094558141650339143, guid: 74e5f5ea84d84da486499466b0bb8128, type: 3}
+  - {fileID: 9094558141650339143, guid: fed3c22f6fc7499881debc799b6818cc, type: 3}
+  - {fileID: 9094558141650339143, guid: 5f21e79551124fa2b622e9e3c04bfe9b, type: 3}
+  - {fileID: 9094558141650339143, guid: f5d82c65a17043b096f9ced4373bf3fc, type: 3}
+  - {fileID: 9094558141650339143, guid: 05c853f295f34199bdd5cad5c3341e49, type: 3}
+  - {fileID: 9094558141650339143, guid: 18d44bb1f0934c8192f2699a97892a90, type: 3}
+  - {fileID: 9094558141650339143, guid: 432d979673994769af292c6f20caa7e6, type: 3}
+  - {fileID: 9094558141650339143, guid: 7ff1a11b068447ecaa1d60354ab178d0, type: 3}
+  - {fileID: 9094558141650339143, guid: bb6d786cd65f474695c265f2ebe834f0, type: 3}
+  - {fileID: 9094558141650339143, guid: d4d284d28d6e419a9791b549155b19f9, type: 3}

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using MessagePipe;
 using Project.Scripts.GameManager;
 using Project.Scripts.System.Localization;
@@ -55,9 +55,10 @@ namespace Project.Scripts.UI.UseCases
 
         private void ShowCompletionResult(bool applyWinBonus)
         {
+            var timeBonusPoints = 0;
             if (applyWinBonus)
             {
-                _timerPointsUseCase.ApplyWinBonus();
+                timeBonusPoints = Mathf.Max(0, _timerPointsUseCase.ApplyWinBonus());
             }
 
             var score = Mathf.Max(0, _levelCounterUseCase.CurrentValue);
@@ -68,7 +69,7 @@ namespace Project.Scripts.UI.UseCases
             var completionText = BuildCompletionText(levelConfig, score, starsCount, totalStarsCount);
 
             _levelProgressService.SaveBestStars(levelConfig, starsCount);
-            _endGamePresenter.ShowResult(isPassed, score, starsCount, totalStarsCount, completionText);
+            _endGamePresenter.ShowResult(isPassed, score, starsCount, totalStarsCount, completionText, timeBonusPoints);
             _gameManagerService.FinishGame();
         }
 

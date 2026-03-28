@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2c13c7a3043f464eab61fe176919974, type: 3}
+  m_Name: Desserts 01
+  m_EditorClassIdentifier: Assembly-CSharp::Dessert.DessertConfig
+  _dessertPrefabs:
+  - {fileID: 9094558141650339143, guid: 001b72c8896054e489d329e023c1eced, type: 3}
+  - {fileID: 9094558141650339143, guid: cffefb6794605e246a896d84d717cf46, type: 3}
+  - {fileID: 9094558141650339143, guid: af3c53f8245f74c43933fbcd0d3975b6, type: 3}
+  - {fileID: 9094558141650339143, guid: 959e4dea300c4d9b9a9d6aa002986295, type: 3}
+  - {fileID: 9094558141650339143, guid: e03c11b4a6d448ff8e73b98a4f134f17, type: 3}
+  - {fileID: 9094558141650339143, guid: 9592d5b780a6413e891e4d210080f5b7, type: 3}

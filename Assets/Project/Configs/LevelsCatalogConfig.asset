@@ -21,9 +21,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 534355b72c724b5a948f2f6392d90972, type: 2}
   - {fileID: 11400000, guid: 3c1c7cfbd108495a8cc061305794d6e0, type: 2}
   - {fileID: 11400000, guid: fe3cde007a26416e830ac754983e0397, type: 2}
-  - {fileID: 11400000, guid: 4ecbd1b9079b4406ab74573eeb240079, type: 2}
   - {fileID: 11400000, guid: df439ee12bc442299842b69aa411d6d1, type: 2}
   - {fileID: 11400000, guid: ad3f7163380a4ff9bfca43ecc0a918f9, type: 2}
+  - {fileID: 11400000, guid: 4ecbd1b9079b4406ab74573eeb240079, type: 2}
   - {fileID: 11400000, guid: 43872bdc01944fa1b4c3bd68c512ecf2, type: 2}
   - {fileID: 11400000, guid: 3facac6d226343a59017d0d3c420c475, type: 2}
   - {fileID: 11400000, guid: 25fbd7594631494a835703e60707d7a0, type: 2}
@@ -33,7 +33,47 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9378e412ef2041ec98c418a6524d6004, type: 2}
   - {fileID: 11400000, guid: 32a234c101cf435ab3a2017a37e7e916, type: 2}
   - {fileID: 11400000, guid: 529ef64923f84175882c13cddaf9b901, type: 2}
+  - {fileID: 11400000, guid: 5eb9e37033eb4669bf58821cb8eeec30, type: 2}
+  - {fileID: 11400000, guid: 8848725d01104a3fb3484a8e62d5b928, type: 2}
+  - {fileID: 11400000, guid: 485ebbcc39724cd1b2fd7c2bba05ed12, type: 2}
+  - {fileID: 11400000, guid: 2b7e9fc8e9cf43eb828e2e3d3dd8fca3, type: 2}
+  - {fileID: 11400000, guid: 973575fae68e499fabebc8c245b6ead5, type: 2}
+  - {fileID: 11400000, guid: 2ae291d912d245fba425434f87572e9e, type: 2}
+  - {fileID: 11400000, guid: f573c11085b34ce6bbdd4383010008c4, type: 2}
+  - {fileID: 11400000, guid: a7b2b15da7d543ef861701f715bc5fd9, type: 2}
+  - {fileID: 11400000, guid: 0d608ef670a94a80be86fdcd23ed0d17, type: 2}
+  - {fileID: 11400000, guid: c14f2b44a6104e08939d10a8fd6f0ac7, type: 2}
+  - {fileID: 11400000, guid: 3420fd5afcb341359afe267013662adc, type: 2}
+  - {fileID: 11400000, guid: 31ec9076aa764223ab39b3f90f1705e1, type: 2}
+  - {fileID: 11400000, guid: 35414229b8d4489085ce5ea26cb636c7, type: 2}
+  - {fileID: 11400000, guid: caa9293e38f04cb0a07a3712a671a69f, type: 2}
+  - {fileID: 11400000, guid: c586eed8b4d945f698baee081e3ef063, type: 2}
+  - {fileID: 11400000, guid: 78609a4778c24d14ad3adf1c052f7213, type: 2}
+  - {fileID: 11400000, guid: 518e7ebe0b2b444fba3bb89ed71ed849, type: 2}
+  - {fileID: 11400000, guid: cc2aa172292340e7a9739c2c562bbfb1, type: 2}
+  - {fileID: 11400000, guid: 196dae13272e4905b9f064793b432b0c, type: 2}
+  - {fileID: 11400000, guid: 538863b1fdb946c9b2492721f402218a, type: 2}
+  - {fileID: 11400000, guid: 5672b5d22f8a41a8a2c500c6d4231ce7, type: 2}
+  - {fileID: 11400000, guid: f8e195785042468498c784e576c9dc99, type: 2}
+  - {fileID: 11400000, guid: 75f60d7dd464419da67303f908495c0f, type: 2}
+  - {fileID: 11400000, guid: e4e3a2ae905a474d88d5938af45e9917, type: 2}
+  - {fileID: 11400000, guid: e05aadc2866c480ab6204278fe583db7, type: 2}
+  - {fileID: 11400000, guid: 0265cc24b7804784bfb9e7db668a50f6, type: 2}
+  - {fileID: 11400000, guid: 1cebfc8271b94edd9c5e5dad644cef62, type: 2}
+  - {fileID: 11400000, guid: 9c3618ad8b934fabb60cc9d775c75e2f, type: 2}
+  - {fileID: 11400000, guid: 518ca7b16f994f4fadd5b8146145e0dc, type: 2}
+  - {fileID: 11400000, guid: e0dba3057103455a821d4112c0117546, type: 2}
+  - {fileID: 11400000, guid: def33acd3ea04802b29d7e5ae1d3630a, type: 2}
+  - {fileID: 11400000, guid: 4e245b39c8d548e183d056be377e1122, type: 2}
+  - {fileID: 11400000, guid: f8d6480bd1d44de4babe2e635de4cd76, type: 2}
+  - {fileID: 11400000, guid: 8d76a0d4d3ac4017ae403f3c440bc326, type: 2}
+  - {fileID: 11400000, guid: 14e9d24544c54aa8a23114cfa11e27b1, type: 2}
+  - {fileID: 11400000, guid: f4921a0282414a02a4e60d348bdf8b9b, type: 2}
+  - {fileID: 11400000, guid: d187b5e071234f1a9da7bea4cf79b7f6, type: 2}
+  - {fileID: 11400000, guid: 66f473a2324b425dba5134275973b928, type: 2}
+  - {fileID: 11400000, guid: 01efbeb9ad30442cae9b813f020f5e48, type: 2}
+  - {fileID: 11400000, guid: ef8267d6c4684e57bcf1184b45da9b65, type: 2}
   _defaultLevel: {fileID: 11400000, guid: 2e8c309a63a0eaf4abaafb5d260a52b5, type: 2}
   _autoCollectInEditor: 0
   _searchFolders:
-  - Assets/Project/Configs
+  - Assets/Project/Configs/Level configs

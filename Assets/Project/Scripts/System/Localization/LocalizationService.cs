@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -137,6 +137,8 @@ namespace Project.Scripts.System.Localization
             AddEntry(LocalizationKeys.EndGameTitleLose, "Поражение", "Defeat");
             AddEntry(LocalizationKeys.EndGameScoreFormat, "Очки: {0}", "Score: {0}");
             AddEntry(LocalizationKeys.EndGameMenuButton, "В меню", "Menu");
+
+            AddEntry(LocalizationKeys.PauseTitle, "ПАУЗА", "PAUSE");
 
             AddEntry(LocalizationKeys.HudScoreFormat, "Очки: {0}", "Score: {0}");
             AddEntry(LocalizationKeys.HudDessertsLabel, "Десерты", "Desserts");
