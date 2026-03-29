@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dd82b99a45d51b4eb088eb715ec8e59, type: 3}
   m_Name: LevelConfig 59
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.GameManager.LevelConfig
-  _dessertPool: {fileID: 11400000, guid: c3774ba0e3854bc08ed04d2bcbf3820c, type: 2}
+  _dessertPool: {fileID: 11400000, guid: f464602fcde66ebe8af1321a6a311bc5, type: 2}
   _copiesPerDessert: 3
-  _spawnDelaySeconds: 0.95
-  _roundDurationSeconds: 120
-  _actionBarOverflowPenaltySeconds: 18
+  _spawnDelaySeconds: 0.8
+  _roundDurationSeconds: 150
+  _actionBarOverflowPenaltySeconds: 9.111
   _dessertPointsConfig: {fileID: 11400000, guid: 30c4fb9b321f433883b7180c0a97516c, type: 2}
-  _oneStarScore: 14180
-  _twoStarsScore: 16330
-  _threeStarsScore: 19830
+  _oneStarScore: 6201
+  _twoStarsScore: 9922
+  _threeStarsScore: 13780

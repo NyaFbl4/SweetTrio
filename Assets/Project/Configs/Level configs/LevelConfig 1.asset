@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.GameManager.LevelConfig
   _dessertPool: {fileID: 11400000, guid: bc7a9e5532af4b91958675ca2c80814f, type: 2}
   _copiesPerDessert: 3
-  _spawnDelaySeconds: 1
+  _spawnDelaySeconds: 0.8
   _roundDurationSeconds: 150
-  _actionBarOverflowPenaltySeconds: 8
+  _actionBarOverflowPenaltySeconds: 2
   _dessertPointsConfig: {fileID: 11400000, guid: 30c4fb9b321f433883b7180c0a97516c, type: 2}
-  _oneStarScore: 4000
-  _twoStarsScore: 6000
-  _threeStarsScore: 9000
+  _oneStarScore: 2025
+  _twoStarsScore: 3240
+  _threeStarsScore: 4500
 

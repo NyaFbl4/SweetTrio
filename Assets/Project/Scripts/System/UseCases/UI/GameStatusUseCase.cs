@@ -1,6 +1,7 @@
 using System;
 using MessagePipe;
 using Project.Scripts.GameManager;
+using Project.Scripts.System.Audio;
 using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI.Dtos;
 using Project.Scripts.UI.EndGame;
@@ -24,6 +25,7 @@ namespace Project.Scripts.UI.UseCases
         [Inject] private readonly ILevelSelectionService _levelSelectionService;
         [Inject] private readonly ILevelProgressService _levelProgressService;
         [Inject] private readonly ILocalizationService _localizationService;
+        [Inject] private readonly ISoundManager _soundManager;
 
         private IDisposable _subscription = DisposableBag.Empty;
 
@@ -69,6 +71,15 @@ namespace Project.Scripts.UI.UseCases
             var completionText = BuildCompletionText(levelConfig, score, starsCount, totalStarsCount);
 
             _levelProgressService.SaveBestStars(levelConfig, starsCount);
+            if (isPassed)
+            {
+                _soundManager.PlayLevelWin();
+            }
+            else
+            {
+                _soundManager.PlayLevelFail();
+            }
+
             _endGamePresenter.ShowResult(isPassed, score, starsCount, totalStarsCount, completionText, timeBonusPoints);
             _gameManagerService.FinishGame();
         }

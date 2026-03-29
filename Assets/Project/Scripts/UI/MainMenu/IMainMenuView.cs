@@ -8,6 +8,7 @@ namespace Project.Scripts.UI.MainScreen
     public interface IMainMenuView : ILayoutView
     {
         event Action<LevelConfig> LevelSelected;
+        event Action SettingsClicked;
 
         void SetLevels(IReadOnlyList<LevelConfig> levels, LevelConfig selectedLevel, IReadOnlyList<int> savedStars);
         void SetLevelsTabVisible(bool visible);

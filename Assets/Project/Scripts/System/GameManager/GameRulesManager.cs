@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Assets.Project.Scripts.Desserts;
 using Assets.Project.Scripts.System.DessertCreator;
 using MessagePipe;
+using Project.Scripts.System.Audio;
 using Project.Scripts.Systems.UI.Dtos;
 using Project.Scripts.UI.LevelUI;
 using Project.Scripts.UI.UseCases;
@@ -25,6 +26,7 @@ namespace Project.Scripts.GameManager
         private readonly IPublisher<GameStatusCommandDto> _gameStatusPublisher;
         private readonly ILevelSelectionService _levelSelectionService;
         private readonly ILevelUIPresenter _levelUIPresenter;
+        private readonly ISoundManager _soundManager;
 
         private bool _isGameFinished;
         private bool _isRoundActive;
@@ -38,7 +40,8 @@ namespace Project.Scripts.GameManager
             ILevelCounterUseCase levelCounterUseCase,
             IPublisher<GameStatusCommandDto> gameStatusPublisher,
             ILevelSelectionService levelSelectionService,
-            ILevelUIPresenter levelUIPresenter)
+            ILevelUIPresenter levelUIPresenter,
+            ISoundManager soundManager)
         {
             _actionBar = actionBar;
             _dessertSpawner = dessertSpawner;
@@ -46,6 +49,7 @@ namespace Project.Scripts.GameManager
             _gameStatusPublisher = gameStatusPublisher;
             _levelSelectionService = levelSelectionService;
             _levelUIPresenter = levelUIPresenter;
+            _soundManager = soundManager;
         }
 
         public void Initialize()
@@ -110,6 +114,7 @@ namespace Project.Scripts.GameManager
             while (TryGetThreeOfKind(out var matchedDesserts))
             {
                 _actionBar.RemoveDesserts(matchedDesserts);
+                _soundManager.PlayComboChain();
                 var matchPoints = GetPointsForMatchedDesserts(matchedDesserts);
                 if (matchPoints > 0)
                 {

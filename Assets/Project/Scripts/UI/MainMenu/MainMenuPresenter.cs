@@ -5,6 +5,7 @@ using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
 using Project.Scripts.UI.RulesUI;
+using Project.Scripts.UI.SettingsUI;
 using VContainer;
 
 namespace Project.Scripts.UI.MainScreen
@@ -14,6 +15,7 @@ namespace Project.Scripts.UI.MainScreen
         [Inject] private readonly ILevelSelectionService _levelSelectionService;
         [Inject] private readonly ILevelProgressService _levelProgressService;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
+        [Inject] private readonly IPublisher<ShowPopupDto> _showPopUpPublisher;
         [Inject] private readonly IRulesUIController _rulesUIController;
 
         public override void Initialize()
@@ -21,6 +23,7 @@ namespace Project.Scripts.UI.MainScreen
             base.Initialize();
 
             _layoutView.LevelSelected += HandleLevelSelected;
+            _layoutView.SettingsClicked += HandleSettingsClicked;
 
             RefreshLevels();
             _layoutView.SetLevelsTabVisible(true);
@@ -37,6 +40,7 @@ namespace Project.Scripts.UI.MainScreen
         public override void Dispose()
         {
             _layoutView.LevelSelected -= HandleLevelSelected;
+            _layoutView.SettingsClicked -= HandleSettingsClicked;
             base.Dispose();
         }
 
@@ -54,6 +58,14 @@ namespace Project.Scripts.UI.MainScreen
             });
 
             _rulesUIController.ShowBeforeLevelStart();
+        }
+
+        private void HandleSettingsClicked()
+        {
+            _showPopUpPublisher.Publish(new ShowPopupDto
+            {
+                TargetPopUpType = typeof(ISettingsUIPresenter)
+            });
         }
 
         private void RefreshLevels()
@@ -81,4 +93,5 @@ namespace Project.Scripts.UI.MainScreen
         }
     }
 }
+
 

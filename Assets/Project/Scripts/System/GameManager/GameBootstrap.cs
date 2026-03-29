@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Assets.Project.Scripts.System.DessertCreator;
 using MessagePipe;
+using Project.Scripts.System.Audio;
 using Project.System;
 using VContainer.Unity;
 
@@ -13,6 +14,7 @@ namespace Project.Scripts.GameManager
         private readonly IActionBar _actionBar;
         private readonly ILevelSelectionService _levelSelectionService;
         private readonly GameConfig _gameConfig;
+        private readonly ISoundManager _soundManager;
 
         private bool _isAutoSpawnActive;
         private bool _isInitialSpawnInProgress;
@@ -25,12 +27,14 @@ namespace Project.Scripts.GameManager
             IActionBar actionBar,
             ILevelSelectionService levelSelectionService,
             GameConfig gameConfig,
+            ISoundManager soundManager,
             ISubscriber<ShuffleFieldCommandDto> shuffleFieldSubscriber)
         {
             _dessertSpawner = dessertSpawner;
             _actionBar = actionBar;
             _levelSelectionService = levelSelectionService;
             _gameConfig = gameConfig;
+            _soundManager = soundManager;
 
             IGameListener.Register(this);
             _actionBar.DessertAdded += HandleDessertAdded;
@@ -71,6 +75,10 @@ namespace Project.Scripts.GameManager
                     {
                         _isInitialSpawnInProgress = false;
                     }
+                    else
+                    {
+                        _soundManager.PlayDessertSpawn();
+                    }
                 }
 
                 return;
@@ -104,6 +112,10 @@ namespace Project.Scripts.GameManager
             if (queuedSpawned == null)
             {
                 _isInitialSpawnInProgress = _dessertSpawner.RemainingDessertsCount > 0;
+            }
+            else
+            {
+                _soundManager.PlayDessertSpawn();
             }
         }
 

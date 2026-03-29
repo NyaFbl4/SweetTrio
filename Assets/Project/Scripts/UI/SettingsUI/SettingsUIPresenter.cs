@@ -1,5 +1,6 @@
 using MessagePipe;
 using Project.Scripts.GameManager;
+using Project.Scripts.System.Audio;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
 using VContainer;
@@ -9,9 +10,7 @@ namespace Project.Scripts.UI.SettingsUI
     public class SettingsUIPresenter : LayoutPresenterBase<ISettingsUIView>, ISettingsUIPresenter, IGameStartListener, IGameFinishListener
     {
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
-
-        private bool _isMusicEnabled = true;
-        private bool _isSoundEnabled = true;
+        [Inject] private readonly ISoundManager _soundManager;
 
         public override void Initialize()
         {
@@ -20,8 +19,8 @@ namespace Project.Scripts.UI.SettingsUI
             _layoutView.CloseClicked += HandleCloseClicked;
             _layoutView.MusicToggleClicked += HandleMusicToggleClicked;
             _layoutView.SoundToggleClicked += HandleSoundToggleClicked;
-            _layoutView.SetMusicEnabled(_isMusicEnabled);
-            _layoutView.SetSoundEnabled(_isSoundEnabled);
+            _layoutView.SetMusicEnabled(_soundManager.IsMusicEnabled);
+            _layoutView.SetSoundEnabled(_soundManager.IsSoundEnabled);
         }
 
         public override void Dispose()
@@ -50,14 +49,16 @@ namespace Project.Scripts.UI.SettingsUI
 
         private void HandleMusicToggleClicked()
         {
-            _isMusicEnabled = !_isMusicEnabled;
-            _layoutView.SetMusicEnabled(_isMusicEnabled);
+            var newValue = !_soundManager.IsMusicEnabled;
+            _soundManager.SetMusicEnabled(newValue);
+            _layoutView.SetMusicEnabled(newValue);
         }
 
         private void HandleSoundToggleClicked()
         {
-            _isSoundEnabled = !_isSoundEnabled;
-            _layoutView.SetSoundEnabled(_isSoundEnabled);
+            var newValue = !_soundManager.IsSoundEnabled;
+            _soundManager.SetSoundEnabled(newValue);
+            _layoutView.SetSoundEnabled(newValue);
         }
 
         private void HideSettingsPopup()

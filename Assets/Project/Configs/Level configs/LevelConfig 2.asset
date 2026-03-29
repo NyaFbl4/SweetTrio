@@ -15,14 +15,14 @@ MonoBehaviour:
   _levelTitle: ??????????? ?????
   _levelDescription: ??????? ????? ? ???????? ??????, ????? ??????????.
   _menuOrder: 20
-  _dessertPool: {fileID: 11400000, guid: bc7a9e5532af4b91958675ca2c80814f, type: 2}
+  _dessertPool: {fileID: 11400000, guid: cea07088afe9481da3271126ada29997, type: 2}
   _copiesPerDessert: 3
-  _spawnDelaySeconds: 0.55
-  _roundDurationSeconds: 90
-  _actionBarOverflowPenaltySeconds: 12
+  _spawnDelaySeconds: 0.8
+  _roundDurationSeconds: 150
+  _actionBarOverflowPenaltySeconds: 2.889
   _dessertPointsConfig: {fileID: 11400000, guid: 30c4fb9b321f433883b7180c0a97516c, type: 2}
-  _oneStarScore: 900
-  _twoStarsScore: 2100
-  _threeStarsScore: 3600
+  _oneStarScore: 2097
+  _twoStarsScore: 3355
+  _threeStarsScore: 4660
 
 

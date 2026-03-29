@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: LevelConfig 8
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.GameManager.LevelConfig
   _dessertPool: {fileID: 11400000, guid: cea07088afe9481da3271126ada29997, type: 2}
-  _copiesPerDessert: 2
-  _spawnDelaySeconds: 0.45
-  _roundDurationSeconds: 120
-  _actionBarOverflowPenaltySeconds: 8
+  _copiesPerDessert: 3
+  _spawnDelaySeconds: 0.8
+  _roundDurationSeconds: 150
+  _actionBarOverflowPenaltySeconds: 8.222
   _dessertPointsConfig: {fileID: 11400000, guid: 30c4fb9b321f433883b7180c0a97516c, type: 2}
-  _oneStarScore: 2960
-  _twoStarsScore: 4360
-  _threeStarsScore: 7510
+  _oneStarScore: 2529
+  _twoStarsScore: 4046
+  _threeStarsScore: 5620

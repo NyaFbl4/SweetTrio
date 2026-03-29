@@ -1,6 +1,7 @@
 using VContainer.Unity;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Project.Scripts.System.Audio;
 using Project.System;
 
 
@@ -9,10 +10,12 @@ namespace Assets.Project.Scripts.Desserts
     public class DessertClickInputHandler : ITickable
     {
         private readonly IActionBar _actionBar;
+        private readonly ISoundManager _soundManager;
 
-        public DessertClickInputHandler(IActionBar actionBar)
+        public DessertClickInputHandler(IActionBar actionBar, ISoundManager soundManager)
         {
-            _actionBar = actionBar;    
+            _actionBar = actionBar;
+            _soundManager = soundManager;
         }
 
         public void Tick()
@@ -41,7 +44,8 @@ namespace Assets.Project.Scripts.Desserts
 
             if (dessert == null)
                 return;
-            
+
+            _soundManager.PlayTapPick();
             _actionBar.TryAddDessert(dessert);
         }
     }

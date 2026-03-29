@@ -2,6 +2,7 @@
 using Assets.Project.Scripts.System.DessertCreator;
 using MessagePipe;
 using Project.Scripts.GameManager;
+using Project.Scripts.System.Audio;
 using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.UI.EndGame;
@@ -26,6 +27,7 @@ namespace Project.Scripts.System.Installers
         [SerializeField] private LevelConfig _levelConfig;
         [SerializeField] private LevelsCatalogConfig _levelsCatalogConfig;
         [SerializeField] private GameConfig _gameConfig;
+        [SerializeField] private SoundConfig _soundConfig;
         [SerializeField] private TransformController _transformController;
         [SerializeField] private ActionBar _actionBar;
 
@@ -42,6 +44,7 @@ namespace Project.Scripts.System.Installers
         private void RegisterSystems(IContainerBuilder builder)
         {
             builder.RegisterMessagePipe();
+            builder.RegisterEntryPoint<SoundManager>(Lifetime.Singleton).As<ISoundManager>();
             builder.Register<LocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
             builder.RegisterEntryPoint<UIController>().As<IUIController>();
             builder.RegisterEntryPoint<LevelSelectionService>(Lifetime.Singleton).As<ILevelSelectionService>();
@@ -116,8 +119,11 @@ namespace Project.Scripts.System.Installers
             builder.RegisterInstance(_levelConfig);
             builder.RegisterInstance(_levelsCatalogConfig);
             builder.RegisterInstance(_gameConfig);
+            if (_soundConfig != null)
+            {
+                builder.RegisterInstance(_soundConfig);
+            }
             builder.RegisterInstance(_transformController);
         }
     }
 }
-

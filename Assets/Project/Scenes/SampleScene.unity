@@ -2000,7 +2000,7 @@ MonoBehaviour:
   autoInjectGameObjects: []
   _gameManagerHelper: {fileID: 1311257050}
   _layoutsRepository: {fileID: 11400000, guid: 6a2db3ed400a3e042b028e6c1c8c8b67, type: 2}
-  _dessertsPool: {fileID: 11400000, guid: 2f2bfe2dac624a84b97ea08db1e8e543, type: 2}
+  _dessertsPool: {fileID: 11400000, guid: bc7a9e5532af4b91958675ca2c80814f, type: 2}
   _levelConfig: {fileID: 11400000, guid: 3254b8caa5cddfc469a91712a07034d4, type: 2}
   _levelsCatalogConfig: {fileID: 11400000, guid: 8f9b8d5ff6dd4d4bb6dce347b3f66b3a, type: 2}
   _gameConfig: {fileID: 11400000, guid: 8fa233314b7d0b74baa386ab815256a2, type: 2}

@@ -18,6 +18,7 @@ namespace Project.Scripts.UI.MainScreen
 
         private Button _paginationPrevButton;
         private Button _paginationNextButton;
+        private Button _settingsButton;
         private VisualElement _overlay;
         private VisualElement _banner;
         private VisualElement _levelsTab;
@@ -38,6 +39,7 @@ namespace Project.Scripts.UI.MainScreen
         private int _totalPages = 1;
 
         public event Action<LevelConfig> LevelSelected;
+        public event Action SettingsClicked;
 
         public override void Awake()
         {
@@ -45,6 +47,7 @@ namespace Project.Scripts.UI.MainScreen
 
             _paginationPrevButton = _root.Q<Button>("main-menu-pagination-prev-button");
             _paginationNextButton = _root.Q<Button>("main-menu-pagination-next-button");
+            _settingsButton = _root.Q<Button>("main-menu-settings-button");
             _overlay = _root.Q<VisualElement>("main-menu-overlay");
             _banner = _root.Q<VisualElement>("main-menu-banner");
             _titleLabel = _root.Q<Label>("main-menu-title-label");
@@ -70,6 +73,12 @@ namespace Project.Scripts.UI.MainScreen
                 _paginationNextButton.clicked += HandlePaginationNextClicked;
             }
 
+            if (_settingsButton != null)
+            {
+                UIButtonAnimationUtility.EnableDefault(_settingsButton);
+                _settingsButton.clicked += HandleSettingsClicked;
+            }
+
             ApplyTexts();
             SetLevelsTabVisible(true);
             SetSelectedLevel(null);
@@ -83,6 +92,9 @@ namespace Project.Scripts.UI.MainScreen
 
             if (_paginationNextButton != null)
                 _paginationNextButton.clicked -= HandlePaginationNextClicked;
+
+            if (_settingsButton != null)
+                _settingsButton.clicked -= HandleSettingsClicked;
 
             _levelButtons.Clear();
             _levels.Clear();
@@ -356,6 +368,11 @@ namespace Project.Scripts.UI.MainScreen
             RenderCurrentPage();
         }
 
+        private void HandleSettingsClicked()
+        {
+            SettingsClicked?.Invoke();
+        }
+
         private void HandlePaginationNextClicked()
         {
             if (_currentPageIndex >= _totalPages - 1)
@@ -465,4 +482,5 @@ namespace Project.Scripts.UI.MainScreen
         }
     }
 }
+
 
