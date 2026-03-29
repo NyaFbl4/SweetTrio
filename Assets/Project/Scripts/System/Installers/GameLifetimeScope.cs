@@ -2,6 +2,7 @@
 using Assets.Project.Scripts.System.DessertCreator;
 using MessagePipe;
 using Project.Scripts.GameManager;
+using Project.Scripts.System.Ads;
 using Project.Scripts.System.Audio;
 using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
@@ -44,6 +45,7 @@ namespace Project.Scripts.System.Installers
         private void RegisterSystems(IContainerBuilder builder)
         {
             builder.RegisterMessagePipe();
+            builder.Register<YandexLevelStartAdService>(Lifetime.Singleton).As<ILevelStartAdService>();
             builder.RegisterEntryPoint<SoundManager>(Lifetime.Singleton).As<ISoundManager>();
             builder.Register<LocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
             builder.RegisterEntryPoint<UIController>().As<IUIController>();

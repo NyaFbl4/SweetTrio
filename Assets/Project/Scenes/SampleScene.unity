@@ -2004,6 +2004,7 @@ MonoBehaviour:
   _levelConfig: {fileID: 11400000, guid: 3254b8caa5cddfc469a91712a07034d4, type: 2}
   _levelsCatalogConfig: {fileID: 11400000, guid: 8f9b8d5ff6dd4d4bb6dce347b3f66b3a, type: 2}
   _gameConfig: {fileID: 11400000, guid: 8fa233314b7d0b74baa386ab815256a2, type: 2}
+  _soundConfig: {fileID: 11400000, guid: f40c7f6f1f6f4e0ea64630b45b22a1d2, type: 2}
   _transformController: {fileID: 483594931}
   _actionBar: {fileID: 419873558}
 --- !u!1 &1825673045

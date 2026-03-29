@@ -8,6 +8,8 @@ namespace Project.Scripts.System.Audio
     {
         private const string SoundEnabledPrefsKey = "settings.sound.enabled";
         private const string MusicEnabledPrefsKey = "settings.music.enabled";
+        private const string SoundVolumePrefsKey = "settings.sound.volume";
+        private const string MusicVolumePrefsKey = "settings.music.volume";
         private const int EnabledPrefsValue = 1;
         private const float DefaultMusicVolume = 0.6f;
         private const float DefaultSfxVolume = 1f;
@@ -38,6 +40,8 @@ namespace Project.Scripts.System.Audio
         private bool _clipsLoaded;
         private bool _isSoundEnabled = true;
         private bool _isMusicEnabled = true;
+        private float _soundVolume = DefaultSfxVolume;
+        private float _musicVolume = DefaultMusicVolume;
 
         public bool IsSoundEnabled
         {
@@ -57,6 +61,26 @@ namespace Project.Scripts.System.Audio
                 return _isMusicEnabled;
             }
             private set => _isMusicEnabled = value;
+        }
+
+        public float SoundVolume
+        {
+            get
+            {
+                EnsureSettingsLoaded();
+                return _soundVolume;
+            }
+            private set => _soundVolume = Mathf.Clamp01(value);
+        }
+
+        public float MusicVolume
+        {
+            get
+            {
+                EnsureSettingsLoaded();
+                return _musicVolume;
+            }
+            private set => _musicVolume = Mathf.Clamp01(value);
         }
 
         public SoundManager(SoundConfig soundConfig = null)
@@ -90,6 +114,23 @@ namespace Project.Scripts.System.Audio
             EnsureRuntimeReady();
             IsMusicEnabled = isEnabled;
             PlayerPrefs.SetInt(MusicEnabledPrefsKey, isEnabled ? EnabledPrefsValue : 0);
+            PlayerPrefs.Save();
+            ApplyMusicState();
+        }
+
+        public void SetSoundVolume(float volume)
+        {
+            EnsureRuntimeReady();
+            SoundVolume = volume;
+            PlayerPrefs.SetFloat(SoundVolumePrefsKey, SoundVolume);
+            PlayerPrefs.Save();
+        }
+
+        public void SetMusicVolume(float volume)
+        {
+            EnsureRuntimeReady();
+            MusicVolume = volume;
+            PlayerPrefs.SetFloat(MusicVolumePrefsKey, MusicVolume);
             PlayerPrefs.Save();
             ApplyMusicState();
         }
@@ -152,6 +193,8 @@ namespace Project.Scripts.System.Audio
             _settingsLoaded = true;
             IsSoundEnabled = PlayerPrefs.GetInt(SoundEnabledPrefsKey, EnabledPrefsValue) == EnabledPrefsValue;
             IsMusicEnabled = PlayerPrefs.GetInt(MusicEnabledPrefsKey, EnabledPrefsValue) == EnabledPrefsValue;
+            SoundVolume = PlayerPrefs.GetFloat(SoundVolumePrefsKey, ResolveConfiguredSfxVolume());
+            MusicVolume = PlayerPrefs.GetFloat(MusicVolumePrefsKey, ResolveConfiguredMusicVolume());
         }
 
         private void EnsureRuntimeReady()
@@ -238,10 +281,20 @@ namespace Project.Scripts.System.Audio
 
         private float ResolveMusicVolume()
         {
-            return _soundConfig != null ? _soundConfig.MusicVolume : DefaultMusicVolume;
+            return MusicVolume;
         }
 
         private float ResolveSfxVolume()
+        {
+            return SoundVolume;
+        }
+
+        private float ResolveConfiguredMusicVolume()
+        {
+            return _soundConfig != null ? _soundConfig.MusicVolume : DefaultMusicVolume;
+        }
+
+        private float ResolveConfiguredSfxVolume()
         {
             return _soundConfig != null ? _soundConfig.SfxVolume : DefaultSfxVolume;
         }

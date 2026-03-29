@@ -19,8 +19,13 @@ namespace Project.Scripts.UI.SettingsUI
             _layoutView.CloseClicked += HandleCloseClicked;
             _layoutView.MusicToggleClicked += HandleMusicToggleClicked;
             _layoutView.SoundToggleClicked += HandleSoundToggleClicked;
+            _layoutView.MusicVolumeChanged += HandleMusicVolumeChanged;
+            _layoutView.SoundVolumeChanged += HandleSoundVolumeChanged;
+
             _layoutView.SetMusicEnabled(_soundManager.IsMusicEnabled);
             _layoutView.SetSoundEnabled(_soundManager.IsSoundEnabled);
+            _layoutView.SetMusicVolume(_soundManager.MusicVolume);
+            _layoutView.SetSoundVolume(_soundManager.SoundVolume);
         }
 
         public override void Dispose()
@@ -28,6 +33,8 @@ namespace Project.Scripts.UI.SettingsUI
             _layoutView.CloseClicked -= HandleCloseClicked;
             _layoutView.MusicToggleClicked -= HandleMusicToggleClicked;
             _layoutView.SoundToggleClicked -= HandleSoundToggleClicked;
+            _layoutView.MusicVolumeChanged -= HandleMusicVolumeChanged;
+            _layoutView.SoundVolumeChanged -= HandleSoundVolumeChanged;
             IGameListener.Unregister(this);
             base.Dispose();
         }
@@ -59,6 +66,16 @@ namespace Project.Scripts.UI.SettingsUI
             var newValue = !_soundManager.IsSoundEnabled;
             _soundManager.SetSoundEnabled(newValue);
             _layoutView.SetSoundEnabled(newValue);
+        }
+
+        private void HandleMusicVolumeChanged(float value)
+        {
+            _soundManager.SetMusicVolume(value);
+        }
+
+        private void HandleSoundVolumeChanged(float value)
+        {
+            _soundManager.SetSoundVolume(value);
         }
 
         private void HideSettingsPopup()

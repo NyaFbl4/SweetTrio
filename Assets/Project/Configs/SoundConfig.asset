@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.System.Audio.SoundConfig
   _musicVolume: 0.6
   _sfxVolume: 1
-  _backgroundMusic: {fileID: 0}
-  _dessertSpawn: {fileID: 0}
-  _levelFail: {fileID: 0}
-  _levelWin: {fileID: 0}
-  _tapPick: {fileID: 0}
-  _comboChain: {fileID: 0}
+  _backgroundMusic: {fileID: 8300000, guid: d15401b7e57beb140bcb2fc2d28a9332, type: 3}
+  _dessertSpawn: {fileID: 8300000, guid: 4b577ee2c0afcd241acd1e4744b703d8, type: 3}
+  _levelFail: {fileID: 8300000, guid: 894cba16d4115334cafb6401fd5926f0, type: 3}
+  _levelWin: {fileID: 8300000, guid: 405521edd7ab1874fae52427b84d2306, type: 3}
+  _tapPick: {fileID: 8300000, guid: f78140de37bca1b479e28080d1a4c337, type: 3}
+  _comboChain: {fileID: 8300000, guid: 19d4089831675a74193876aa8b83b439, type: 3}
   _dessertSpawnVolume: 1
   _levelFailVolume: 1
   _levelWinVolume: 1

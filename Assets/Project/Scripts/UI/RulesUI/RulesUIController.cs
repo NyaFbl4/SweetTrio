@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using MessagePipe;
 using Project.Scripts.GameManager;
+using Project.Scripts.System.Ads;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
 using UnityEngine;
@@ -12,6 +13,7 @@ namespace Project.Scripts.UI.RulesUI
     {
         [Inject] private readonly IGameManagerService _gameManagerService;
         [Inject] private readonly ILevelSelectionService _levelSelectionService;
+        [Inject] private readonly ILevelStartAdService _levelStartAdService;
         [Inject] private readonly IPublisher<ShowPopupDto> _showPopupPublisher;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopupPublisher;
 
@@ -58,6 +60,7 @@ namespace Project.Scripts.UI.RulesUI
         public void ShowBeforeLevelStart()
         {
             ApplyCurrentLevelRulesThresholds();
+            _levelStartAdService?.ShowLevelStartAd();
             _startGameOnClose = true;
             _startGameRequestedAfterHide = false;
             ShowRulesPopup();
@@ -79,7 +82,9 @@ namespace Project.Scripts.UI.RulesUI
         private void HandleCloseClicked()
         {
             if (_startGameOnClose)
+            {
                 _startGameRequestedAfterHide = true;
+            }
 
             HideRulesPopup();
         }
