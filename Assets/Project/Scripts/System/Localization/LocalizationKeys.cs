@@ -15,6 +15,14 @@
 
         public const string PauseTitle = "pause.title";
 
+        public const string SettingsTitle = "settings.title";
+        public const string SettingsMusicLabel = "settings.music_label";
+        public const string SettingsSoundLabel = "settings.sound_label";
+
+        public const string RulesTitle = "rules.title";
+        public const string RulesLevelTitle = "rules.level_title";
+        public const string RulesTextTemplate = "rules.text_template";
+
         public const string HudScoreFormat = "hud.score_format";
         public const string HudDessertsLabel = "hud.desserts_label";
         public const string HudDessertsFormat = "hud.desserts_format";

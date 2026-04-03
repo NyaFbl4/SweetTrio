@@ -1,7 +1,9 @@
-using System;
+﻿using System;
+using Project.Scripts.System.Localization;
 using Project.Scripts.Systems.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
+using VContainer;
 
 namespace Project.Scripts.UI.SettingsUI
 {
@@ -11,6 +13,11 @@ namespace Project.Scripts.UI.SettingsUI
         private const string ToggleOffPath = "UI/Settings Panel/off";
         private const float VolumeStep = 0.05f;
 
+        [Inject] private readonly ILocalizationService _localizationService;
+
+        private Label _titleLabel;
+        private Label _musicLabel;
+        private Label _soundLabel;
         private Button _closeButton;
         private Button _musicToggleButton;
         private Button _soundToggleButton;
@@ -38,6 +45,9 @@ namespace Project.Scripts.UI.SettingsUI
         {
             base.Awake();
 
+            _titleLabel = _root.Q<Label>("setting-title-label");
+            _musicLabel = _root.Q<Label>("settings-music-label");
+            _soundLabel = _root.Q<Label>("settings-sound-label");
             _closeButton = _root.Q<Button>("settings-close-button");
             _musicToggleButton = _root.Q<Button>("settings-music-toggle-button");
             _soundToggleButton = _root.Q<Button>("settings-sound-toggle-button");
@@ -102,6 +112,15 @@ namespace Project.Scripts.UI.SettingsUI
 
             if (_toggleOnTexture == null || _toggleOffTexture == null)
                 Debug.LogWarning("SettingsUIView: ON/OFF textures not found in Resources/UI/Settings Panel.");
+
+            if (_titleLabel != null)
+                _titleLabel.text = GetLocalizedText(LocalizationKeys.SettingsTitle, _titleLabel.text);
+
+            if (_musicLabel != null)
+                _musicLabel.text = GetLocalizedText(LocalizationKeys.SettingsMusicLabel, _musicLabel.text);
+
+            if (_soundLabel != null)
+                _soundLabel.text = GetLocalizedText(LocalizationKeys.SettingsSoundLabel, _soundLabel.text);
         }
 
         private void OnDestroy()
@@ -227,6 +246,15 @@ namespace Project.Scripts.UI.SettingsUI
             }
 
             button.text = isEnabled ? "ON" : "OFF";
+        }
+
+        private string GetLocalizedText(string key, string fallback)
+        {
+            if (_localizationService == null)
+                return fallback;
+
+            var text = _localizationService.Get(key);
+            return string.IsNullOrWhiteSpace(text) ? fallback : text;
         }
     }
 }

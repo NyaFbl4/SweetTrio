@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-us">
 <head>
     <meta charset="utf-8">
@@ -76,7 +76,36 @@
         const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
         const progressBarFull = document.querySelector("#unity-progress-bar-full");
         const spinner = document.querySelector('.spinner');
+        let StartUnityInstance;
+        let ygGameInstance = null;
+        let ysdk = null;
+        let initYSDK = false;
+        let initGame = false;
+        let syncInit = false;
+        let isVisibility = true;
+        let isPausedGame = false;
+        const NO_DATA = 'no data';
 
+        function TryResolveLanguageFromYandexSDK() {
+            try {
+                if (ysdk && ysdk.environment && ysdk.environment.i18n && ysdk.environment.i18n.lang)
+                    return ysdk.environment.i18n.lang;
+            } catch (e) {
+                // ignore
+            }
+
+            try {
+                const langMatch = window.location.search.match(/[?&]lang=([^&]+)/i);
+                if (langMatch && langMatch.length > 1)
+                    return decodeURIComponent(langMatch[1]);
+            } catch (e) {
+                // ignore
+            }
+
+            return navigator.language || '';
+        }
+
+        window.ProjectDetectedLanguage = TryResolveLanguageFromYandexSDK();
         const canFullscreen = (function () {
             for (const key of [
                 'exitFullscreen',
@@ -103,16 +132,6 @@
 #endif
         loadingCover.style.background = "url('Images/background.png') center / cover";
         loadingCover.style.display = "";
-
-        let StartUnityInstance;
-        let ygGameInstance = null;
-        let ysdk = null;
-        let initYSDK = false;
-        let initGame = false;
-        let syncInit = false;
-        let isVisibility = true;
-        let isPausedGame = false;
-        const NO_DATA = 'no data';
 
         document.addEventListener('contextmenu', event => event.preventDefault());
         document.addEventListener('visibilitychange', () => SetVisibility(!document.hidden));
@@ -285,6 +304,8 @@
                 ysdk.on('game_api_pause', PauseCallback);
                 ysdk.on('game_api_resume', ResumeCallback);
 
+                window.ProjectDetectedLanguage = TryResolveLanguageFromYandexSDK();
+
                 // Additional init0 modules
 
                 // Additional init1 modules
@@ -324,3 +345,4 @@
     </script>
 </body>
 </html>
+

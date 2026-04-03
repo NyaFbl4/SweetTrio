@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Project.Scripts.System.Localization
@@ -22,10 +23,16 @@ namespace Project.Scripts.System.Localization
         {
             LoadEntries();
 
+            var detectedLanguage = TryDetectStartupLanguage();
+            if (!string.IsNullOrWhiteSpace(detectedLanguage) && SetLanguage(detectedLanguage))
+            {
+                return;
+            }
+
             var savedLanguage = PlayerPrefs.GetString(LanguagePrefsKey, string.Empty);
             if (!string.IsNullOrWhiteSpace(savedLanguage))
             {
-                _currentLanguageCode = NormalizeLanguageCode(savedLanguage);
+                SetLanguage(savedLanguage);
             }
         }
 
@@ -140,6 +147,31 @@ namespace Project.Scripts.System.Localization
 
             AddEntry(LocalizationKeys.PauseTitle, "ПАУЗА", "PAUSE");
 
+            AddEntry(LocalizationKeys.SettingsTitle, "НАСТРОЙКИ", "SETTINGS");
+            AddEntry(LocalizationKeys.SettingsMusicLabel, "Музыка", "Music");
+            AddEntry(LocalizationKeys.SettingsSoundLabel, "Звуки", "Sounds");
+
+            AddEntry(LocalizationKeys.RulesTitle, "ПРАВИЛА", "RULES");
+            AddEntry(LocalizationKeys.RulesLevelTitle, "Правила уровня", "Level rules");
+            AddEntry(
+                LocalizationKeys.RulesTextTemplate,
+                "Собирай одинаковые десерты в ряд по 3 и больше, чтобы получать очки.\n\n" +
+                "Чем длиннее комбинация, тем больше награда.\n\n" +
+                "Собирай десерты быстро и делай комбо подряд, чтобы получить бонусные очки.\n\n" +
+                "Оставшееся в конце уровня время превращается в дополнительные очки.\n\n" +
+                "Звезды за результат:\n" +
+                "1 звезда — от {0} очков\n" +
+                "2 звезды — от {1} очков\n" +
+                "3 звезды — от {2} очков",
+                "Match identical desserts in lines of 3 or more to earn points.\n\n" +
+                "The longer the combo, the higher the reward.\n\n" +
+                "Make matches quickly and chain combos to get bonus points.\n\n" +
+                "Time left at the end of a level is converted into extra points.\n\n" +
+                "Stars for the result:\n" +
+                "1 star — from {0} points\n" +
+                "2 stars — from {1} points\n" +
+                "3 stars — from {2} points");
+
             AddEntry(LocalizationKeys.HudScoreFormat, "Очки: {0}", "Score: {0}");
             AddEntry(LocalizationKeys.HudDessertsLabel, "Десерты", "Desserts");
             AddEntry(LocalizationKeys.HudDessertsFormat, "Десерты: {0}", "Desserts: {0}");
@@ -163,7 +195,36 @@ namespace Project.Scripts.System.Localization
             if (string.IsNullOrWhiteSpace(languageCode))
                 return DefaultLanguage;
 
-            return languageCode.Trim().ToLowerInvariant();
+            var normalized = languageCode.Trim().ToLowerInvariant().Replace('_', '-');
+            if (normalized.StartsWith("ru", StringComparison.Ordinal))
+                return DefaultLanguage;
+            if (normalized.StartsWith("en", StringComparison.Ordinal))
+                return EnglishLanguage;
+
+            return EnglishLanguage;
+        }
+
+        private static string TryDetectStartupLanguage()
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            try
+            {
+                var languageFromWeb = ProjectLanguageBridge.GetAutoLanguageCode();
+                if (!string.IsNullOrWhiteSpace(languageFromWeb))
+                    return languageFromWeb;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"LocalizationService: failed to read language from WebGL bridge. {ex.Message}");
+            }
+#endif
+
+            return Application.systemLanguage switch
+            {
+                SystemLanguage.Russian => DefaultLanguage,
+                SystemLanguage.English => EnglishLanguage,
+                _ => EnglishLanguage
+            };
         }
 
         [Serializable]
@@ -191,6 +252,23 @@ namespace Project.Scripts.System.Localization
 
             public string Russian { get; }
             public string English { get; }
+        }
+
+        private static class ProjectLanguageBridge
+        {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            [DllImport("__Internal")]
+            private static extern string Project_GetAutoLanguage();
+#endif
+
+            public static string GetAutoLanguageCode()
+            {
+#if UNITY_WEBGL && !UNITY_EDITOR
+                return Project_GetAutoLanguage();
+#else
+                return string.Empty;
+#endif
+            }
         }
     }
 }

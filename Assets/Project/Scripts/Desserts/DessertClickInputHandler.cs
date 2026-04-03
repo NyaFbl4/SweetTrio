@@ -1,5 +1,6 @@
 using VContainer.Unity;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using Project.Scripts.System.Audio;
 using Project.System;
@@ -20,19 +21,18 @@ namespace Assets.Project.Scripts.Desserts
 
         public void Tick()
         {
-            if (Mouse.current == null)
+            if (!TryGetPointerDownScreenPosition(out var screenPos, out var pointerId))
                 return;
 
-            if (!Mouse.current.leftButton.wasPressedThisFrame)
+            if (IsPointerOverUi(pointerId))
                 return;
 
             var camera = Camera.main;
             if (camera == null)
                 return;
 
-            var screenPos = Mouse.current.position.ReadValue();
-            var worldPos = camera.ScreenToWorldPoint(screenPos);
-            var hit = Physics2D.Raycast(new Vector2(worldPos.x, worldPos.y), Vector2.zero);
+            var ray = camera.ScreenPointToRay(screenPos);
+            var hit = Physics2D.GetRayIntersection(ray, Mathf.Infinity);
 
             if (!hit.collider)
                 return;
@@ -45,8 +45,59 @@ namespace Assets.Project.Scripts.Desserts
             if (dessert == null)
                 return;
 
-            _soundManager.PlayTapPick();
-            _actionBar.TryAddDessert(dessert);
+            if (_actionBar.TryAddDessert(dessert))
+                _soundManager.PlayTapPick();
+        }
+
+        private static bool TryGetPointerDownScreenPosition(out Vector2 screenPos, out int pointerId)
+        {
+            screenPos = default;
+            pointerId = -1;
+
+            var mouse = Mouse.current;
+            if (mouse != null && mouse.leftButton.wasPressedThisFrame)
+            {
+                screenPos = mouse.position.ReadValue();
+                return true;
+            }
+
+            var touchscreen = Touchscreen.current;
+            if (touchscreen == null)
+                return false;
+
+            var primaryTouch = touchscreen.primaryTouch;
+            if (primaryTouch.press.wasPressedThisFrame)
+            {
+                screenPos = primaryTouch.position.ReadValue();
+                pointerId = primaryTouch.touchId.ReadValue();
+                return true;
+            }
+
+            var touches = touchscreen.touches;
+            for (var i = 0; i < touches.Count; i++)
+            {
+                var touch = touches[i];
+                if (!touch.press.wasPressedThisFrame)
+                    continue;
+
+                screenPos = touch.position.ReadValue();
+                pointerId = touch.touchId.ReadValue();
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool IsPointerOverUi(int pointerId)
+        {
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null)
+                return false;
+
+            if (pointerId >= 0)
+                return eventSystem.IsPointerOverGameObject(pointerId);
+
+            return eventSystem.IsPointerOverGameObject();
         }
     }
 }

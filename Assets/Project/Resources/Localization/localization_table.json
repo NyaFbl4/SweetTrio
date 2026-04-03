@@ -52,6 +52,36 @@
       "en": "PAUSE"
     },
     {
+      "key": "settings.title",
+      "ru": "НАСТРОЙКИ",
+      "en": "SETTINGS"
+    },
+    {
+      "key": "settings.music_label",
+      "ru": "Музыка",
+      "en": "Music"
+    },
+    {
+      "key": "settings.sound_label",
+      "ru": "Звуки",
+      "en": "Sounds"
+    },
+    {
+      "key": "rules.title",
+      "ru": "ПРАВИЛА",
+      "en": "RULES"
+    },
+    {
+      "key": "rules.level_title",
+      "ru": "Правила уровня",
+      "en": "Level rules"
+    },
+    {
+      "key": "rules.text_template",
+      "ru": "Собирай одинаковые десерты в ряд по 3 и больше, чтобы получать очки.\n\nЧем длиннее комбинация, тем больше награда.\n\nСобирай десерты быстро и делай комбо подряд, чтобы получить бонусные очки.\n\nОставшееся в конце уровня время превращается в дополнительные очки.\n\nЗвезды за результат:\n1 звезда — от {0} очков\n2 звезды — от {1} очков\n3 звезды — от {2} очков",
+      "en": "Match identical desserts in lines of 3 or more to earn points.\n\nThe longer the combo, the higher the reward.\n\nMake matches quickly and chain combos to get bonus points.\n\nTime left at the end of a level is converted into extra points.\n\nStars for the result:\n1 star — from {0} points\n2 stars — from {1} points\n3 stars — from {2} points"
+    },
+    {
       "key": "hud.score_format",
       "ru": "Очки: {0}",
       "en": "Score: {0}"
