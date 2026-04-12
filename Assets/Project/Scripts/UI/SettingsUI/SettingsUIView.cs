@@ -9,8 +9,8 @@ namespace Project.Scripts.UI.SettingsUI
 {
     public class SettingsUIView : AnimatedPopupViewBase, ISettingsUIView
     {
-        private const string ToggleOnPath = "UI/Settings Panel/on";
-        private const string ToggleOffPath = "UI/Settings Panel/off";
+        private const string ToggleOnPath = "UI/Settings Panel/on_1";
+        private const string ToggleOffPath = "UI/Settings Panel/off_1";
         private const float VolumeStep = 0.05f;
 
         [Inject] private readonly ILocalizationService _localizationService;
@@ -18,6 +18,8 @@ namespace Project.Scripts.UI.SettingsUI
         private Label _titleLabel;
         private Label _musicLabel;
         private Label _soundLabel;
+        private Label _musicToggleStateLabel;
+        private Label _soundToggleStateLabel;
         private Button _closeButton;
         private Button _musicToggleButton;
         private Button _soundToggleButton;
@@ -27,8 +29,10 @@ namespace Project.Scripts.UI.SettingsUI
         private Button _soundVolumePlusButton;
         private VisualElement _musicVolumeFill;
         private VisualElement _soundVolumeFill;
-        private Texture2D _toggleOnTexture;
-        private Texture2D _toggleOffTexture;
+        private Sprite _toggleOnSprite;
+        private Sprite _toggleOffSprite;
+        private string _toggleOnText = "ON";
+        private string _toggleOffText = "OFF";
         private float _musicVolume = 1f;
         private float _soundVolume = 1f;
 
@@ -48,6 +52,10 @@ namespace Project.Scripts.UI.SettingsUI
             _titleLabel = _root.Q<Label>("setting-title-label");
             _musicLabel = _root.Q<Label>("settings-music-label");
             _soundLabel = _root.Q<Label>("settings-sound-label");
+            _musicToggleStateLabel = _root.Q<Label>("settings-music-label-on-of")
+                                     ?? _root.Q<Label>("settings-music-toggle-state-label");
+            _soundToggleStateLabel = _root.Q<Label>("settings-sound-label-on-of")
+                                     ?? _root.Q<Label>("settings-sound-toggle-state-label");
             _closeButton = _root.Q<Button>("settings-close-button");
             _musicToggleButton = _root.Q<Button>("settings-music-toggle-button");
             _soundToggleButton = _root.Q<Button>("settings-sound-toggle-button");
@@ -107,11 +115,11 @@ namespace Project.Scripts.UI.SettingsUI
                 _soundVolumePlusButton.clicked += HandleSoundVolumePlusClicked;
             }
 
-            _toggleOnTexture = Resources.Load<Texture2D>(ToggleOnPath);
-            _toggleOffTexture = Resources.Load<Texture2D>(ToggleOffPath);
+            _toggleOnSprite = LoadToggleSprite(ToggleOnPath);
+            _toggleOffSprite = LoadToggleSprite(ToggleOffPath);
 
-            if (_toggleOnTexture == null || _toggleOffTexture == null)
-                Debug.LogWarning("SettingsUIView: ON/OFF textures not found in Resources/UI/Settings Panel.");
+            if (_toggleOnSprite == null || _toggleOffSprite == null)
+                Debug.LogWarning("SettingsUIView: ON/OFF sprites not found in Resources/UI/Settings Panel.");
 
             if (_titleLabel != null)
                 _titleLabel.text = GetLocalizedText(LocalizationKeys.SettingsTitle, _titleLabel.text);
@@ -121,6 +129,15 @@ namespace Project.Scripts.UI.SettingsUI
 
             if (_soundLabel != null)
                 _soundLabel.text = GetLocalizedText(LocalizationKeys.SettingsSoundLabel, _soundLabel.text);
+
+            _toggleOnText = GetLocalizedText(LocalizationKeys.SettingsToggleOn, _toggleOnText);
+            _toggleOffText = GetLocalizedText(LocalizationKeys.SettingsToggleOff, _toggleOffText);
+
+            if (_musicToggleStateLabel != null)
+                _musicToggleStateLabel.text = _toggleOnText;
+
+            if (_soundToggleStateLabel != null)
+                _soundToggleStateLabel.text = _toggleOnText;
         }
 
         private void OnDestroy()
@@ -149,12 +166,12 @@ namespace Project.Scripts.UI.SettingsUI
 
         public void SetMusicEnabled(bool isEnabled)
         {
-            ApplyToggleVisual(_musicToggleButton, isEnabled);
+            ApplyToggleVisual(_musicToggleButton, _musicToggleStateLabel, isEnabled);
         }
 
         public void SetSoundEnabled(bool isEnabled)
         {
-            ApplyToggleVisual(_soundToggleButton, isEnabled);
+            ApplyToggleVisual(_soundToggleButton, _soundToggleStateLabel, isEnabled);
         }
 
         public void SetMusicVolume(float value)
@@ -232,20 +249,24 @@ namespace Project.Scripts.UI.SettingsUI
             fill.style.width = Length.Percent(Mathf.Clamp01(value) * 100f);
         }
 
-        private void ApplyToggleVisual(Button button, bool isEnabled)
+        private void ApplyToggleVisual(Button button, Label stateLabel, bool isEnabled)
         {
             if (button == null)
                 return;
 
-            var texture = isEnabled ? _toggleOnTexture : _toggleOffTexture;
-            if (texture != null)
+            var stateText = isEnabled ? _toggleOnText : _toggleOffText;
+            if (stateLabel != null)
+                stateLabel.text = stateText;
+
+            var sprite = isEnabled ? _toggleOnSprite : _toggleOffSprite;
+            if (sprite != null)
             {
-                button.style.backgroundImage = new StyleBackground(texture);
+                button.style.backgroundImage = new StyleBackground(sprite);
                 button.text = string.Empty;
                 return;
             }
 
-            button.text = isEnabled ? "ON" : "OFF";
+            button.text = stateText;
         }
 
         private string GetLocalizedText(string key, string fallback)
@@ -255,6 +276,15 @@ namespace Project.Scripts.UI.SettingsUI
 
             var text = _localizationService.Get(key);
             return string.IsNullOrWhiteSpace(text) ? fallback : text;
+        }
+
+        private static Sprite LoadToggleSprite(string resourcePath)
+        {
+            var sprites = Resources.LoadAll<Sprite>(resourcePath);
+            if (sprites != null && sprites.Length > 0)
+                return sprites[0];
+
+            return Resources.Load<Sprite>(resourcePath);
         }
     }
 }

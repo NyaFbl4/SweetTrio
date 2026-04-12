@@ -18,6 +18,8 @@
         public const string SettingsTitle = "settings.title";
         public const string SettingsMusicLabel = "settings.music_label";
         public const string SettingsSoundLabel = "settings.sound_label";
+        public const string SettingsToggleOn = "settings.toggle_on";
+        public const string SettingsToggleOff = "settings.toggle_off";
 
         public const string RulesTitle = "rules.title";
         public const string RulesLevelTitle = "rules.level_title";

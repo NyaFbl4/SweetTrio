@@ -150,6 +150,8 @@ namespace Project.Scripts.System.Localization
             AddEntry(LocalizationKeys.SettingsTitle, "НАСТРОЙКИ", "SETTINGS");
             AddEntry(LocalizationKeys.SettingsMusicLabel, "Музыка", "Music");
             AddEntry(LocalizationKeys.SettingsSoundLabel, "Звуки", "Sounds");
+            AddEntry(LocalizationKeys.SettingsToggleOn, "ВКЛ", "ON");
+            AddEntry(LocalizationKeys.SettingsToggleOff, "ВЫКЛ", "OFF");
 
             AddEntry(LocalizationKeys.RulesTitle, "ПРАВИЛА", "RULES");
             AddEntry(LocalizationKeys.RulesLevelTitle, "Правила уровня", "Level rules");

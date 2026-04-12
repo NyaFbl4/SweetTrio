@@ -67,6 +67,16 @@
       "en": "Sounds"
     },
     {
+      "key": "settings.toggle_on",
+      "ru": "ВКЛ",
+      "en": "ON"
+    },
+    {
+      "key": "settings.toggle_off",
+      "ru": "ВЫКЛ",
+      "en": "OFF"
+    },
+    {
       "key": "rules.title",
       "ru": "ПРАВИЛА",
       "en": "RULES"
