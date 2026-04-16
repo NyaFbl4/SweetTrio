@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using YG;
 
 namespace Project.Scripts.System.Localization
 {
@@ -21,6 +22,8 @@ namespace Project.Scripts.System.Localization
 
         public LocalizationService()
         {
+            Debug.Log("init LocalizationService");
+            YG2.onCorrectLang += OnChangeLang;
             LoadEntries();
 
             var detectedLanguage = TryDetectStartupLanguage();
@@ -33,6 +36,18 @@ namespace Project.Scripts.System.Localization
             if (!string.IsNullOrWhiteSpace(savedLanguage))
             {
                 SetLanguage(savedLanguage);
+            }
+        }
+        public void InitLanguage()
+        {
+            
+        }
+
+        public static void OnChangeLang(string language)
+        {
+            if (language != "ru" && language != "en")
+            {
+                YG2.lang = "ru";
             }
         }
 

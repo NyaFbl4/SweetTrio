@@ -4,7 +4,20 @@
 
         try {
             if (typeof window !== "undefined") {
-                if (typeof window.ProjectDetectedLanguage === "string" && window.ProjectDetectedLanguage.length > 0) {
+                if (window.ysdk &&
+                    window.ysdk.environment &&
+                    window.ysdk.environment.i18n &&
+                    typeof window.ysdk.environment.i18n.lang === "string" &&
+                    window.ysdk.environment.i18n.lang.length > 0) {
+                    language = window.ysdk.environment.i18n.lang;
+                } else if (typeof ysdk !== "undefined" &&
+                    ysdk &&
+                    ysdk.environment &&
+                    ysdk.environment.i18n &&
+                    typeof ysdk.environment.i18n.lang === "string" &&
+                    ysdk.environment.i18n.lang.length > 0) {
+                    language = ysdk.environment.i18n.lang;
+                } else if (typeof window.ProjectDetectedLanguage === "string" && window.ProjectDetectedLanguage.length > 0) {
                     language = window.ProjectDetectedLanguage;
                 } else if (window.location && typeof window.location.search === "string") {
                     var match = window.location.search.match(/[?&]lang=([^&]+)/i);
@@ -25,5 +38,25 @@
         var buffer = _malloc(length);
         stringToUTF8(language, buffer, length);
         return buffer;
+    },
+
+    Project_ShowInterstitialAdv: function () {
+        try {
+            var sdk = null;
+            if (typeof window !== "undefined" && window.ysdk) {
+                sdk = window.ysdk;
+            } else if (typeof ysdk !== "undefined" && ysdk) {
+                sdk = ysdk;
+            }
+
+            if (sdk && sdk.adv && typeof sdk.adv.showFullscreenAdv === "function") {
+                sdk.adv.showFullscreenAdv({});
+                return 1;
+            }
+        } catch (error) {
+            return 0;
+        }
+
+        return 0;
     }
 });

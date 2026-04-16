@@ -17,6 +17,7 @@ using Project.System;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
+using YG;
 
 namespace Project.Scripts.System.Installers
 {
@@ -57,6 +58,8 @@ namespace Project.Scripts.System.Installers
             builder.RegisterEntryPoint<DessertClickInputHandler>(Lifetime.Singleton);
             builder.Register<DessertSpawner>(Lifetime.Singleton).As<IDessertSpawner>();
             builder.RegisterEntryPoint<DessertCreator>().As<IDessertCreator>();
+
+            YG2.StickyAdActivity(true);
 
             if (_actionBar != null)
             {

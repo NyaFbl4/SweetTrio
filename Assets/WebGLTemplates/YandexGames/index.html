@@ -289,6 +289,14 @@
                 if (IsLocalHost()) return;
 
                 ysdk = await YaGames.init();
+                window.ysdk = ysdk;
+                if (ysdk &&
+                    ysdk.environment &&
+                    ysdk.environment.i18n &&
+                    typeof ysdk.environment.i18n.lang === "string" &&
+                    ysdk.environment.i18n.lang.length > 0) {
+                    window.ProjectDetectedLanguage = ysdk.environment.i18n.lang;
+                }
                 ysdk.on('game_api_pause', PauseCallback);
                 ysdk.on('game_api_resume', ResumeCallback);
 
