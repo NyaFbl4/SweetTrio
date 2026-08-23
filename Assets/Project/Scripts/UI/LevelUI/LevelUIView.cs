@@ -28,10 +28,17 @@ namespace Project.Scripts.UI.LevelUI
         private Button _shuffleButton;
         private Button _exitToMenuButton;
         private Button _pauseButton;
+        private VisualElement _topHudContainer;
+        private VisualElement _bottomHudContainer;
 
         private int _displayedCounterValue;
         private bool _counterInitialized;
         private int _counterAnimationVersion;
+        
+        private int _hudAnimationVersion;
+        private float HudShowDurationSeconds = 0.28f; 
+        private float TopHudHiddenOffsetPx = -220f;
+        private float BottomHudHiddenOffsetPx = 170f;
 
         public event Action ShuffleButtonClicked;
         public event Action ExitToMenuClicked;
@@ -57,6 +64,9 @@ namespace Project.Scripts.UI.LevelUI
             _shuffleButton = _root.Q<Button>("shuffle-button");
             _exitToMenuButton = _root.Q<Button>("gameplay-menu-button");
             _pauseButton = _root.Q<Button>("pause-button");
+            
+            _topHudContainer = _root.Q<VisualElement>("top-hud-container");
+            _bottomHudContainer = _root.Q<VisualElement>("bottom-hud-container");
 
             if (_counterLabel == null)
             {
@@ -128,10 +138,61 @@ namespace Project.Scripts.UI.LevelUI
 
             ConfigureProgressStars();
         }
+        
+        public override async UniTask ShowAsync()
+        {
+            var version = ++_hudAnimationVersion;
+
+            Show();
+            ApplyHudAppearanceState(0f);
+
+            var elapsed = 0f;
+            while (elapsed < HudShowDurationSeconds)
+            {
+                if (version != _hudAnimationVersion)
+                    return;
+
+                elapsed += Time.unscaledDeltaTime;
+                var t = Mathf.Clamp01(elapsed / HudShowDurationSeconds);
+                var eased = 1f - Mathf.Pow(1f - t, 3f);
+
+                ApplyHudAppearanceState(eased);
+
+                await UniTask.Yield(PlayerLoopTiming.Update);
+            }
+
+            ApplyHudAppearanceState(1f);
+        }
+
+        public override async UniTask HideAsync()
+        {
+            _hudAnimationVersion++;
+            await base.HideAsync();
+        }
+
+        private void ApplyHudAppearanceState(float state)
+        {
+            var topOffset = Mathf.Lerp(TopHudHiddenOffsetPx, 0f, state);
+            var bottomOffset = Mathf.Lerp(BottomHudHiddenOffsetPx, 0f, state);
+
+            _topHudContainer.style.translate = new Translate(
+                new Length(0f, LengthUnit.Pixel),
+                new Length(topOffset, LengthUnit.Pixel),
+                0f);
+
+            _bottomHudContainer.style.translate = new Translate(
+                new Length(0f, LengthUnit.Pixel),
+                new Length(bottomOffset, LengthUnit.Pixel),
+                0f);
+
+            _topHudContainer.style.opacity = state;
+            _bottomHudContainer.style.opacity = state;
+        }
 
         private void OnDestroy()
         {
             _counterAnimationVersion++;
+            _hudAnimationVersion++;
 
             if (_shuffleButton != null)
             {

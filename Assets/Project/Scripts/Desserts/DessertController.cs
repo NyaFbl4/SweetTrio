@@ -60,6 +60,13 @@ namespace Assets.Project.Scripts.Desserts
         {
             _isInteractable = isInteractable;
         }
+        
+        public void BeginMoveToActionBar()
+        {
+            _isInteractable = false;
+            _isInActionBar = true;
+            SetRigidBodySimulated(false);
+        }
 
         private void OnMouseDown()
         {

@@ -9,6 +9,7 @@ using Project.Scripts.UI.UseCases;
 using UnityEngine;
 using UnityEngine.Rendering;
 using VContainer;
+using Cysharp.Threading.Tasks;
 
 namespace Project.System
 {
@@ -27,6 +28,11 @@ namespace Project.System
         [Inject] private readonly ILevelSelectionService _levelSelectionService;
         [Inject] private readonly IPublisher<DessertCountsDto> _dessertCountsPublisher;
         private readonly List<DessertController> _desserts = new();
+        
+        [SerializeField, Min(0.05f)] private float _dessertFlyDuration = 0.28f;
+        [SerializeField, Min(0f)] private float _dessertFlyArcHeight = 0.8f;
+        
+        private bool _isDessertFlyingToActionBar;
 
         public event Action<DessertController> DessertAdded;
         public int CurrentCount => _desserts.Count;
@@ -60,14 +66,13 @@ namespace Project.System
                 return false;
             }
 
-            var slot = GetSlotByIndex(_desserts.Count);
+            if (_isDessertFlyingToActionBar)
+                return false;
 
-            dessert.MoveToActionBar(slot);
-            ApplyRenderOrder(dessert, _baseSortingOrder + _desserts.Count);
-            _desserts.Add(dessert);
-            RebuildLayout();
-            DessertAdded?.Invoke(dessert);
-            PublishCountsChanged();
+            var slot = GetSlotByIndex(_desserts.Count);
+            _isDessertFlyingToActionBar = true;
+
+            AddDessertAnimatedAsync(dessert, slot).Forget();
             return true;
         }
 
@@ -120,6 +125,46 @@ namespace Project.System
             }
         }
 
+        private async UniTaskVoid AddDessertAnimatedAsync(DessertController dessert, Transform slot)
+        {
+            dessert.BeginMoveToActionBar();
+            ApplyRenderOrder(dessert, _baseSortingOrder + _desserts.Count);
+
+            var startPosition = dessert.transform.position;
+            var targetPosition = slot.TransformPoint(DessertSlotLocalOffset);
+
+            var startScale = dessert.transform.localScale;
+            var targetScale = Vector3.one * 0.85f;
+
+            var elapsed = 0f;
+            while (elapsed < _dessertFlyDuration)
+            {
+                elapsed += Time.deltaTime;
+
+                var t = Mathf.Clamp01(elapsed / _dessertFlyDuration);
+                var eased = 1f - Mathf.Pow(1f - t, 3f);
+
+                var position = Vector3.Lerp(startPosition, targetPosition, eased);
+                position.y += Mathf.Sin(t * Mathf.PI) * _dessertFlyArcHeight;
+
+                dessert.transform.position = position;
+                dessert.transform.localScale = Vector3.Lerp(startScale, targetScale, eased);
+
+                await UniTask.Yield(PlayerLoopTiming.Update, destroyCancellationToken);
+            }
+
+            dessert.MoveToActionBar(slot);
+            dessert.transform.localPosition = DessertSlotLocalOffset;
+
+            _desserts.Add(dessert);
+            RebuildLayout();
+
+            _isDessertFlyingToActionBar = false;
+
+            DessertAdded?.Invoke(dessert);
+            PublishCountsChanged();
+        }
+        
         private void HandleActionBarOverflow(DessertController overflowDessert)
         {
             var dessertsToReturn = new List<DessertController>(_desserts.Count + 1);

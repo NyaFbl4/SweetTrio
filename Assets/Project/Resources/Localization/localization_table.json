@@ -88,8 +88,8 @@
     },
     {
       "key": "rules.text_template",
-      "ru": "Собирай одинаковые десерты в ряд по 3 и больше, чтобы получать очки.\n\nЧем длиннее комбинация, тем больше награда.\n\nСобирай десерты быстро и делай комбо подряд, чтобы получить бонусные очки.\n\nОставшееся в конце уровня время превращается в дополнительные очки.\n\nЗвезды за результат:\n1 звезда — от {0} очков\n2 звезды — от {1} очков\n3 звезды — от {2} очков",
-      "en": "Match identical desserts in lines of 3 or more to earn points.\n\nThe longer the combo, the higher the reward.\n\nMake matches quickly and chain combos to get bonus points.\n\nTime left at the end of a level is converted into extra points.\n\nStars for the result:\n1 star — from {0} points\n2 stars — from {1} points\n3 stars — from {2} points"
+      "ru": "Нажимай на десерты на поле. Собери 3 одинаковых десерта в нижней панели, чтобы убрать их и получить очки.\n\nЕсли соберешь десерт, показанный в бонусном окне, очки умножатся.\n\nОставшееся в конце уровня время превращается в дополнительные очки.\n\nЗвезды за результат:\n1 звезда — от {0} очков\n2 звезды — от {1} очков\n3 звезды — от {2} очков",
+      "en": "Tap desserts on the field. Collect 3 identical desserts in the bottom bar to remove them and earn points.\n\nIf you collect the dessert shown in the bonus window, your points are multiplied.\n\nTime left at the end of a level is converted into extra points.\n\nStars for the result:\n1 star — from {0} points\n2 stars — from {1} points\n3 stars — from {2} points"
     },
     {
       "key": "hud.score_format",

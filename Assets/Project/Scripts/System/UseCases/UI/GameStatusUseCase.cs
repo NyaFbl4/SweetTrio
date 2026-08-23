@@ -96,6 +96,7 @@ namespace Project.Scripts.UI.UseCases
                     : GetLocalizedText(LocalizationKeys.GameStatusLevelNotPassed, "Level failed");
             }
 
+            /*
             if (starsCount >= totalStarsCount)
             {
                 return FormatLocalizedText(
@@ -104,6 +105,7 @@ namespace Project.Scripts.UI.UseCases
                     totalStarsCount,
                     totalStarsCount);
             }
+            */
 
             var nextStarNumber = starsCount + 1;
             var nextStarScore = ResolveNextStarScore(levelConfig, score);
