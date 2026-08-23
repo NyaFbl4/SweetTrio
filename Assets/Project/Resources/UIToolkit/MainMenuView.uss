@@ -52,3 +52,19 @@
 .main-menu-page-indicator-inner--inactive {
     background-color: rgba(173, 173, 173, 1);
 }
+
+.main-menu-level-cell-button--locked {
+    opacity: 0.55;
+}
+
+.main-menu-level-cell-lock {
+    width: 54px;
+    height: 54px;
+    background-image: resource('UI/Level Select/lock');
+    -unity-background-scale-mode: scale-to-fit;
+    display: none;
+}
+
+.main-menu-level-cell-button--locked .main-menu-level-cell-lock {
+    display: flex;
+}

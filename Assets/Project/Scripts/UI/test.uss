@@ -1,0 +1,12 @@
+.press-button {
+    transition-property: scale, translate;
+    transition-duration: 80ms;
+    transition-timing-function: ease-out;
+    scale: 1;
+    translate: 0px 0px;
+}
+
+.press-button:active {
+    scale: 0.94;
+    translate: 0px 2px;
+}

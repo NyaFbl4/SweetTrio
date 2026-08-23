@@ -22,14 +22,16 @@ namespace Project.Scripts.UI.EndGame
         private Label _scoreLabel;
         private Label _completionLabel;
         private VisualElement _starsContainer;
-        private Button _primaryActionButton;
-        private Button _secondaryActionButton;
+        private Button _restartButton;
+        private Button _nextLevelButton;
+        private Button _menuButton;
 
         protected override string OverlayElementName => "end-game-overlay";
         protected override string PanelElementName => "end-game-panel";
 
-        public event Action PrimaryButtonClicked;
-        public event Action SecondaryButtonClicked;
+        public event Action RestartButtonClicked;
+        public event Action NextLevelButtonClicked;
+        public event Action MenuButtonClicked;
 
         public override void Awake()
         {
@@ -38,16 +40,22 @@ namespace Project.Scripts.UI.EndGame
             QueryElements();
             EnsureRequiredElements();
 
-            if (_primaryActionButton != null)
+            if (_restartButton != null)
             {
-                UIButtonAnimationUtility.EnableDefault(_primaryActionButton);
-                _primaryActionButton.clicked += HandlePrimaryActionClicked;
+                UIButtonAnimationUtility.EnableDefault(_restartButton);
+                _restartButton.clicked += HandleRestartActionClicked;
             }
 
-            if (_secondaryActionButton != null)
+            if (_nextLevelButton != null)
             {
-                UIButtonAnimationUtility.EnableDefault(_secondaryActionButton);
-                _secondaryActionButton.clicked += HandleSecondaryActionClicked;
+                UIButtonAnimationUtility.EnableDefault(_nextLevelButton);
+                _nextLevelButton.clicked += HandleNextLevelButtonClicked;
+            }
+            
+            if (_menuButton != null)
+            {
+                UIButtonAnimationUtility.EnableDefault(_menuButton);
+                _menuButton.clicked += HandleMenuActionClicked;
             }
 
             SetCompletionVisible(false);
@@ -56,11 +64,23 @@ namespace Project.Scripts.UI.EndGame
 
         private void OnDestroy()
         {
-            if (_primaryActionButton != null)
-                _primaryActionButton.clicked -= HandlePrimaryActionClicked;
+            if (_restartButton != null)
+            {
+                UIButtonAnimationUtility.EnableDefault(_restartButton);
+                _restartButton.clicked -= HandleRestartActionClicked;
+            }
 
-            if (_secondaryActionButton != null)
-                _secondaryActionButton.clicked -= HandleSecondaryActionClicked;
+            if (_nextLevelButton != null)
+            {
+                UIButtonAnimationUtility.EnableDefault(_nextLevelButton);
+                _nextLevelButton.clicked -= HandleNextLevelButtonClicked;
+            }
+            
+            if (_menuButton != null)
+            {
+                UIButtonAnimationUtility.EnableDefault(_menuButton);
+                _menuButton.clicked -= HandleMenuActionClicked;
+            }
         }
 
         public void SetTitle(string message)
@@ -129,17 +149,25 @@ namespace Project.Scripts.UI.EndGame
             _scoreLabel = _root.Q<Label>("end-game-score-label");
             _completionLabel = _root.Q<Label>("end-game-completion-label");
             _starsContainer = _root.Q<VisualElement>("end-game-stars-container");
-            _primaryActionButton = _root.Q<Button>("end-game-primary-button") ?? _root.Q<Button>("end-game-menu-button");
-            _secondaryActionButton = _root.Q<Button>("end-game-secondary-button");
+            _restartButton = _root.Q<Button>("end-game-restart-button") ?? _root.Q<Button>("end-game-primary-button");
+            _nextLevelButton = _root.Q<Button>("end-game-next-level-button");
+            _menuButton = _root.Q<Button>("end-game-menu-button") ?? _root.Q<Button>("end-game-secondary-button");
         }
 
+        public void SetNextLevelButtonVisible(bool isVisible)
+        {
+            if (_nextLevelButton == null)
+                return;
+
+            _nextLevelButton.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
+            _nextLevelButton.SetEnabled(isVisible);
+        }
+        
         private void EnsureRequiredElements()
         {
             if (_titleLabel == null ||
                 _scoreLabel == null ||
-                _starsContainer == null ||
-                _primaryActionButton == null ||
-                _secondaryActionButton == null)
+                _starsContainer == null)
             {
                 Debug.LogError("EndGameView: Required elements not found in EndGameView.uxml.");
             }
@@ -179,14 +207,19 @@ namespace Project.Scripts.UI.EndGame
             return sprite;
         }
 
-        private void HandlePrimaryActionClicked()
+        private void HandleNextLevelButtonClicked()
         {
-            PrimaryButtonClicked?.Invoke();
+            NextLevelButtonClicked?.Invoke();
+        }
+        
+        private void HandleRestartActionClicked()
+        {
+            RestartButtonClicked?.Invoke();
         }
 
-        private void HandleSecondaryActionClicked()
+        private void HandleMenuActionClicked()
         {
-            SecondaryButtonClicked?.Invoke();
+            MenuButtonClicked?.Invoke();
         }
     }
 }

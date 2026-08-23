@@ -5,8 +5,9 @@ namespace Project.Scripts.UI.EndGame
 {
     public interface IEndGameView : ILayoutView
     {
-        event Action PrimaryButtonClicked;
-        event Action SecondaryButtonClicked;
+        event Action RestartButtonClicked;
+        event Action NextLevelButtonClicked;
+        event Action MenuButtonClicked;
 
         void SetTitle(string message);
         void SetScoreText(string text);
@@ -15,5 +16,6 @@ namespace Project.Scripts.UI.EndGame
         void SetCompletionVisible(bool isVisible);
         void SetStars(int activeStarsCount, int totalStarsCount = 3);
         void SetStarsVisible(bool isVisible);
+        void SetNextLevelButtonVisible(bool isVisible);
     }
 }

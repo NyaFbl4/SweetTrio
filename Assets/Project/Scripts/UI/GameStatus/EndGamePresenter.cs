@@ -20,27 +20,31 @@ namespace Project.Scripts.UI.EndGame
         [Inject] private readonly IPublisher<ShowPopupDto> _showPopUpPublisher;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
         [Inject] private readonly IRulesUIController _rulesUIController;
+        [Inject] private readonly ILevelSelectionService _levelSelectionService;
 
         private int _scoreAnimationVersion;
 
         public override void Initialize()
         {
             base.Initialize();
-            _layoutView.PrimaryButtonClicked += HandlePrimaryButtonClicked;
-            _layoutView.SecondaryButtonClicked += HandleSecondaryButtonClicked;
+            _layoutView.RestartButtonClicked += HandleRestartButtonClicked;
+            _layoutView.NextLevelButtonClicked += HandleNextLevelButtonClicked;
+            _layoutView.MenuButtonClicked += HandleMenuButtonClicked;
             IGameListener.Register(this);
         }
 
         public override void Dispose()
         {
             _scoreAnimationVersion++;
-            _layoutView.PrimaryButtonClicked -= HandlePrimaryButtonClicked;
-            _layoutView.SecondaryButtonClicked -= HandleSecondaryButtonClicked;
+            _layoutView.RestartButtonClicked -= HandleRestartButtonClicked;
+            _layoutView.NextLevelButtonClicked -= HandleNextLevelButtonClicked;
+            _layoutView.MenuButtonClicked -= HandleMenuButtonClicked;
             IGameListener.Unregister(this);
             base.Dispose();
         }
 
-        public void ShowResult(bool isPassed, int score, int starsCount, int totalStarsCount, string completionText, int timeBonusPoints = 0)
+        public void ShowResult(bool isPassed, int score, int starsCount, 
+            int totalStarsCount, string completionText, int timeBonusPoints = 0 )
         {
             var titleKey = isPassed ? LocalizationKeys.EndGameTitleWin : LocalizationKeys.EndGameTitleLose;
             var title = _localizationService != null
@@ -57,11 +61,12 @@ namespace Project.Scripts.UI.EndGame
             _layoutView.SetScoreText(FormatScore(scoreBeforeTimeBonus));
             _layoutView.SetScoreVisible(true);
 
-            _layoutView.SetCompletionText(string.Empty);
-            _layoutView.SetCompletionVisible(false);
+            _layoutView.SetCompletionText(completionText);
+            _layoutView.SetCompletionVisible(!string.IsNullOrWhiteSpace(completionText));
 
             _layoutView.SetStarsVisible(true);
             _layoutView.SetStars(starsCount, totalStarsCount > 0 ? totalStarsCount : LevelConfig.TotalStarsCount);
+            _layoutView.SetNextLevelButtonVisible(isPassed && _levelSelectionService.HasNextLevel);
 
             _showPopUpPublisher.Publish(new ShowPopupDto { TargetPopUpType = typeof(IEndGamePresenter) });
 
@@ -77,10 +82,16 @@ namespace Project.Scripts.UI.EndGame
         public void OnStartGame()
         {
             _scoreAnimationVersion++;
+            _layoutView.SetNextLevelButtonVisible(false);
             _hidePopUpPublisher.Publish(new HidePopupDto { TargetPopUpType = typeof(IEndGamePresenter) });
         }
 
-        private void HandlePrimaryButtonClicked()
+        private void HandleRestartButtonClicked()
+        {
+            ShowRulesForSelectedLevel();
+        }
+        
+        private void ShowRulesForSelectedLevel()
         {
             _scoreAnimationVersion++;
 
@@ -91,8 +102,14 @@ namespace Project.Scripts.UI.EndGame
 
             _rulesUIController.ShowBeforeLevelStart();
         }
+        
+        private void HandleNextLevelButtonClicked()
+        {
+            if (_levelSelectionService.TrySelectNextLevel())
+                ShowRulesForSelectedLevel();
+        }
 
-        private void HandleSecondaryButtonClicked()
+        private void HandleMenuButtonClicked()
         {
             _scoreAnimationVersion++;
             _gameManagerService.FinishGame();

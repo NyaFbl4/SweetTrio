@@ -9,8 +9,9 @@ namespace Project.Scripts.UI.MainScreen
     {
         event Action<LevelConfig> LevelSelected;
         event Action SettingsClicked;
-
-        void SetLevels(IReadOnlyList<LevelConfig> levels, LevelConfig selectedLevel, IReadOnlyList<int> savedStars);
+        
+        void SetLevels(IReadOnlyList<LevelConfig> levels, LevelConfig selectedLevel,
+            IReadOnlyList<int> savedStars, IReadOnlyList<bool> unlockedLevels);
         void SetLevelsTabVisible(bool visible);
         void SetSelectedLevel(LevelConfig selectedLevel);
     }

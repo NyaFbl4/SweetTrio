@@ -100,7 +100,8 @@ namespace Project.Scripts.UI.MainScreen
             _levels.Clear();
         }
 
-        public void SetLevels(IReadOnlyList<LevelConfig> levels, LevelConfig selectedLevel, IReadOnlyList<int> savedStars)
+        public void SetLevels(IReadOnlyList<LevelConfig> levels, LevelConfig selectedLevel, 
+            IReadOnlyList<int> savedStars, IReadOnlyList<bool> unlockedLevels)
         {
             _levels.Clear();
 
@@ -118,7 +119,8 @@ namespace Project.Scripts.UI.MainScreen
                         stars = Mathf.Clamp(savedStars[i], 0, LevelConfig.TotalStarsCount);
                     }
 
-                    _levels.Add(new LevelEntry(levelConfig, i + 1, stars));
+                    var isUnlocked = unlockedLevels != null && i < unlockedLevels.Count && unlockedLevels[i];
+                    _levels.Add(new LevelEntry(levelConfig, i + 1, stars, isUnlocked));
                 }
             }
 
@@ -217,7 +219,8 @@ namespace Project.Scripts.UI.MainScreen
                     }
 
                     var entry = _levels[i];
-                    var levelButton = CreateLevelButton(entry.LevelConfig, entry.LevelNumber, entry.EarnedStarsCount);
+                    var levelButton = CreateLevelButton(entry.LevelConfig, entry.LevelNumber, 
+                        entry.EarnedStarsCount, entry.IsUnlocked);
                     currentRow?.Add(levelButton);
                     _levelButtons.Add(levelButton);
                     rowItemIndex++;
@@ -228,13 +231,13 @@ namespace Project.Scripts.UI.MainScreen
             RefreshLevelButtonSelection();
         }
 
-        private Button CreateLevelButton(LevelConfig levelConfig, int levelNumber, int earnedStarsCount)
+        private Button CreateLevelButton(LevelConfig levelConfig, int levelNumber, int earnedStarsCount, bool isUnlocked)
         {
-            var templateButton = CreateLevelButtonFromTemplate(levelConfig, levelNumber, earnedStarsCount);
-            return templateButton ?? CreateLevelButtonFallback(levelConfig, levelNumber);
+            var templateButton = CreateLevelButtonFromTemplate(levelConfig, levelNumber, earnedStarsCount, isUnlocked);
+            return templateButton ?? CreateLevelButtonFallback(levelConfig, levelNumber, isUnlocked);
         }
 
-        private Button CreateLevelButtonFromTemplate(LevelConfig levelConfig, int levelNumber, int earnedStarsCount)
+        private Button CreateLevelButtonFromTemplate(LevelConfig levelConfig, int levelNumber, int earnedStarsCount, bool isUnlocked)
         {
             if (_levelCellTemplate == null)
                 return null;
@@ -246,7 +249,15 @@ namespace Project.Scripts.UI.MainScreen
 
             button.text = string.Empty;
             button.userData = levelConfig;
-            button.clicked += () => HandleLevelSelected(levelConfig);
+            if (isUnlocked)
+            {
+                button.clicked += () => HandleLevelSelected(levelConfig);
+            }
+            else
+            {
+                button.SetEnabled(false);
+                button.AddToClassList("main-menu-level-cell-button--locked");
+            }
 
             var starsStrip = button.Q<VisualElement>("main-menu-level-cell-stars");
             ApplyStarsState(starsStrip, earnedStarsCount);
@@ -259,13 +270,23 @@ namespace Project.Scripts.UI.MainScreen
             return button;
         }
 
-        private Button CreateLevelButtonFallback(LevelConfig levelConfig, int levelNumber)
+        private Button CreateLevelButtonFallback(LevelConfig levelConfig, int levelNumber, bool isUnlocked)
         {
-            var button = new Button(() => HandleLevelSelected(levelConfig))
+            var button = new Button
             {
                 userData = levelConfig,
                 text = levelNumber.ToString()
             };
+
+            if (isUnlocked)
+            {
+                button.clicked += () => HandleLevelSelected(levelConfig);
+            }
+            else
+            {
+                button.SetEnabled(false);
+                button.AddToClassList("main-menu-level-cell-button--locked");
+            }
 
             UIButtonAnimationUtility.EnableDefault(button);
             return button;
@@ -469,13 +490,15 @@ namespace Project.Scripts.UI.MainScreen
 
         private readonly struct LevelEntry
         {
-            public LevelEntry(LevelConfig levelConfig, int levelNumber, int earnedStarsCount)
+            public LevelEntry(LevelConfig levelConfig, int levelNumber, int earnedStarsCount, bool isUnlocked)
             {
                 LevelConfig = levelConfig;
                 LevelNumber = levelNumber;
                 EarnedStarsCount = earnedStarsCount;
+                IsUnlocked = isUnlocked;
             }
 
+            public bool IsUnlocked { get; }
             public LevelConfig LevelConfig { get; }
             public int LevelNumber { get; }
             public int EarnedStarsCount { get; }

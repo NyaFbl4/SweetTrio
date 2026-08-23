@@ -13,6 +13,15 @@ namespace Project.Scripts.GameManager
         public IReadOnlyList<LevelConfig> AvailableLevels => _availableLevels;
         public LevelConfig CurrentLevel { get; private set; }
         public bool HasAnyLevel => _availableLevels.Count > 0;
+        
+        public bool HasNextLevel
+        {
+            get
+            {
+                var currentLevelIndex = GetCurrentLevelIndex();
+                return currentLevelIndex >= 0 && currentLevelIndex < _availableLevels.Count - 1;
+            }
+        }
 
         public LevelSelectionService(LevelsCatalogConfig levelsCatalogConfig, LevelConfig fallbackLevelConfig)
         {
@@ -74,12 +83,28 @@ namespace Project.Scripts.GameManager
 
             CurrentLevel = levelConfig;
         }
+        
+        public bool TrySelectNextLevel()
+        {
+            var currentLevelIndex = GetCurrentLevelIndex();
+            if (currentLevelIndex < 0 || currentLevelIndex >= _availableLevels.Count - 1)
+                return false;
+
+            CurrentLevel = _availableLevels[currentLevelIndex + 1];
+            return true;
+        }
+
+        private int GetCurrentLevelIndex()
+        {
+            return CurrentLevel != null ? _availableLevels.IndexOf(CurrentLevel) : -1;
+        }
 
     }
 
     public class LevelProgressService : ILevelProgressService
     {
         private const string StarsKeyPrefix = "level_stars_";
+        private const string MaxUnlockedLevelIndexKey = "max_unlocked_level_index";
 
         public int GetBestStars(LevelConfig levelConfig)
         {
@@ -103,6 +128,61 @@ namespace Project.Scripts.GameManager
 
             PlayerPrefs.SetInt(key, clampedStars);
             PlayerPrefs.Save();
+        }
+        
+        public int GetMaxUnlockedLevelIndex(IReadOnlyList<LevelConfig> levels)
+        {
+            if (levels == null || levels.Count == 0)
+                return 0;
+
+            var savedIndex = PlayerPrefs.GetInt(MaxUnlockedLevelIndexKey, 0);
+
+            for (var i = 0; i < levels.Count; i++)
+            {
+                if (GetBestStars(levels[i]) > 0)
+                    savedIndex = Mathf.Max(savedIndex, i + 1);
+            }
+
+            return Mathf.Clamp(savedIndex, 0, levels.Count - 1);
+        }
+
+        public bool IsLevelUnlocked(IReadOnlyList<LevelConfig> levels, LevelConfig levelConfig)
+        {
+            if (levels == null || levelConfig == null)
+                return false;
+
+            var maxUnlockedIndex = GetMaxUnlockedLevelIndex(levels);
+
+            for (var i = 0; i < levels.Count; i++)
+            {
+                if (levels[i] == levelConfig)
+                    return i <= maxUnlockedIndex;
+            }
+
+            return false;
+        }
+
+        public void UnlockNextLevel(IReadOnlyList<LevelConfig> levels, LevelConfig completedLevel)
+        {
+            if (levels == null || completedLevel == null)
+                return;
+
+            for (var i = 0; i < levels.Count; i++)
+            {
+                if (levels[i] != completedLevel)
+                    continue;
+
+                var nextIndex = Mathf.Clamp(i + 1, 0, levels.Count - 1);
+                var savedIndex = PlayerPrefs.GetInt(MaxUnlockedLevelIndexKey, 0);
+
+                if (nextIndex > savedIndex)
+                {
+                    PlayerPrefs.SetInt(MaxUnlockedLevelIndexKey, nextIndex);
+                    PlayerPrefs.Save();
+                }
+
+                return;
+            }
         }
 
         private static string GetLevelStarsKey(LevelConfig levelConfig)

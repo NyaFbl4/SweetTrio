@@ -74,6 +74,7 @@ namespace Project.Scripts.UI.UseCases
             if (isPassed)
             {
                 _soundManager.PlayLevelWin();
+                _levelProgressService.UnlockNextLevel(_levelSelectionService.AvailableLevels, levelConfig);
             }
             else
             {

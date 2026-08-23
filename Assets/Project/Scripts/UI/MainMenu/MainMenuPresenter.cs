@@ -46,6 +46,9 @@ namespace Project.Scripts.UI.MainScreen
 
         private void HandleLevelSelected(LevelConfig levelConfig)
         {
+            if (!_levelProgressService.IsLevelUnlocked(_levelSelectionService.AvailableLevels, levelConfig))
+                return;
+            
             _levelSelectionService.SelectLevel(levelConfig);
             if (_levelSelectionService.CurrentLevel == null)
                 return;
@@ -73,11 +76,29 @@ namespace Project.Scripts.UI.MainScreen
             var levels = _levelSelectionService.AvailableLevels;
             var selectedLevel = _levelSelectionService.CurrentLevel;
             var savedStars = BuildSavedStars(levels);
-
-            _layoutView.SetLevels(levels, selectedLevel, savedStars);
+            var unlockedLevels = BuildUnlockedLevels(levels);
+            
+            _layoutView.SetLevels(levels, selectedLevel, savedStars, unlockedLevels);
             _layoutView.SetSelectedLevel(selectedLevel);
         }
 
+        private IReadOnlyList<bool> BuildUnlockedLevels(IReadOnlyList<LevelConfig> levels)
+        {
+            var result = new List<bool>();
+
+            if (levels == null)
+                return result;
+
+            var maxUnlockedIndex = _levelProgressService.GetMaxUnlockedLevelIndex(levels);
+
+            for (var i = 0; i < levels.Count; i++)
+            {
+                result.Add(i <= maxUnlockedIndex);
+            }
+
+            return result;
+        }
+        
         private IReadOnlyList<int> BuildSavedStars(IReadOnlyList<LevelConfig> levels)
         {
             if (levels == null || levels.Count == 0)
