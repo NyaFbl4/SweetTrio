@@ -32,6 +32,8 @@ namespace Project.System
         [SerializeField, Min(0.05f)] private float _dessertFlyDuration = 0.28f;
         [SerializeField, Min(0f)] private float _dessertFlyArcHeight = 0.8f;
         
+        [Inject] private readonly IPublisher<ActionBarStateDto> _actionBarStatePublisher;
+        
         private bool _isDessertFlyingToActionBar;
 
         public event Action<DessertController> DessertAdded;
@@ -48,6 +50,23 @@ namespace Project.System
             {
                 EnsureSlotsReady();
             }
+        }
+        
+        public bool TryReturnDessertsToPool()
+        {
+            if (_isDessertFlyingToActionBar || _desserts.Count == 0)
+                return false;
+
+            var dessertsToReturn = new List<DessertController>(_desserts);
+            _desserts.Clear();
+
+            PublishCountsChanged();
+            PublishActionBarStateChanged();
+            _dessertSpawner.ReturnDessertsToPool(dessertsToReturn);
+            RebuildLayout();
+            PublishCountsChanged();
+
+            return true;
         }
 
         public bool TryAddDessert(DessertController dessert)
@@ -101,7 +120,8 @@ namespace Project.System
             }
 
             if (hasChanges)
-            {
+            { ;
+                PublishActionBarStateChanged();
                 RebuildLayout();
                 PublishCountsChanged();
             }
@@ -121,6 +141,8 @@ namespace Project.System
             _desserts.Clear();
             if (hasChanges)
             {
+                PublishCountsChanged();
+                PublishActionBarStateChanged();
                 PublishCountsChanged();
             }
         }
@@ -163,6 +185,7 @@ namespace Project.System
 
             DessertAdded?.Invoke(dessert);
             PublishCountsChanged();
+            PublishActionBarStateChanged();
         }
         
         private void HandleActionBarOverflow(DessertController overflowDessert)
@@ -192,6 +215,7 @@ namespace Project.System
 
             RebuildLayout();
             PublishCountsChanged();
+            PublishActionBarStateChanged();
 
             var levelConfig = _levelSelectionService.CurrentLevel;
             if (_timerCountdownUseCase != null && levelConfig != null)
@@ -221,6 +245,11 @@ namespace Project.System
             }
 
             return false;
+        }
+        
+        private void PublishActionBarStateChanged()
+        {
+            _actionBarStatePublisher.Publish(new ActionBarStateDto(_desserts.Count));
         }
 
         private void RebuildLayout()

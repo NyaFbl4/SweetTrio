@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274746bbc9fe1aa45be6b73c00994e2f, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: Assembly-CSharp::Project.Scripts.GameManager.GameConfig
-  _spawnDessertScale: 1.25
-  _maxDessertsOnField: 30
-
+  _spawnDessertScale: 1.65
+  _maxDessertsOnField: 21

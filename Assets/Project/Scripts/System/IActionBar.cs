@@ -13,5 +13,6 @@ namespace Project.System
         IReadOnlyList<DessertController> GetDesserts();
         void RemoveDesserts(IReadOnlyList<DessertController> desserts);
         void ClearField();
+        bool TryReturnDessertsToPool();
     }
 }

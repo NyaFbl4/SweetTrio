@@ -28,6 +28,9 @@ namespace Project.Scripts.UI.LevelUI
         private Button _shuffleButton;
         private Button _exitToMenuButton;
         private Button _pauseButton;
+        private Button _clearActionBarButton;
+        private Label _clearActionBarPressCountLabel;
+        private Label _shufflePressCountLabel;
         private VisualElement _topHudContainer;
         private VisualElement _bottomHudContainer;
 
@@ -41,6 +44,7 @@ namespace Project.Scripts.UI.LevelUI
         private float BottomHudHiddenOffsetPx = 170f;
 
         public event Action ShuffleButtonClicked;
+        public event Action ClearActionBarButtonClicked;
         public event Action ExitToMenuClicked;
         public event Action PauseButtonClicked;
 
@@ -64,6 +68,9 @@ namespace Project.Scripts.UI.LevelUI
             _shuffleButton = _root.Q<Button>("shuffle-button");
             _exitToMenuButton = _root.Q<Button>("gameplay-menu-button");
             _pauseButton = _root.Q<Button>("pause-button");
+            _clearActionBarButton = _root.Q<Button>("clear-actionBar-button");
+            _shufflePressCountLabel = _shuffleButton.Q<Label>("press-count");  
+            _clearActionBarPressCountLabel = _clearActionBarButton.Q<Label>("press-count");
             
             _topHudContainer = _root.Q<VisualElement>("top-hud-container");
             _bottomHudContainer = _root.Q<VisualElement>("bottom-hud-container");
@@ -114,6 +121,10 @@ namespace Project.Scripts.UI.LevelUI
                 _shuffleButton.text = string.Empty;
                 _shuffleButton.clicked += OnShuffleButtonClicked;
             }
+            
+            UIButtonAnimationUtility.EnableDefault(_clearActionBarButton);
+            _clearActionBarButton.text = string.Empty;
+            _clearActionBarButton.clicked += OnClearActionBarButtonClicked;
 
             if (_exitToMenuButton == null)
             {
@@ -169,6 +180,22 @@ namespace Project.Scripts.UI.LevelUI
             _hudAnimationVersion++;
             await base.HideAsync();
         }
+        
+        public void SetShufflePressCount(int value)
+        {
+            _shufflePressCountLabel.text = Mathf.Max(0, value).ToString();
+        }
+
+        public void SetClearActionBarPressCount(int value)
+        {
+            _clearActionBarPressCountLabel.text = Mathf.Max(0, value).ToString();
+        }
+
+        public void SetBoosterButtonsEnabled(bool enabled)
+        {
+            _shuffleButton.SetEnabled(enabled);
+            _clearActionBarButton.SetEnabled(enabled);
+        }
 
         private void ApplyHudAppearanceState(float state)
         {
@@ -198,6 +225,9 @@ namespace Project.Scripts.UI.LevelUI
             {
                 _shuffleButton.clicked -= OnShuffleButtonClicked;
             }
+
+            if (_clearActionBarButton != null)
+                    _clearActionBarButton.clicked -= OnClearActionBarButtonClicked;
 
             if (_exitToMenuButton != null)
             {
@@ -366,6 +396,11 @@ namespace Project.Scripts.UI.LevelUI
             _levelProgressFill.style.top = 0f;
             _levelProgressFill.style.bottom = 0f;
             _levelProgressFill.style.width = Length.Percent(0f);
+        }
+        
+        private void OnClearActionBarButtonClicked()
+        {
+            ClearActionBarButtonClicked?.Invoke();
         }
 
         private void ConfigureProgressStars()

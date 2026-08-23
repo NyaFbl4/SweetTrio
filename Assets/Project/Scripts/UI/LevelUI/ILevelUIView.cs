@@ -8,6 +8,7 @@ namespace Project.Scripts.UI.LevelUI
     {
         event Action ShuffleButtonClicked;
         event Action ExitToMenuClicked;
+        event Action ClearActionBarButtonClicked;
         event Action PauseButtonClicked;
 
         void SetCounter(int value);
@@ -17,5 +18,8 @@ namespace Project.Scripts.UI.LevelUI
         void SetProgress(float value01);
         void SetBonusDessertSprite(Sprite sprite);
         void SetBonusMultiplierText(string text);
+        void SetShufflePressCount(int value);
+        void SetClearActionBarPressCount(int value);
+        void SetBoosterButtonsEnabled(bool enabled);
     }
 }

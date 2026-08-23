@@ -661,6 +661,8 @@ MonoBehaviour:
   - {fileID: 43028688}
   - {fileID: 57509709}
   _autoSlotSpacing: 0.9
+  _dessertFlyDuration: 0.28
+  _dessertFlyArcHeight: 0.8
 --- !u!1 &483594929
 GameObject:
   m_ObjectHideFlags: 0
@@ -767,7 +769,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 3
+  m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 0.7, y: 0.7}

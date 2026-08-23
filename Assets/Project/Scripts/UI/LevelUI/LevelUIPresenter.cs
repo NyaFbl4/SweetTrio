@@ -1,4 +1,5 @@
-﻿using MessagePipe;
+﻿using System;
+using MessagePipe;
 using Project.Scripts.GameManager;
 using Project.Scripts.Systems.UI;
 using Project.Scripts.Systems.UI.Dtos;
@@ -15,6 +16,19 @@ namespace Project.Scripts.UI.LevelUI
         [Inject] private readonly IPublisher<ShuffleFieldCommandDto> _shuffleFieldPublisher;
         [Inject] private readonly IPublisher<ShowPopupDto> _showPopUpPublisher;
         [Inject] private readonly IPublisher<HidePopupDto> _hidePopUpPublisher;
+        [Inject] private readonly IPublisher<ClearActionBarCommandDto> _clearActionBarPublisher;
+        [Inject] private readonly IRewardedAdService _rewardedAdService;
+        [Inject] private readonly ISubscriber<ActionBarStateDto> _actionBarStateSubscriber;
+        
+        private IDisposable _actionBarStateSubscription;
+        private int _actionBarCurrentCount;
+        private int _freeBoosterPressesPerLevel = 1;
+        private string _shuffleRewardId = "shuffle_field";
+        private string _clearActionBarRewardId = "clear_action_bar";
+
+        private int _shuffleFreePresses;
+        private int _clearActionBarFreePresses;
+        private bool _isWaitingReward;
 
         public override void Initialize()
         {
@@ -23,6 +37,8 @@ namespace Project.Scripts.UI.LevelUI
             _layoutView.ShuffleButtonClicked += HandleShuffleButtonClicked;
             _layoutView.ExitToMenuClicked += HandleExitToMenuClicked;
             _layoutView.PauseButtonClicked += HandlePauseButtonClicked;
+            _layoutView.ClearActionBarButtonClicked += HandleClearActionBarButtonClicked;
+            _actionBarStateSubscription = _actionBarStateSubscriber.Subscribe(HandleActionBarStateChanged);
         }
 
         public override void Dispose()
@@ -30,6 +46,8 @@ namespace Project.Scripts.UI.LevelUI
             _layoutView.ShuffleButtonClicked -= HandleShuffleButtonClicked;
             _layoutView.ExitToMenuClicked -= HandleExitToMenuClicked;
             _layoutView.PauseButtonClicked -= HandlePauseButtonClicked;
+            _layoutView.ClearActionBarButtonClicked -= HandleClearActionBarButtonClicked;
+            _actionBarStateSubscription.Dispose();
             IGameListener.Unregister(this);
             base.Dispose();
         }
@@ -71,6 +89,13 @@ namespace Project.Scripts.UI.LevelUI
 
         public void OnStartGame()
         {
+            _shuffleFreePresses = _freeBoosterPressesPerLevel;
+            _clearActionBarFreePresses = _freeBoosterPressesPerLevel;
+
+            _layoutView.SetShufflePressCount(_shuffleFreePresses);
+            _layoutView.SetClearActionBarPressCount(_clearActionBarFreePresses);
+            _layoutView.SetBoosterButtonsEnabled(true);
+            
             _showPopUpPublisher.Publish(new ShowPopupDto
             {
                 TargetPopUpType = typeof(ILevelUIPresenter)
@@ -89,10 +114,66 @@ namespace Project.Scripts.UI.LevelUI
                 TargetPopUpType = typeof(ILevelUIPresenter)
             });
         }
+        
+        private void HandleActionBarStateChanged(ActionBarStateDto dto)
+        {
+            _actionBarCurrentCount = dto.CurrentCount;
+        }
 
         private void HandleShuffleButtonClicked()
         {
-            _shuffleFieldPublisher.Publish(new ShuffleFieldCommandDto());
+            TryUseBooster(
+                ref _shuffleFreePresses,
+                _layoutView.SetShufflePressCount,
+                _shuffleRewardId,
+                () => _shuffleFieldPublisher.Publish(new ShuffleFieldCommandDto()));
+        }
+
+        private void HandleClearActionBarButtonClicked()
+        {
+            if (_actionBarCurrentCount  <= 0)
+                return;
+
+            TryUseBooster(
+                ref _clearActionBarFreePresses,
+                _layoutView.SetClearActionBarPressCount,
+                _clearActionBarRewardId,
+                () => _clearActionBarPublisher.Publish(new ClearActionBarCommandDto()));
+        }
+        
+        private void TryUseBooster(
+            ref int freePresses,
+            Action<int> updatePressCount,
+            string rewardId,
+            Action applyAction)
+        {
+            if (_isWaitingReward)
+                return;
+
+            if (freePresses > 0)
+            {
+                freePresses--;
+                updatePressCount(freePresses);
+                applyAction();
+                return;
+            }
+
+            _isWaitingReward = true;
+            _layoutView.SetBoosterButtonsEnabled(false);
+
+            _rewardedAdService.Show(
+                rewardId,
+                () =>
+                {
+                    _isWaitingReward = false;
+                    _layoutView.SetBoosterButtonsEnabled(true);
+                    applyAction();
+                },
+                () =>
+                {
+                    _isWaitingReward = false;
+                    _layoutView.SetBoosterButtonsEnabled(true);
+                });
         }
 
         private void HandleExitToMenuClicked()

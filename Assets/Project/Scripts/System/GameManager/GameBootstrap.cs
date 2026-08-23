@@ -15,7 +15,8 @@ namespace Project.Scripts.GameManager
         private readonly ILevelSelectionService _levelSelectionService;
         private readonly GameConfig _gameConfig;
         private readonly ISoundManager _soundManager;
-
+        private readonly IDisposable _clearActionBarSubscription;
+        
         private bool _isAutoSpawnActive;
         private bool _isInitialSpawnInProgress;
         private float _spawnTimer;
@@ -28,7 +29,8 @@ namespace Project.Scripts.GameManager
             ILevelSelectionService levelSelectionService,
             GameConfig gameConfig,
             ISoundManager soundManager,
-            ISubscriber<ShuffleFieldCommandDto> shuffleFieldSubscriber)
+            ISubscriber<ShuffleFieldCommandDto> shuffleFieldSubscriber,
+            ISubscriber<ClearActionBarCommandDto> clearActionBarSubscriber)
         {
             _dessertSpawner = dessertSpawner;
             _actionBar = actionBar;
@@ -39,6 +41,7 @@ namespace Project.Scripts.GameManager
             IGameListener.Register(this);
             _actionBar.DessertAdded += HandleDessertAdded;
             _shuffleFieldSubscription = shuffleFieldSubscriber.Subscribe(HandleShuffleRequested);
+            _clearActionBarSubscription = clearActionBarSubscriber.Subscribe(HandleClearActionBarRequested);
         }
 
         public void Tick()
@@ -129,7 +132,7 @@ namespace Project.Scripts.GameManager
                 _spawnTimer = 0f;
                 return;
             }
-
+            
             _actionBar.ClearField();
             _dessertSpawner.PrepareDeck();
             _spawnRequestQueue.Clear();
@@ -182,11 +185,20 @@ namespace Project.Scripts.GameManager
             _dessertSpawner.RespawnFieldWithShuffle();
             RestartInitialSpawn();
         }
+        
+        private void HandleClearActionBarRequested(ClearActionBarCommandDto _)
+        {
+            if (_actionBar.TryReturnDessertsToPool())
+            {
+                RestartInitialSpawn();
+            }
+        }
 
         public void Dispose()
         {
             _shuffleFieldSubscription.Dispose();
             _actionBar.DessertAdded -= HandleDessertAdded;
+            _clearActionBarSubscription.Dispose();
             IGameListener.Unregister(this);
         }
     }

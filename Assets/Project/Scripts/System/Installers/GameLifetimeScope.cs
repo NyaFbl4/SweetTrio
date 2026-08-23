@@ -47,6 +47,7 @@ namespace Project.Scripts.System.Installers
         {
             builder.RegisterMessagePipe();
             builder.Register<YandexLevelStartAdService>(Lifetime.Singleton).As<ILevelStartAdService>();
+            builder.Register<YandexRewardedAdService>(Lifetime.Singleton).As<IRewardedAdService>();
             builder.RegisterEntryPoint<SoundManager>(Lifetime.Singleton).As<ISoundManager>();
             builder.Register<LocalizationService>(Lifetime.Singleton).As<ILocalizationService>();
             builder.RegisterEntryPoint<UIController>().As<IUIController>();
